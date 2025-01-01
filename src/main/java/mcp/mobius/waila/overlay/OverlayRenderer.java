@@ -1,17 +1,16 @@
 package mcp.mobius.waila.overlay;
 
-import mcp.mobius.waila.Waila;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.Minecraft;
 import net.minecraft.RaycastCollision;
 import net.minecraft.RenderHelper;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 
 public class OverlayRenderer {
-    public OverlayRenderer() {}
+    public OverlayRenderer() {
+    }
 
     protected static boolean hasBlending;
     protected static boolean hasLight;
@@ -25,29 +24,30 @@ public class OverlayRenderer {
     public void renderOverlay() {
         Minecraft mc = Minecraft.getMinecraft();
         RaycastCollision rc = mc.objectMouseOver;
-        if (!(mc.currentScreen == null && mc.theWorld != null
-                && Minecraft.isGuiEnabled()
-                && !mc.gameSettings.keyBindPlayerList.isPressed()
-                && WailaConfig.showTooltip.getBooleanValue()
-                && RayTracing.instance().getTarget() != null
-                && rc != null))
-            return;
+
+        // change too many && to simple returns
+        if (mc.currentScreen != null) return;
+        if (mc.theWorld == null) return;
+        if (!Minecraft.isGuiEnabled()) return;
+        if (mc.gameSettings.keyBindPlayerList.isPressed()) return;
+        if (!WailaConfig.showTooltip.getBooleanValue()) return;
+        if (RayTracing.instance().getTarget() == null) return;
+        if (rc == null) return;
+
+        Tooltip tooltip = WailaTickHandler.instance().tooltip;
+        if (tooltip == null) return;// not ready
 
         if (rc.isBlock()
                 && RayTracing.instance().getTargetStack() != null) {
-            renderOverlay(WailaTickHandler.instance().tooltip);
+            renderOverlay(tooltip);
         }
         if (rc.isEntity()
                 && WailaConfig.showEnts.getBooleanValue()) {
-            renderOverlay(WailaTickHandler.instance().tooltip);
+            renderOverlay(tooltip);
         }
     }
 
     public void renderOverlay(Tooltip tooltip) {
-        if (Minecraft.getMinecraft().objectMouseOver != null) {
-            return;
-        }
-
         GL11.glPushMatrix();
         saveGLState();
 

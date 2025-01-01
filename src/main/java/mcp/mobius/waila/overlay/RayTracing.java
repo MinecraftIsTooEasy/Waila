@@ -1,16 +1,14 @@
 package mcp.mobius.waila.overlay;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import moddedmite.waila.config.WailaConfig;
-import net.minecraft.*;
-
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaEntityProvider;
 import mcp.mobius.waila.api.impl.DataAccessorCommon;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import mcp.mobius.waila.utils.Constants;
+import moddedmite.waila.config.WailaConfig;
+import net.minecraft.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RayTracing {
 
@@ -25,10 +23,11 @@ public class RayTracing {
     }
 
     private final Minecraft mc = Minecraft.getMinecraft();
-    private RaycastCollision target = mc.objectMouseOver;
+
+    private RaycastCollision target = null;// referring to mc.objectMouseOver is unreliable
 
     public void fire() {
-        if (target != null
+        if (mc.objectMouseOver != null
 //                &&
 //                target.isEntity()
 //                && !shouldHidePlayer(mc.objectMouseOver.getEntityHit())
@@ -44,8 +43,9 @@ public class RayTracing {
     }
 
     private Float getReach() {
-        if (Minecraft.getMinecraft().objectMouseOver != null) {
-            return mc.thePlayer.getReach(Minecraft.getMinecraft().objectMouseOver.getBlockHit(), Minecraft.getMinecraft().objectMouseOver.world.getBlockMetadata(Minecraft.getMinecraft().objectMouseOver.block_hit_x, Minecraft.getMinecraft().objectMouseOver.block_hit_y, Minecraft.getMinecraft().objectMouseOver.block_hit_z));
+        RaycastCollision rc = this.mc.objectMouseOver;
+        if (rc != null && rc.isBlock()) {
+            return mc.thePlayer.getReach(rc.getBlockHit(), rc.world.getBlockMetadata(rc.block_hit_x, rc.block_hit_y, rc.block_hit_z));
         }
         return 5.0F;
     }
@@ -166,7 +166,8 @@ public class RayTracing {
 
                 if (block.getItem() != null) items.add(block);
 
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         if (!items.isEmpty()) return items;
