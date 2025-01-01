@@ -43,14 +43,14 @@ public class DataAccessorCommon implements IWailaCommonAccessor, IWailaDataAcces
             this.metadata = world.getBlockMetadata(_mop.block_hit_x, _mop.block_hit_y, _mop.block_hit_z);
             this.tileEntity = world.getBlockTileEntity(_mop.block_hit_x, _mop.block_hit_y, _mop.block_hit_z);
             this.entity = null;
-            if (this.block != null) {
-                this.blockID = this.block.blockID;
-                this.blockResource = this.getMod() + ":" + this.getBlockUnlocalizedName();
-                this.blockUnlocalizedName = this.block.getUnlocalizedName();
-            }
             try {
                 this.stack = new ItemStack(this.block, 1, this.metadata);
             } catch (Exception ignored) {}
+            if (this.block != null) {
+                this.blockID = this.block.blockID;
+                this.blockUnlocalizedName = this.block.getUnlocalizedName();
+                this.blockResource = this.getMod() + ":" + this.getBlockUnlocalizedName();
+            }
 
         } else if (this.mop != null && this.mop.isEntity()) {
             this.block = null;
@@ -202,11 +202,6 @@ public class DataAccessorCommon implements IWailaCommonAccessor, IWailaDataAcces
     }
 
     @Override
-    public String getBlockQualifiedName() {
-        return this.blockResource;
-    }
-
-    @Override
     public String getBlockUnlocalizedName() {
         return this.blockUnlocalizedName;
     }
@@ -214,5 +209,10 @@ public class DataAccessorCommon implements IWailaCommonAccessor, IWailaDataAcces
     @Override
     public String getMod() {
         return ModIdentification.nameFromStack(stack);
+    }
+
+    @Override
+    public String getBlockQualifiedName() {
+        return this.blockResource;
     }
 }

@@ -9,6 +9,7 @@ import mcp.mobius.waila.api.IWailaRegistrar;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
 import mcp.mobius.waila.handlers.DecoratorFMP;
 import mcp.mobius.waila.handlers.HUDHandlerFMP;
+import moddedmite.waila.handlers.HUDHandlerMITE;
 
 public class ProxyServer {
 
@@ -17,12 +18,13 @@ public class ProxyServer {
     public void registerHandlers() {}
 
     public void registerMods() {
-
         HUDHandlerVanilla.register();
         HUDHandlerFurnace.register();
 
         HUDHandlerFMP.register();
         DecoratorFMP.register();
+
+        HUDHandlerMITE.register();
     }
 
     public void registerIMCs() {

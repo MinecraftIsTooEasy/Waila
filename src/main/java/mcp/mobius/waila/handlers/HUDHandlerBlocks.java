@@ -45,7 +45,7 @@ public class HUDHandlerBlocks implements IWailaDataProvider {
             if (WailaConfig.metadata.getBooleanValue()) {
                 currenttip.add(
                         String.format(
-                                ITALIC + "[%d:%d] | %s",
+                                GRAY + ITALIC + "[%d:%d] | %s",
                                 accessor.getBlockID(),
                                 accessor.getMetadata(),
                                 accessor.getBlockQualifiedName()));

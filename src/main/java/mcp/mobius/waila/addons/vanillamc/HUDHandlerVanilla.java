@@ -17,8 +17,6 @@ import mcp.mobius.waila.api.SpecialChars;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
 import mcp.mobius.waila.cbcore.LangUtil;
 
-import static mcp.mobius.waila.api.SpecialChars.DGRAY;
-
 public class HUDHandlerVanilla implements IWailaDataProvider {
 
     static Block mobSpawner = Block.mobSpawner;
@@ -68,6 +66,14 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
 
         if (block == crops) {
             return new ItemStack(Item.wheat);
+        }
+
+        if (block == carrot) {
+            return new ItemStack(Item.carrot);
+        }
+
+        if (block == potato) {
+            return new ItemStack(Item.potato);
         }
 
         if ((block == leave) && (accessor.getMetadata() > 3)) {
@@ -140,7 +146,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                 if (growthValue < 100.0)
                     currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
                 else currenttip.add(
-                        String.format(
+                        String.format(SpecialChars.GRAY +
                                 "%s : %s",
                                 LangUtil.translateG("hud.msg.growth"),
                                 LangUtil.translateG("hud.msg.mature")));
@@ -153,7 +159,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             if (growthValue < 100.0)
                 currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
             else currenttip.add(
-                    String.format(
+                    String.format(SpecialChars.GRAY +
                             "%s : %s",
                             LangUtil.translateG("hud.msg.growth"),
                             LangUtil.translateG("hud.msg.mature")));
@@ -165,7 +171,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             if (growthValue < 100.0)
                 currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
             else currenttip.add(
-                    String.format(
+                    String.format(SpecialChars.GRAY +
                             "%s : %s",
                             LangUtil.translateG("hud.msg.growth"),
                             LangUtil.translateG("hud.msg.mature")));
@@ -175,31 +181,31 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
         if (WailaConfig.leverstate.getBooleanValue()) if (block == lever) {
             String redstoneOn = (accessor.getMetadata() & 8) == 0 ? LangUtil.translateG("hud.msg.off")
                     : LangUtil.translateG("hud.msg.on");
-            currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.state"), redstoneOn));
+            currenttip.add(SpecialChars.GRAY + String.format("%s : %s", LangUtil.translateG("hud.msg.state"), redstoneOn));
             return currenttip;
         }
 
         if (WailaConfig.repeater.getBooleanValue()) if ((block == repeaterIdle) || (block == repeaterActv)) {
             int tick = (accessor.getMetadata() >> 2) + 1;
             if (tick == 1) currenttip.add(String.format("%s : %s tick", LangUtil.translateG("hud.msg.delay"), tick));
-            else currenttip.add(String.format("%s : %s ticks", LangUtil.translateG("hud.msg.delay"), tick));
+            else currenttip.add(SpecialChars.GRAY + String.format("%s : %s ticks", LangUtil.translateG("hud.msg.delay"), tick));
             return currenttip;
         }
 
         if (WailaConfig.comparator.getBooleanValue()) if ((block == comparatorIdl) || (block == comparatorAct)) {
             String mode = ((accessor.getMetadata() >> 2) & 1) == 0 ? LangUtil.translateG("hud.msg.comparator")
                     : LangUtil.translateG("hud.msg.substractor");
-            currenttip.add("Mode : " + mode);
+            currenttip.add(SpecialChars.GRAY + "Mode : " + mode);
             return currenttip;
         }
 
         if (WailaConfig.redstone.getBooleanValue()) if (block == redstone) {
-            currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.power"), accessor.getMetadata()));
+            currenttip.add(SpecialChars.GRAY + String.format("%s : %s", LangUtil.translateG("hud.msg.power"), accessor.getMetadata()));
             return currenttip;
         }
 
         if (WailaConfig.spawnertype.getBooleanValue() && block == mobSpawner && (accessor.getTileEntity() instanceof TileEntityMobSpawner)) {
-            currenttip.add(String.format("Type: %s", ((TileEntityMobSpawner) accessor.getTileEntity()).getSpawnerLogic().getEntityNameToSpawn()));
+            currenttip.add(SpecialChars.GRAY + String.format("Type: %s", ((TileEntityMobSpawner) accessor.getTileEntity()).getSpawnerLogic().getEntityNameToSpawn()));
         }
 
         if (WailaConfig.skull.getBooleanValue() && block == skull && (accessor.getTileEntity() instanceof TileEntitySkull) && Waila.instance.serverPresent) {
@@ -214,7 +220,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                 case 5 -> StatCollector.translateToLocal("item.skull.infused.name");
                 default -> skull.unlocalizedName;
             };
-            currenttip.add(skull2);
+            currenttip.add(SpecialChars.GRAY + skull2);
         }
 
         return currenttip;

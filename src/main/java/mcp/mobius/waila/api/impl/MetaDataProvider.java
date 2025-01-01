@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import mcp.mobius.waila.api.SpecialChars;
 import moddedmite.waila.api.PacketDispatcher;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.*;

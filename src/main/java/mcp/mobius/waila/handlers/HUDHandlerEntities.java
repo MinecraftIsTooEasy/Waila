@@ -8,6 +8,7 @@ import static mcp.mobius.waila.api.SpecialChars.getRenderString;
 
 import java.util.List;
 
+import mcp.mobius.waila.api.SpecialChars;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.*;
 
@@ -57,8 +58,8 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
             else {
                 currenttip.add(
-                        getRenderString(
-                                "waila.health",
+                        getRenderString(SpecialChars.GRAY +
+                                        "waila.health",
                                 String.valueOf(nhearts),
                                 String.valueOf(health),
                                 String.valueOf(maxhp)));

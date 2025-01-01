@@ -9,9 +9,6 @@ import org.lwjgl.opengl.GL12;
 
 
 public class OverlayRenderer {
-    public OverlayRenderer() {
-    }
-
     protected static boolean hasBlending;
     protected static boolean hasLight;
     protected static boolean hasDepthTest;
@@ -20,6 +17,9 @@ public class OverlayRenderer {
     protected static boolean hasRescaleNormal;
     protected static boolean hasColorMaterial;
     protected static int boundTexIndex;
+
+    public OverlayRenderer() {
+    }
 
     public void renderOverlay() {
         Minecraft mc = Minecraft.getMinecraft();
