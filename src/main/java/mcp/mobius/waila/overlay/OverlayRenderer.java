@@ -29,7 +29,7 @@ public class OverlayRenderer {
         if (mc.currentScreen != null) return;
         if (mc.theWorld == null) return;
         if (!Minecraft.isGuiEnabled()) return;
-        if (mc.gameSettings.keyBindPlayerList.isPressed()) return;
+        if (mc.gameSettings.keyBindPlayerList.pressed) return;
         if (!WailaConfig.showTooltip.getBooleanValue()) return;
         if (RayTracing.instance().getTarget() == null) return;
         if (rc == null) return;
