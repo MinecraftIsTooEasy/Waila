@@ -6,13 +6,10 @@ import fi.dy.masa.malilib.config.ConfigTab;
 import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.SimpleConfigs;
 import fi.dy.masa.malilib.config.options.*;
-import fi.dy.masa.malilib.gui.screen.DefaultConfigScreen;
 import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.KeyCodes;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.overlay.OverlayConfig;
 import moddedmite.waila.handlers.emi.EMIHandler;
-import net.minecraft.GuiScreen;
 import net.minecraft.Minecraft;
 import net.xiaoyu233.fml.FishModLoader;
 import org.lwjgl.input.Keyboard;
@@ -21,21 +18,22 @@ import java.util.*;
 
 public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
-    public static final ConfigBoolean showTooltip = new ConfigBoolean("showTooltip", true);
+    public static final ConfigBoolean showTooltip = new ConfigBoolean("choice.showhidewaila", true);
     public static final ConfigBoolean showEnts = new ConfigBoolean("showEnts", true);
-    public static final ConfigBoolean metadata = new ConfigBoolean("metadata", false);
-    public static final ConfigBoolean liquid = new ConfigBoolean("liquid", false);
-    public static final ConfigBoolean shiftblock = new ConfigBoolean("shiftblock", false);
-    public static final ConfigBoolean shiftents = new ConfigBoolean("shiftents", false);
+    public static final ConfigBoolean metadata = new ConfigBoolean("choice.showhideidmeta", false);
+    public static final ConfigBoolean liquid = new ConfigBoolean("choice.showliquids", false);
+    public static final ConfigBoolean shiftblock = new ConfigBoolean("choice.shifttoggledblock", false);
+    public static final ConfigBoolean shiftents = new ConfigBoolean("choice.shifttoggledents", false);
 
-    public static final ConfigBoolean showhp = new ConfigBoolean("showhp", true);
-    public static final ConfigBoolean showcrop = new ConfigBoolean("showcrop", true);
-    public static final ConfigBoolean spawnertype = new ConfigBoolean("spawnertype", true);
-    public static final ConfigBoolean repeater = new ConfigBoolean("repeater", true);
-    public static final ConfigBoolean redstone = new ConfigBoolean("redstone", true);
-    public static final ConfigBoolean comparator = new ConfigBoolean("comparator", true);
-    public static final ConfigBoolean leverstate = new ConfigBoolean("leverstate", true);
-    public static final ConfigBoolean skull = new ConfigBoolean("skull", true);
+    public static final ConfigBoolean showhp = new ConfigBoolean("option.general.showhp", true);
+    public static final ConfigBoolean showcrop = new ConfigBoolean("option.general.showcrop", true);
+
+    public static final ConfigBoolean spawnertype = new ConfigBoolean("option.vanilla.spawntype", true);
+    public static final ConfigBoolean repeater = new ConfigBoolean("option.vanilla.repeater", true);
+    public static final ConfigBoolean redstone = new ConfigBoolean("option.vanilla.redstone", true);
+    public static final ConfigBoolean comparator = new ConfigBoolean("option.vanilla.comparator", true);
+    public static final ConfigBoolean leverstate = new ConfigBoolean("option.vanilla.leverstate", true);
+    public static final ConfigBoolean skulltype = new ConfigBoolean("option.vanilla.skulltype", true);
 
     public static final ConfigInteger posX = new ConfigInteger("posX", 50, 0, 100, true, "");
     public static final ConfigInteger posY = new ConfigInteger("posY", 1, 0, 100, true, "");
@@ -44,13 +42,13 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     public static final ConfigColor gradient1 = new ConfigColor("gradient1", "#FF5000FF");
     public static final ConfigColor gradient2 = new ConfigColor("gradient2", "#FF28007F");
     public static final ConfigColor fontcolor = new ConfigColor("fontcolor", "#FFA0A0A0");
-    public static final ConfigDouble scale = new ConfigDouble("scale", 1, 0.2, 2, true, "");
+    public static final ConfigDouble scale = new ConfigDouble("screen.label.scale", 1, 0.2, 2, true, "");
 
-    public static final ConfigHotkey wailaconfig = new ConfigHotkey("wailaconfig", Keyboard.KEY_NUMPAD0);
-    public static final ConfigHotkey wailadisplay = new ConfigHotkey("wailadisplay", Keyboard.KEY_NUMPAD1);
-    public static final ConfigHotkey keyliquid = new ConfigHotkey("keyliquid", Keyboard.KEY_NUMPAD2);
-    public static final ConfigHotkey recipe = new ConfigHotkey("recipe", Keyboard.KEY_NUMPAD3);
-    public static final ConfigHotkey usage = new ConfigHotkey("usage", Keyboard.KEY_NUMPAD4);
+    public static final ConfigHotkey wailaconfig = new ConfigHotkey("waila.keybind.wailaconfig", Keyboard.KEY_NUMPAD0);
+    public static final ConfigHotkey wailadisplay = new ConfigHotkey("waila.keybind.wailadisplay", Keyboard.KEY_NUMPAD1);
+    public static final ConfigHotkey keyliquid = new ConfigHotkey("waila.keybind.liquid", Keyboard.KEY_NUMPAD2);
+    public static final ConfigHotkey recipe = new ConfigHotkey("waila.keybind.recipe", Keyboard.KEY_NUMPAD3);
+    public static final ConfigHotkey usage = new ConfigHotkey("waila.keybind.usage", Keyboard.KEY_NUMPAD4);
 
     private static WailaConfig Instance;
     public static List<ConfigBase> main;
@@ -66,7 +64,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
     static {
         main = List.of(showTooltip, showEnts, metadata, liquid, shiftblock, shiftents);
-        general = List.of(showhp, showcrop, spawnertype, repeater, redstone, comparator, leverstate, skull);
+        general = List.of(showhp, showcrop, spawnertype, repeater, redstone, comparator, leverstate, skulltype);
         screen = List.of(posX, posY, alpha, bgcolor, gradient1, gradient2, fontcolor, scale);
         key = List.of(wailaconfig, wailadisplay, keyliquid, recipe, usage);
         ArrayList<ConfigBase> values = new ArrayList<>();

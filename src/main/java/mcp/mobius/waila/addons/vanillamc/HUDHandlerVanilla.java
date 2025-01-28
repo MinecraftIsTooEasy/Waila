@@ -1,9 +1,7 @@
 package mcp.mobius.waila.addons.vanillamc;
 
-import java.util.Collections;
 import java.util.List;
 
-import au.com.bytecode.opencsv.CSVParser;
 import mcp.mobius.waila.Waila;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.*;
@@ -208,7 +206,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             currenttip.add(SpecialChars.GRAY + String.format("Type: %s", ((TileEntityMobSpawner) accessor.getTileEntity()).getSpawnerLogic().getEntityNameToSpawn()));
         }
 
-        if (WailaConfig.skull.getBooleanValue() && block == skull && (accessor.getTileEntity() instanceof TileEntitySkull) && Waila.instance.serverPresent) {
+        if (WailaConfig.skulltype.getBooleanValue() && block == skull && (accessor.getTileEntity() instanceof TileEntitySkull) && Waila.instance.serverPresent) {
             NBTTagCompound tag = accessor.getNBTData();
             byte type = tag.getByte("SkullType");
             skull2 = switch (type) {
