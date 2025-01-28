@@ -60,10 +60,11 @@ public class TooltipRenderer {
             if (!Objects.equals(HwiteInfo.infoMain, "") && HwiteInfo.hasIcon && HwiteConfigs.BlockRender.getBooleanValue()) {
                 RenderHelper.enableGUIStandardItemLighting();
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                DisplayUtil.renderStack(
-                        TooltipBGRender.x + 5,
-                        list.size() == 1 ? TooltipBGRender.y - 6  : (TooltipBGRender.y - TooltipBGRender.h / 2) - 3,
-                        new ItemStack(HwiteInfo.blockInfo, 1, mc.theWorld.getBlockMetadata(HwiteInfo.blockPosX, HwiteInfo.blockPosY, HwiteInfo.blockPosZ)));
+                if (HwiteInfo.blockInfo instanceof BlockDoor door) {
+                    renderStack(new ItemStack(door.getDoorItem(), 1, mc.theWorld.getBlockMetadata(HwiteInfo.blockPosX, HwiteInfo.blockPosY, HwiteInfo.blockPosZ)), list);
+                } else {
+                    renderStack(new ItemStack(HwiteInfo.blockInfo, 1, mc.theWorld.getBlockMetadata(HwiteInfo.blockPosX, HwiteInfo.blockPosY, HwiteInfo.blockPosZ)), list);
+                }
             }
             loadGLState();
 
@@ -73,6 +74,13 @@ public class TooltipRenderer {
             }
             GL11.glPopMatrix();
         }
+    }
+
+    private static void renderStack(ItemStack itemStack, List list) {
+        DisplayUtil.renderStack(
+                TooltipBGRender.x + 5,
+                list.size() == 1 ? TooltipBGRender.y - 6 : (TooltipBGRender.y - TooltipBGRender.h / 2) - 3,
+                itemStack);
     }
 
     private static int getHealthY(ArrayList<String> list) {
