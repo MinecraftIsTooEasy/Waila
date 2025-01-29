@@ -121,11 +121,11 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
         }
 
         if (block == melonStem) {
-            currenttip.set(0, SpecialChars.WHITE + "Melon stem");
+            currenttip.set(0, SpecialChars.WHITE + I18n.getString("tile.melon_stem.name"));
         }
 
         if (block == pumpkinStem) {
-            currenttip.set(0, SpecialChars.WHITE + "Pumpkin stem");
+            currenttip.set(0, SpecialChars.WHITE + I18n.getString("tile.pumpkin_stem.name"));
         }
 
         return currenttip;

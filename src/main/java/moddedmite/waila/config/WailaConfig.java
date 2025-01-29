@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.SimpleConfigs;
 import fi.dy.masa.malilib.config.options.*;
 import fi.dy.masa.malilib.util.JsonUtils;
+import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.overlay.OverlayConfig;
 import moddedmite.waila.handlers.emi.EMIHandler;
@@ -19,7 +20,7 @@ import java.util.*;
 public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
     public static final ConfigBoolean showTooltip = new ConfigBoolean("choice.showhidewaila", true);
-    public static final ConfigBoolean showEnts = new ConfigBoolean("showEnts", true);
+    public static final ConfigBoolean showEnts = new ConfigBoolean("choice.showEnts", true);
     public static final ConfigBoolean metadata = new ConfigBoolean("choice.showhideidmeta", false);
     public static final ConfigBoolean liquid = new ConfigBoolean("choice.showliquids", false);
     public static final ConfigBoolean shiftblock = new ConfigBoolean("choice.shifttoggledblock", false);
@@ -35,13 +36,13 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     public static final ConfigBoolean leverstate = new ConfigBoolean("option.vanilla.leverstate", true);
     public static final ConfigBoolean skulltype = new ConfigBoolean("option.vanilla.skulltype", true);
 
-    public static final ConfigInteger posX = new ConfigInteger("posX", 50, 0, 100, true, "");
-    public static final ConfigInteger posY = new ConfigInteger("posY", 1, 0, 100, true, "");
-    public static final ConfigInteger alpha = new ConfigInteger("alpha", 80, 0, 100, true, "");
-    public static final ConfigColor bgcolor = new ConfigColor("bgcolor", "#FF100010");
-    public static final ConfigColor gradient1 = new ConfigColor("gradient1", "#FF5000FF");
-    public static final ConfigColor gradient2 = new ConfigColor("gradient2", "#FF28007F");
-    public static final ConfigColor fontcolor = new ConfigColor("fontcolor", "#FFA0A0A0");
+    public static final ConfigInteger posX = new ConfigInteger("screen.label.posX", 50, 0, 100, true, "");
+    public static final ConfigInteger posY = new ConfigInteger("screen.label.posY", 1, 0, 100, true, "");
+    public static final ConfigInteger alpha = new ConfigInteger("screen.label.alpha", 80, 0, 100, true, "");
+    public static final ConfigColor bgcolor = new ConfigColor("screen.label.bgcolor", "#FF100010");
+    public static final ConfigColor gradient1 = new ConfigColor("screen.label.gradient1", "#FF5000FF");
+    public static final ConfigColor gradient2 = new ConfigColor("screen.label.gradient2", "#FF28007F");
+    public static final ConfigColor fontcolor = new ConfigColor("screen.label.fontcolor", "#FFFFFFFF");
     public static final ConfigDouble scale = new ConfigDouble("screen.label.scale", 1, 0.2, 2, true, "");
 
     public static final ConfigHotkey wailaconfig = new ConfigHotkey("waila.keybind.wailaconfig", Keyboard.KEY_NUMPAD0);
@@ -100,11 +101,9 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
                     return true;
                 }));
             } catch (Exception ignored) {
+                Waila.log.warn("You don't have EMI mod installed");
             }
         }
-
-//        if (bgcolor.isModified() || fontcolor.isModified() || gradient1.isModified() || gradient2.isModified() ||
-//                scale.isModified() || alpha.isModified() || posX.isModified() || posY.isModified())
     }
 
     @Override

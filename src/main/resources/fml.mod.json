@@ -6,7 +6,7 @@
     "fishmodloader": ">=3.2.0",
     "many-lib": ">=2.2.0"
   },
-  "recommends": {
+  "suggests": {
     "emi": ">=1.0.4"
   },
   "environment": "*",
@@ -14,15 +14,11 @@
   "description": "All your data are belong to us. Fork from GTNH-Waila",
   "authors": [
     "ProfMobius",
+    "GTNH",
     "Xy_Lose"
   ],
-  "License": "MIT",
-  "icon": "assets/minecraft/textures/hwite_icon.png",
+  "license": "MIT",
   "contact": {
-    "homepage": "https://www.mcmod.cn/class/15041.html",
-    "issues": "https://github.com/ysesiq/HWITE/issues",
-    "sources": "https://github.com/ysesiq/HWITE",
-    "qqGroup": "661223990"
   },
   "entrypoints": {
     "main": [
@@ -30,11 +26,7 @@
     ]
   },
   "mixins": [
-    "hwite.mixins.json"
+    "waila.mixins.json"
   ],
-  "accessWidener": "hwite.accesswidener",
-  "custom": {
-    "loom:injected_interfaces": {
-    }
-  }
+  "accessWidener": "waila.accesswidener"
 }

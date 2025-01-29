@@ -10,12 +10,13 @@ group = project.maven_group
 
 static def buildTime() {
 	def df = new SimpleDateFormat("yyyyMMddHHmm")
-	df.setTimeZone(TimeZone.getTimeZone("UTC"))
+	df.setTimeZone(TimeZone.getTimeZone("GMT+8"))
 	return df.format(new Date())
 }
 
 base {
-	archivesName = project.archives_base_name + "-dev-build." + buildTime()
+//	archivesName = project.archives_base_name + "-dev-build." + buildTime()
+	archivesName = project.archives_base_name + "-pre-release." + buildTime()
 //	archivesName = "[高亮信息显示]" + project.archives_base_name
 }
 
@@ -28,7 +29,7 @@ repositories {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/hwite.accesswidener")
+	accessWidenerPath = file("src/main/resources/waila.accesswidener")
 	mergedMinecraftJar()
 	setFML(new File("libs\\FishModLoader-v3.3.3.jar"))
 	mods {
