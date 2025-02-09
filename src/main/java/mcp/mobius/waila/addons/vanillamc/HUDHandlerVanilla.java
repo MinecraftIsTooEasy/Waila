@@ -144,7 +144,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                 if (growthValue < 100.0)
                     currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
                 else currenttip.add(
-                        String.format(SpecialChars.GRAY +
+                        String.format(
                                 "%s : %s",
                                 LangUtil.translateG("hud.msg.growth"),
                                 LangUtil.translateG("hud.msg.mature")));
@@ -157,7 +157,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             if (growthValue < 100.0)
                 currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
             else currenttip.add(
-                    String.format(SpecialChars.GRAY +
+                    String.format(
                             "%s : %s",
                             LangUtil.translateG("hud.msg.growth"),
                             LangUtil.translateG("hud.msg.mature")));
@@ -169,7 +169,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             if (growthValue < 100.0)
                 currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
             else currenttip.add(
-                    String.format(SpecialChars.GRAY +
+                    String.format(
                             "%s : %s",
                             LangUtil.translateG("hud.msg.growth"),
                             LangUtil.translateG("hud.msg.mature")));
@@ -179,31 +179,31 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
         if (WailaConfig.leverstate.getBooleanValue()) if (block == lever) {
             String redstoneOn = (accessor.getMetadata() & 8) == 0 ? LangUtil.translateG("hud.msg.off")
                     : LangUtil.translateG("hud.msg.on");
-            currenttip.add(SpecialChars.GRAY + String.format("%s : %s", LangUtil.translateG("hud.msg.state"), redstoneOn));
+            currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.state"), redstoneOn));
             return currenttip;
         }
 
         if (WailaConfig.repeater.getBooleanValue()) if ((block == repeaterIdle) || (block == repeaterActv)) {
             int tick = (accessor.getMetadata() >> 2) + 1;
             if (tick == 1) currenttip.add(String.format("%s : %s tick", LangUtil.translateG("hud.msg.delay"), tick));
-            else currenttip.add(SpecialChars.GRAY + String.format("%s : %s ticks", LangUtil.translateG("hud.msg.delay"), tick));
+            else currenttip.add(String.format("%s : %s ticks", LangUtil.translateG("hud.msg.delay"), tick));
             return currenttip;
         }
 
         if (WailaConfig.comparator.getBooleanValue()) if ((block == comparatorIdl) || (block == comparatorAct)) {
             String mode = ((accessor.getMetadata() >> 2) & 1) == 0 ? LangUtil.translateG("hud.msg.comparator")
                     : LangUtil.translateG("hud.msg.substractor");
-            currenttip.add(SpecialChars.GRAY + "Mode : " + mode);
+            currenttip.add("Mode : " + mode);
             return currenttip;
         }
 
         if (WailaConfig.redstone.getBooleanValue()) if (block == redstone) {
-            currenttip.add(SpecialChars.GRAY + String.format("%s : %s", LangUtil.translateG("hud.msg.power"), accessor.getMetadata()));
+            currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.power"), accessor.getMetadata()));
             return currenttip;
         }
 
         if (WailaConfig.spawnertype.getBooleanValue() && block == mobSpawner && (accessor.getTileEntity() instanceof TileEntityMobSpawner)) {
-            currenttip.add(SpecialChars.GRAY + String.format("Type: %s", ((TileEntityMobSpawner) accessor.getTileEntity()).getSpawnerLogic().getEntityNameToSpawn()));
+            currenttip.add(String.format("Type: %s", ((TileEntityMobSpawner) accessor.getTileEntity()).getSpawnerLogic().getEntityNameToSpawn()));
         }
 
         if (WailaConfig.skulltype.getBooleanValue() && block == skull && (accessor.getTileEntity() instanceof TileEntitySkull) && Waila.instance.serverPresent) {
@@ -218,7 +218,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                 case 5 -> StatCollector.translateToLocal("item.skull.infused.name");
                 default -> skull.unlocalizedName;
             };
-            currenttip.add(SpecialChars.GRAY + skull2);
+            currenttip.add(skull2);
         }
 
         return currenttip;

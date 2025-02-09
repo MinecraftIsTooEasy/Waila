@@ -15,8 +15,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import moddedmite.waila.config.WailaConfig;
+import net.minecraft.BossStatus;
 import net.minecraft.ItemStack;
 
+import net.minecraft.Minecraft;
 import org.lwjgl.opengl.GL11;
 
 import mcp.mobius.waila.api.IWailaCommonAccessor;
@@ -98,8 +100,8 @@ public class Tooltip {
     }
     ////////////////////////////////////////////////////////////////////////////
 
-    public Tooltip(List<String> textData, ItemStack stack) {
-        this(textData, true);
+    public Tooltip(List<String> textData, boolean hasIcon, ItemStack stack) {
+        this(textData, hasIcon);
         this.stack = stack;
     }
 
@@ -214,12 +216,19 @@ public class Tooltip {
         offsetX = hasIcon ? 24 : 6;
 
         w = maxStringW + paddingW;
-
         h = Math.max(paddingH, this.getRenderableTotalHeight() + 8);
 
         Dimension size = DisplayUtil.displaySize();
         x = ((int) (size.width / OverlayConfig.scale) - w - 1) * pos.x / 100;
         y = ((int) (size.height / OverlayConfig.scale) - h - 1) * pos.y / 100;
+
+        if (BossStatus.bossName != null && BossStatus.statusBarLength > 0 && Minecraft.inDevMode() && Minecraft.getMinecraft().gameSettings.gui_mode == 0) {
+            y += 20;
+        } else if (BossStatus.bossName != null && BossStatus.statusBarLength > 0) {
+            y += 20;
+        } else if (Minecraft.inDevMode() && Minecraft.getMinecraft().gameSettings.gui_mode == 0 && WailaConfig.devMoveDownTooltip.getBooleanValue()) {
+            y += 10;
+        }
 
         ty = (h - this.getRenderableTotalHeight()) / 2 + 1;
     }

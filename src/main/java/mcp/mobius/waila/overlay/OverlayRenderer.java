@@ -1,5 +1,8 @@
 package mcp.mobius.waila.overlay;
 
+import fi.dy.masa.malilib.util.Color4f;
+import moddedmite.waila.api.IBreakingProgress;
+import moddedmite.waila.config.EnumTooltipTheme;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.Minecraft;
 import net.minecraft.RaycastCollision;
@@ -17,6 +20,13 @@ public class OverlayRenderer {
     protected static boolean hasRescaleNormal;
     protected static boolean hasColorMaterial;
     protected static int boundTexIndex;
+    private static int lastProgressLine = 0;
+    private static int targetX = 0, targetY = 0, targetW = 0, targetH = 0;
+    private static float currentX = 0, currentY = 0, currentW = 0, currentH = 0;
+    private static final float LERP_FACTOR = 0.3f;
+    private static float lastBreakProgress = 0f;
+    private static float currentAlpha = 0f;
+    private static final float FADE_SPEED = 0.1f;
 
     public OverlayRenderer() {
     }
@@ -51,6 +61,24 @@ public class OverlayRenderer {
         GL11.glPushMatrix();
         saveGLState();
 
+        if (tooltip != null) {
+            currentAlpha = DisplayUtil.lerp(currentAlpha, 1f, FADE_SPEED);
+            if (currentAlpha > 0.99f) {
+                currentAlpha = 1f;
+            }
+        } else {
+            currentAlpha = DisplayUtil.lerp(currentAlpha, 0f, FADE_SPEED);
+            if (currentAlpha < 0.01f) {
+                currentAlpha = 0f;
+            }
+        }
+
+        if (currentAlpha <= 0f) {
+            loadGLState();
+            GL11.glPopMatrix();
+            return;
+        }
+
         GL11.glScalef(OverlayConfig.scale, OverlayConfig.scale, 1.0f);
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -58,15 +86,35 @@ public class OverlayRenderer {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
+        EnumTooltipTheme theme = WailaConfig.theme.getEnumValue();
+        Color4f tooltipBGColor = WailaConfig.bgcolor.getColor();
+        Color4f tooltipFrameColorTop = WailaConfig.gradient1.getColor();
+        Color4f tooltipFrameColorBottom = WailaConfig.gradient2.getColor();
+        float configAlpha = WailaConfig.alpha.getIntegerValue() / 100.0f;
+
+        if (theme != EnumTooltipTheme.Custom) {
+            tooltipBGColor = Color4f.fromColor(theme.backgroundColor, currentAlpha * configAlpha);
+            tooltipFrameColorTop = Color4f.fromColor(theme.frameColorTop, currentAlpha * configAlpha);
+            tooltipFrameColorBottom = Color4f.fromColor(theme.frameColorBottom, currentAlpha * configAlpha);
+        }
+
         drawTooltipBox(
                 tooltip.x,
                 tooltip.y,
                 tooltip.w,
                 tooltip.h,
-                OverlayConfig.bgcolor,
-                OverlayConfig.gradient1,
-                OverlayConfig.gradient2);
+                tooltipBGColor.intValue,
+                tooltipFrameColorTop.intValue,
+                tooltipFrameColorBottom.intValue,
+                theme.center,
+                theme.frame,
+                theme.gradient);
 
+        drawBreakProgress(
+                tooltip.x,
+                tooltip.y,
+                tooltip.w,
+                tooltip.h);
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -105,16 +153,73 @@ public class OverlayRenderer {
         GL11.glPopAttrib();
     }
 
-    public static void drawTooltipBox(int x, int y, int w, int h, int bg, int grad1, int grad2) {
-        DisplayUtil.drawGradientRect(x + 1, y, w - 1, 1, bg, bg);
-        DisplayUtil.drawGradientRect(x + 1, y + h, w - 1, 1, bg, bg);
-        DisplayUtil.drawGradientRect(x + 1, y + 1, w - 1, h - 1, bg, bg);// center
-        DisplayUtil.drawGradientRect(x, y + 1, 1, h - 1, bg, bg);
-        DisplayUtil.drawGradientRect(x + w, y + 1, 1, h - 1, bg, bg);
-        DisplayUtil.drawGradientRect(x + 1, y + 2, 1, h - 3, grad1, grad2);
-        DisplayUtil.drawGradientRect(x + w - 1, y + 2, 1, h - 3, grad1, grad2);
+    public static void drawTooltipBox(int x, int y, int w, int h, int bg, int grad1, int grad2, boolean center, boolean frame, boolean gradient) {
+        targetX = x;
+        targetY = y;
+        targetW = w;
+        targetH = h;
 
-        DisplayUtil.drawGradientRect(x + 1, y + 1, w - 1, 1, grad1, grad1);
-        DisplayUtil.drawGradientRect(x + 1, y + h - 1, w - 1, 1, grad2, grad2);
+        currentX = DisplayUtil.lerp(currentX, targetX, LERP_FACTOR);
+        currentY = DisplayUtil.lerp(currentY, targetY, LERP_FACTOR);
+        currentW = DisplayUtil.lerp(currentW, targetW, LERP_FACTOR);
+        currentH = DisplayUtil.lerp(currentH, targetH, LERP_FACTOR);
+
+        int drawX = (int) currentX;
+        int drawY = (int) currentY;
+        int drawW = (int) currentW;
+        int drawH = (int) currentH;
+
+        EnumTooltipTheme theme = WailaConfig.theme.getEnumValue();
+        if (theme.center) {
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, drawH - 1, bg, bg); // 中心区域
+        }
+        if (theme.frame) {
+            DisplayUtil.drawGradientRect(drawX + 1, drawY, drawW - 1, 1, bg, bg); // 顶部边框
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH, drawW - 1, 1, bg, bg); // 底部边框
+            DisplayUtil.drawGradientRect(drawX, drawY + 1, 1, drawH - 1, bg, bg); // 左侧边框
+            DisplayUtil.drawGradientRect(drawX + drawW, drawY + 1, 1, drawH - 1, bg, bg); // 右侧边框
+        }
+        if (theme.gradient) {
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 2, 1, drawH - 3, grad1, grad2); // 左侧渐变
+            DisplayUtil.drawGradientRect(drawX + drawW - 1, drawY + 2, 1, drawH - 3, grad1, grad2); // 右侧渐变
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, 1, grad1, grad1); // 顶部渐变
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH - 1, drawW - 1, 1, grad2, grad2); // 底部渐变
+        }
+        if (theme.coarseGradient) {
+            DisplayUtil.drawGradientRect(drawX, drawY + 2, 3, drawH - 3, grad1, grad2);
+            DisplayUtil.drawGradientRect(drawX + drawW - 3, drawY + 2, 3, drawH - 3, grad1, grad2);
+            DisplayUtil.drawGradientRect(drawX, drawY, drawW, 3, grad1, grad1);
+            DisplayUtil.drawGradientRect(drawX, drawY + drawH - 3, drawW, 3, grad2, grad2);
+        }
+    }
+
+
+
+    public static void drawBreakProgress(int x, int y, int w, int h) {
+        float breakProgress;
+        if (Minecraft.getMinecraft().playerController != null) {
+            breakProgress = ((IBreakingProgress) Minecraft.getMinecraft().playerController).getCurrentBreakingProgress();
+            int currentProgressLine = 0;
+
+            if (breakProgress > 0.0f) {
+                int progress = (int) (breakProgress * 100.0f);
+                currentProgressLine = (int) (progress / 100.0 * w);
+                lastProgressLine = currentProgressLine;
+                lastBreakProgress = breakProgress;
+            } else {
+                if (lastBreakProgress > 0.0f) {
+                    lastProgressLine = (int) (lastProgressLine * 0.9f);
+                    currentProgressLine = lastProgressLine;
+                    if (currentProgressLine < 1) {
+                        currentProgressLine = 0;
+                        lastBreakProgress = 0.0f;
+                    }
+                }
+            }
+
+            if (currentProgressLine > 0) {
+                DisplayUtil.drawGradientRect(x + 1, y + h - 2, currentProgressLine, 1, 0xFF74766B, 0xFF74766B);
+            }
+        }
     }
 }

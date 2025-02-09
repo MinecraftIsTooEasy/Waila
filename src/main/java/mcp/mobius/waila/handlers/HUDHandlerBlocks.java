@@ -2,6 +2,7 @@ package mcp.mobius.waila.handlers;
 
 import java.util.List;
 
+import mcp.mobius.waila.api.SpecialChars;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.*;
 
@@ -45,7 +46,7 @@ public class HUDHandlerBlocks implements IWailaDataProvider {
             if (WailaConfig.metadata.getBooleanValue()) {
                 currenttip.add(
                         String.format(
-                                GRAY + ITALIC + "[%d:%d] | %s",
+                                ITALIC + "[%d:%d] | %s",
                                 accessor.getBlockID(),
                                 accessor.getMetadata(),
                                 accessor.getBlockQualifiedName()));

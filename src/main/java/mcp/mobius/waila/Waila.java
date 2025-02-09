@@ -1,5 +1,6 @@
 package mcp.mobius.waila;
 
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
@@ -11,11 +12,13 @@ import mcp.mobius.waila.network.Packet0x00ServerPing;
 import moddedmite.waila.api.PacketDispatcher;
 import moddedmite.waila.config.WailaConfig;
 import moddedmite.waila.event.WailaEventFish;
+import moddedmite.waila.network.WailaPackets;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.*;
 import net.xiaoyu233.fml.FishModLoader;
+import net.xiaoyu233.fml.ModResourceManager;
 import net.xiaoyu233.fml.reload.event.MITEEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +47,7 @@ public class Waila implements ModInitializer {
         proxy = new ProxyClient();
         proxy.registerHandlers();
         proxy.registerMods();
+        proxy.registerIMCs();
         OverlayConfig.updateColors();
     }
 
@@ -70,108 +74,10 @@ public class Waila implements ModInitializer {
     }
 
     public void onInitialize() {
+        ModResourceManager.addResourcePackDomain("waila");
         MITEEvents.MITE_EVENT_BUS.register(new WailaEventFish());
         WailaConfig.getInstance().load();
         ConfigManager.getInstance().registerConfig(WailaConfig.getInstance());
+        WailaPackets.registerClientReaders();
     }
 }
-//@Instance("Waila")
-//public static Waila instance;
-//
-//@SidedProxy(clientSide = "mcp.mobius.waila.client.ProxyClient", serverSide = "mcp.mobius.waila.server.ProxyServer")
-//public static ProxyServer proxy;
-//public static Logger log = LogManager.getLogger("Waila");
-//public boolean serverPresent = false;
-//private final ArtifactVersion minimumClientJoinVersion = new DefaultArtifactVersion("1.7.3");
-//
-///* INIT SEQUENCE */
-//@EventHandler
-//public void preInit(FMLPreInitializationEvent event) {
-//    ConfigHandler.instance().loadDefaultConfig(event);
-//    OverlayConfig.updateColors();
-//    MinecraftForge.EVENT_BUS.register(new DecoratorRenderer());
-//    WailaPacketHandler.INSTANCE.ordinal();
-//}
-//
-//@EventHandler
-//public void initialize(FMLInitializationEvent event) {
-//    try {
-//        Field eBus = FMLModContainer.class.getDeclaredField("eventBus");
-//        eBus.setAccessible(true);
-//        EventBus FMLbus = (EventBus) eBus.get(FMLCommonHandler.instance().findContainerFor(this));
-//        FMLbus.register(this);
-//    } catch (Throwable ignored) {}
-//
-//    if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-//        MinecraftForge.EVENT_BUS.register(new DecoratorRenderer());
-//        FMLCommonHandler.instance().bus().register(new KeyEvent());
-//        FMLCommonHandler.instance().bus().register(WailaTickHandler.instance());
-//
-//    }
-//    FMLCommonHandler.instance().bus().register(new NetworkHandler());
-//}
-//
-//@EventHandler
-//public void postInit(FMLPostInitializationEvent event) {
-//    proxy.registerHandlers();
-//    ModIdentification.init();
-//}
-//
-//@Subscribe
-//public void loadComplete(FMLLoadCompleteEvent event) {
-//    proxy.registerMods();
-//    proxy.registerIMCs();
-//}
-//
-//@EventHandler
-//public void processIMC(FMLInterModComms.IMCEvent event) {
-//    for (IMCMessage imcMessage : event.getMessages()) {
-//        if (!imcMessage.isStringMessage()) continue;
-//
-//        if (imcMessage.key.equalsIgnoreCase("addconfig")) {
-//            String[] params = imcMessage.getStringValue().split("\\$\\$");
-//            if (params.length != 3) {
-//                Waila.log.warn(
-//                        String.format(
-//                                "Error while parsing config option from [ %s ] for %s",
-//                                imcMessage.getSender(),
-//                                imcMessage.getStringValue()));
-//                continue;
-//            }
-//            Waila.log.info(
-//                    String.format(
-//                            "Receiving config request from [ %s ] for %s",
-//                            imcMessage.getSender(),
-//                            imcMessage.getStringValue()));
-//            ConfigHandler.instance().addConfig(params[0], params[1], params[2]);
-//        }
-//
-//        if (imcMessage.key.equalsIgnoreCase("register")) {
-//            Waila.log.info(
-//                    String.format(
-//                            "Receiving registration request from [ %s ] for method %s",
-//                            imcMessage.getSender(),
-//                            imcMessage.getStringValue()));
-//            ModuleRegistrar.instance().addIMCRequest(imcMessage.getStringValue(), imcMessage.getSender());
-//        }
-//    }
-//}
-//
-//@EventHandler
-//public void serverStarting(FMLServerStartingEvent event) {
-//    event.registerServerCommand(new CommandDumpHandlers());
-//}
-//
-///**
-// * Block any clients older than 1.7.3 to ensure the vanilla.show_invisible_players property is respected
-// */
-//@SuppressWarnings("unused")
-//@NetworkCheckHandler
-//public boolean checkModList(Map<String, String> versions, Side side) {
-//    if (side == Side.CLIENT && versions.containsKey("Waila")) {
-//        return minimumClientJoinVersion.compareTo(new DefaultArtifactVersion(versions.get("Waila"))) <= 0;
-//    }
-//    return true;
-//
-//}
-//}

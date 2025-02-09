@@ -44,10 +44,15 @@ public class RayTracing {
 
     private Float getReach() {
         RaycastCollision rc = this.mc.objectMouseOver;
-        if (rc != null && rc.isBlock()) {
-            return mc.thePlayer.getReach(rc.getBlockHit(), rc.world.getBlockMetadata(rc.block_hit_x, rc.block_hit_y, rc.block_hit_z));
+        float reach = 0;
+        if (rc != null) {
+            if (rc.isBlock()) {
+                reach = mc.thePlayer.getReach(rc.getBlockHit(), rc.world.getBlockMetadata(rc.block_hit_x, rc.block_hit_y, rc.block_hit_z));
+            } else if (rc.isEntity()) {
+                reach = mc.thePlayer.getReach(EnumEntityReachContext.FOR_MELEE_ATTACK, rc.getEntityHit());
+            }
         }
-        return 5.0F;
+        return reach;
     }
 
 //    private static boolean shouldHidePlayer(Entity targetEnt) {
@@ -87,13 +92,14 @@ public class RayTracing {
 
         if (items.isEmpty()) return null;
 
-        items.sort((stack0, stack1) -> stack1.getItemDamage() - stack0.getItemDamage());
+        items.sort((stack0, stack1) -> stack1.getItemSubtype() - stack0.getItemSubtype());
 
         return items.get(0);
     }
 
     public Entity getIdentifierEntity() {
         ArrayList<Entity> ents = new ArrayList<>();
+        RaycastCollision raycastCollision = Minecraft.getMinecraft().objectMouseOver;
 
         if (this.target == null) return null;
 
@@ -170,14 +176,14 @@ public class RayTracing {
             }
         }
 
-        if (!items.isEmpty()) return items;
+//        if (!items.isEmpty()) return items;
 
 //        try {
 //            ItemStack pick = mouseoverBlock.getPickBlock(this.target, world, x, y, z);
 //            if (pick != null) items.add(pick);
 //        } catch (Exception ignored) {}
 
-        if (!items.isEmpty()) return items;
+//        if (!items.isEmpty()) return items;
 
 //        if (mouseoverBlock instanceof IShearable shearable) {
 //            if (shearable.isShearable(new ItemStack(Item.shears), world, x, y, z)) {

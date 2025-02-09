@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import mcp.mobius.waila.api.SpecialChars;
 import net.minecraft.*;
 
 import org.lwjgl.opengl.GL11;
@@ -139,11 +140,9 @@ public class DisplayUtil {
     public static List<String> itemDisplayNameMultiline(ItemStack itemstack) {
         List<String> namelist = null;
         try {
-            namelist = Collections.singletonList(itemstack.getDisplayName());
-//                    itemstack.getTooltip(
-//                    Minecraft.getMinecraft().thePlayer,
-//                    Minecraft.getMinecraft().gameSettings.advancedItemTooltips,
-//                    (Slot) null);
+            namelist = itemstack.getTooltip(
+                    Minecraft.getMinecraft().thePlayer,
+                    Minecraft.getMinecraft().gameSettings.advancedItemTooltips, (Slot) null);
         } catch (Throwable ignored) {}
 
         if (namelist == null) namelist = new ArrayList<>();
@@ -152,8 +151,8 @@ public class DisplayUtil {
 
         if (namelist.get(0) == null || namelist.get(0).isEmpty()) namelist.set(0, "Unnamed");
 
-//        namelist.set(0, itemstack.getRarity().rarityColor + namelist.get(0));
-//        for (int i = 1; i < namelist.size(); i++) namelist.set(i, "\u00a77" + namelist.get(i));
+        namelist.set(0, SpecialChars.MCStyle + Integer.toHexString(itemstack.getRarity().rarityColor) + namelist.get(0));
+        for (int i = 1; i < namelist.size(); i++) namelist.set(i, SpecialChars.GRAY + namelist.get(i));
 
         return namelist;
     }
@@ -170,6 +169,10 @@ public class DisplayUtil {
 
         if (icon.bu != -1) DisplayUtil.drawTexturedModalRect(x, y, icon.bu, icon.bv, sx, sy, icon.bsu, icon.bsv);
         DisplayUtil.drawTexturedModalRect(x, y, icon.u, icon.v, sx, sy, icon.su, icon.sv);
+    }
+
+    public static float lerp(float start, float end, float factor) {
+        return start + (end - start) * factor;
     }
 
 }

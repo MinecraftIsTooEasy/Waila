@@ -24,10 +24,11 @@ public class TTRenderStack implements IWailaTooltipRenderer {
         String name = params[1]; // Fully qualified name
         int amount = Integer.parseInt(params[2]);
         int meta = Integer.parseInt(params[3]);
+        int id = Integer.parseInt(params[4]);
 
         ItemStack stack = null;
         if (type == 0) stack = new ItemStack(accessor.getBlock(), amount, meta);
-//        if (type == 1) stack = new ItemStack((Item) Item.itemRegistry.getObject(name), amount, meta);
+        if (type == 1) stack = new ItemStack(Item.getItem(id), amount, meta);
 
         RenderHelper.enableGUIStandardItemLighting();
         DisplayUtil.renderStack(0, 0, stack);

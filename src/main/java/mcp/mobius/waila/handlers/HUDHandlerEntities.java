@@ -8,14 +8,13 @@ import static mcp.mobius.waila.api.SpecialChars.getRenderString;
 
 import java.util.List;
 
-import mcp.mobius.waila.api.SpecialChars;
+import mcp.mobius.waila.utils.ModIdentification;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.*;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaEntityAccessor;
 import mcp.mobius.waila.api.IWailaEntityProvider;
-import net.xiaoyu233.fml.api.entity.IEntity;
 
 public class HUDHandlerEntities implements IWailaEntityProvider {
 
@@ -51,7 +50,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
             float maxhp = ((EntityLivingBase) entity).getMaxHealth() / 2.0f;
 
             if (((EntityLivingBase) entity).getMaxHealth() > maxhpfortext) currenttip.add(
-                    String.format(GRAY +
+                    String.format(
                             "HP : " + WHITE + "%.0f" + GRAY + " / " + WHITE + "%.0f",
                             ((EntityLivingBase) entity).getHealth(),
                             ((EntityLivingBase) entity).getMaxHealth()));
@@ -73,7 +72,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
     public List<String> getWailaTail(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
             IWailaConfigHandler config) {
         try {
-            currenttip.add(BLUE + ITALIC + getEntityMod(entity));
+            currenttip.add(BLUE + ITALIC + ModIdentification.getEntityMod(entity));
         } catch (Exception e) {
             currenttip.add(BLUE + ITALIC + "Unknown");
         }
@@ -84,18 +83,4 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
     public NBTTagCompound getNBTData(ServerPlayer player, Entity te, NBTTagCompound tag, World world) {
         return tag;
     }
-
-    private static String getEntityMod(Entity entity) {
-        String modName;
-        int id = EntityList.getEntityID(entity);
-        if (id <= 100 || id == 120 || id == 200) {
-            modName = BLUE + ITALIC + "Minecraft";
-        } else if (id >= 512 && id <= 540) {
-            modName = BLUE + ITALIC + "MITE";
-        } else {
-            modName = BLUE + ITALIC + ((IEntity) entity).getNamespace();
-        }
-        return modName;
-    }
-
 }

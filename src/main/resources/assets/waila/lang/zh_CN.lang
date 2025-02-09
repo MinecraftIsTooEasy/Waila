@@ -143,8 +143,6 @@ option.carpenters.hide=隐藏伪装方块
 option.stevescarts.showall=显示数据
 option.stevescarts.colorblind=色盲模式
 option.stevescarts.shifttoggle=潜行触发
-option.general.showhp=显示实体生命值
-option.general.showcrop=显示作物生长状态
 option.thaumcraft.aspects=显示要素
 
 
@@ -172,13 +170,16 @@ config.name.option.vanilla.silverfish=隐藏蠹虫
 config.name.option.general.showhp=显示实体生命值
 config.name.option.general.showcrop=显示作物生长状态
 
-config.tab.waila.main=Waila
-config.tab.waila.general=常规
+config.tab.waila.general=通用
+config.tab.waila.features=功能
 config.tab.waila.screen=界面
-config.tab.waila.key=按键绑定
+config.tab.waila.keybinding=按键绑定
+config.name.choice.devMoveDownTooltip=DEV模式下移
 config.name.screen.label.posX=X
 config.name.screen.label.posY=Y
 config.name.screen.label.alpha=透明度
+config.name.screen.label.icon=图标
+config.name.screen.label.TooltipTheme=主题
 config.name.screen.label.bgcolor=背景颜色
 config.name.screen.label.gradient1=渐变(顶)
 config.name.screen.label.gradient2=渐变(底)

@@ -1,8 +1,7 @@
 package mcp.mobius.waila.client;
 
-import net.minecraft.Block;
-import net.minecraft.Entity;
-import net.minecraft.ResourceLocation;
+import mcp.mobius.waila.addons.vanillamc.HUDHandlerFurnace;
+import net.minecraft.*;
 
 import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.impl.DataAccessorCommon;
@@ -27,19 +26,16 @@ public class ProxyClient extends ProxyServer {
 
     @Override
     public void registerHandlers() {
-
-//        LangUtil.loadLangDir("waila");
-
-        if (FishModLoader.hasMod("emi")) {
-            try {
-                Class.forName("mcp.mobius.waila.handlers.nei.NEIHandler").getDeclaredMethod("register").invoke(null);
-            } catch (Exception e) {
-                Waila.log.error("Failed to hook into NEI properly. Reverting to Vanilla tooltip handler");
-//                MinecraftForge.EVENT_BUS.register(new VanillaTooltipHandler());
-            }
-        } else {
-//            MinecraftForge.EVENT_BUS.register(new VanillaTooltipHandler());
-        }
+//        if (FishModLoader.hasMod("emi")) {
+//            try {
+//                Class.forName("moddedmite.waila.handlers.emi.EMIHandler").getDeclaredMethod("register").invoke(null);
+//            } catch (Exception e) {
+//                Waila.log.error("Failed to hook into NEI properly. Reverting to Vanilla tooltip handler");
+////                MinecraftForge.EVENT_BUS.register(new VanillaTooltipHandler());
+//            }
+//        } else {
+////            MinecraftForge.EVENT_BUS.register(new VanillaTooltipHandler());
+//        }
 
         ModuleRegistrar.instance().registerHeadProvider(new HUDHandlerBlocks(), Block.class);
         ModuleRegistrar.instance().registerTailProvider(new HUDHandlerBlocks(), Block.class);
@@ -48,9 +44,8 @@ public class ProxyClient extends ProxyServer {
         ModuleRegistrar.instance().registerBodyProvider(new HUDHandlerEntities(), Entity.class);
         ModuleRegistrar.instance().registerTailProvider(new HUDHandlerEntities(), Entity.class);
 
-//        ModuleRegistrar.instance().addConfig("General", "general.showents");
-//        ModuleRegistrar.instance().addConfig("General", "general.showhp");
-//        ModuleRegistrar.instance().addConfig("General", "general.showcrop");
+//        ModuleRegistrar.instance().registerBodyProvider(new HUDHandlerFurnace(), BlockFurnace.class);
+//        ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerFurnace(), NBTBase.class);
 
         ModuleRegistrar.instance().registerTooltipRenderer("waila.health", new TTRenderHealth());
         ModuleRegistrar.instance().registerTooltipRenderer("waila.stack", new TTRenderStack());

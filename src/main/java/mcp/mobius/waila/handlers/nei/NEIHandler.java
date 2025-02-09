@@ -2,11 +2,11 @@
 //
 //import java.util.List;
 //
-//import net.minecraft.client.Minecraft;
-//import net.minecraft.client.gui.inventory.GuiInventory;
-//import net.minecraft.item.ItemStack;
-//import net.minecraft.util.ChatComponentTranslation;
-//import net.minecraft.util.MovingObjectPosition;
+//import net.minecraft.Minecraft;
+//import net.minecraft.GuiInventory;
+//import net.minecraft.ItemStack;
+//import net.minecraft.ChatComponentTranslation;
+//import net.minecraft.MovingObjectPosition;
 //import net.minecraftforge.common.config.Configuration;
 //
 //import org.lwjgl.input.Keyboard;

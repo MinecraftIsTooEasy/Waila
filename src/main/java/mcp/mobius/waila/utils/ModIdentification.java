@@ -4,10 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 
-import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.Entity;
+import net.minecraft.EntityList;
 import net.minecraft.ItemStack;
-import net.xiaoyu233.fml.FishModLoader;
 import net.xiaoyu233.fml.api.block.IBlock;
+import net.xiaoyu233.fml.api.entity.IEntity;
 import net.xiaoyu233.fml.api.item.IItem;
 
 public class ModIdentification {
@@ -81,6 +82,19 @@ public class ModIdentification {
         } catch (NullPointerException e) {
             return "";
         }
+    }
+
+    public static String getEntityMod(Entity entity) {
+        String mod;
+        int id = EntityList.getEntityID(entity);
+        if (id <= 100 || id == 120 || id == 200) {
+            mod = "Minecraft";
+        } else if (id >= 512 && id <= 540) {
+            mod = "MITE";
+        } else {
+            mod = ((IEntity) entity).getNamespace();
+        }
+        return mod;
     }
 
     private static boolean isMITEBlock(int id) {

@@ -102,7 +102,7 @@ public class WailaTickHandler {
                     currenttip.addAll(currenttipBody);
                     currenttip.addAll(currenttipTail);
 
-                    this.tooltip = new Tooltip(currenttip, targetStack);
+                    this.tooltip = new Tooltip(currenttip, WailaConfig.icon.getBooleanValue(), targetStack);
                 }
             } else if (target != null && target.isEntity()) {
                 DataAccessorCommon accessor = DataAccessorCommon.instance;

@@ -1,7 +1,6 @@
 package moddedmite.waila.mixin;
 
 import mcp.mobius.waila.Waila;
-import mcp.mobius.waila.api.impl.DataAccessorCommon;
 import net.minecraft.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

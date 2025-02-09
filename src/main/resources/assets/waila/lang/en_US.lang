@@ -143,8 +143,6 @@ option.carpenters.hide=Hide camo blocks
 option.stevescarts.showall=Show data
 option.stevescarts.colorblind=Colorblind mode
 option.stevescarts.shifttoggle=Shift toggle
-option.general.showhp=Show entities health
-option.general.showcrop=Show crop growth
 option.thaumcraft.aspects=Show aspects
 
 config.name.screen.label.scale=Scale
@@ -170,13 +168,16 @@ config.name.option.vanilla.silverfish=Hide silverfish
 config.name.option.general.showhp=Show entities health
 config.name.option.general.showcrop=Show crop growth
 
-config.tab.waila.main=Waila
 config.tab.waila.general=General
+config.tab.waila.features=Features
 config.tab.waila.screen=Screen
-config.tab.waila.key=Keybinding
+config.tab.waila.keybinding=Keybinding
+config.name.choice.devMoveDownTooltip=DEV Mode Move Down
 config.name.screen.label.posX=X
 config.name.screen.label.posY=Y
 config.name.screen.label.alpha=Alpha
+config.name.screen.label.icon=Icon
+config.name.screen.label.TooltipTheme=Theme
 config.name.screen.label.bgcolor=Background Color
 config.name.screen.label.gradient1=Gradient Color(Top)
 config.name.screen.label.gradient2=Gradient Color(Bottom)
