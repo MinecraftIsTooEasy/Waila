@@ -1,11 +1,15 @@
 package moddedmite.xylose.hwite.render;
 
-import moddedmite.xylose.hwite.info.HwiteInfo;
 import moddedmite.xylose.hwite.api.IBreakingProgress;
+import moddedmite.xylose.hwite.config.HwiteConfigs;
+import moddedmite.xylose.hwite.info.HwiteInfo;
+import moddedmite.xylose.hwite.info.InfoContext;
+import moddedmite.xylose.hwite.info.InfoEntry;
 import moddedmite.xylose.hwite.render.util.TTRenderHealth;
 import moddedmite.xylose.hwite.util.DisplayUtil;
-import moddedmite.xylose.hwite.config.HwiteConfigs;
 import net.minecraft.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -15,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class TooltipRenderer {
+    private static final Logger LOGGER = LogManager.getLogger(TooltipRenderer.class);
     private static Minecraft mc = Minecraft.getMinecraft();
     protected static boolean hasBlending;
     protected static boolean hasLight;
@@ -22,7 +27,15 @@ public class TooltipRenderer {
     protected static boolean hasLight1;
     protected static int boundTexIndex;
 
-    public static void RenderHWITEHud(Gui gui, Minecraft mc) {
+    public static void renderHWITEHud(Gui gui, Minecraft mc) {
+        try {
+            renderHWITEHudInternal(gui, mc);
+        } catch (Exception e) {
+            LOGGER.warn("exception while rendering hwite hud", e);
+        }
+    }
+
+    private static void renderHWITEHudInternal(Gui gui, Minecraft mc) {
         ArrayList<String> list = new ArrayList<>();
         ScaledResolution scaledResolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
         TTRenderHealth ttRenderHealth = new TTRenderHealth();
@@ -88,7 +101,7 @@ public class TooltipRenderer {
         if (list.size() == 4) {
             healthY = (TooltipBGRender.y - TooltipBGRender.h / 2) - 3;
         } else if (list.size() == 5) {
-            healthY = (TooltipBGRender.y - TooltipBGRender.h / 2) - 7;;
+            healthY = (TooltipBGRender.y - TooltipBGRender.h / 2) - 7;
         } else if (list.size() == 6) {
             healthY = (TooltipBGRender.y - TooltipBGRender.h / 2) - 11;
         } else if (list.size() == 7) {
@@ -151,8 +164,8 @@ public class TooltipRenderer {
                 list.add(String.format("%d", breakProgress) + "%");
             }
         } else {
-                list.add(HwiteInfo.infoMain);
-                tryAddExtraInfo(list, breakProgress);
+            list.add(HwiteInfo.infoMain);
+            tryAddExtraInfo(list, breakProgress);
             if (!line1Empty) {
                 list.add(HwiteInfo.info_line_1);
                 list.add(HwiteInfo.info_line_2);
@@ -166,108 +179,35 @@ public class TooltipRenderer {
         return List.of();
     }
 
+    private static final List<InfoEntry> INFO_ENTRIES = new ArrayList<>();
+
     private static void tryAddExtraInfo(List<String> list, int breakProgress) {
-        tryAddBreakInfo(list);
-        tryAddBreakProgress(list, breakProgress);
-        tryAddGrowthValue(list);
-        tryAddRedstoneValue(list);
-        tryAddSpawnerValue(list);
-        tryAddDevValue(list);
-        tryAddHiwlaInfo(list);
-        tryAddMITEDetailsInfo(list);
-        tryAddMITEDetailsInfo1(list);
-        tryAddFurnaceInputItemInfo(list);
-        tryAddFurnaceOutputItemInfo(list);
-        tryAddFurnaceFuelItemInfo(list);
-        tryAddHorseInfo(list);
-        tryAddEffectInfo(list);
-    }
-
-    private static void tryAddBreakProgress(List<String> list, int breakProgress) {
-        if (breakProgress > 0 && HwiteConfigs.BreakProgress.getBooleanValue()) {
-            list.add(String.format(EnumChatFormatting.DARK_GRAY + I18n.getString("hwite.info.breakProgress") + "%d", breakProgress) + "%");
+        InfoContext context = new InfoContext(list, mc.objectMouseOver, mc.thePlayer, breakProgress);
+        for (InfoEntry infoEntry : INFO_ENTRIES) {
+            infoEntry.tryAddToList(context);
         }
     }
 
-    private static void tryAddBreakInfo(List<String> list) {
-        if (HwiteConfigs.BreakInfo.getBooleanValue() && !Objects.equals(HwiteInfo.updateBreakInfo(mc.objectMouseOver), "")) {
-            list.add(HwiteInfo.updateBreakInfo(mc.objectMouseOver));
-        }
+    static {
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.BreakInfo, HwiteInfo::updateBreakInfo));
+        INFO_ENTRIES.add(new InfoEntry(HwiteConfigs.BreakProgress::getBooleanValue, context -> {
+            int progress = context.breakProgress();
+            if (progress > 0)
+                return String.format(EnumChatFormatting.DARK_GRAY + I18n.getString("hwite.info.breakProgress") + "%d", progress) + "%";
+            return "";
+        }));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.GrowthValue, HwiteInfo::updateGrowthInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteInfo::updateEffectInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.HorseInfo, HwiteInfo::updateHorseInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.FurnaceInfo, HwiteInfo::updateFurnaceInputItemInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.FurnaceInfo, HwiteInfo::updateFurnaceOutputItemInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.FurnaceInfo, HwiteInfo::updateFurnaceFuelItemInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.MITEDetailsInfo, HwiteInfo::updateMITEDetailsInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.MITEDetailsInfo, HwiteInfo::updateInfoLine2));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.Redstone, HwiteInfo::updateRedStoneInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteConfigs.SpawnerType, HwiteInfo::updateMobSpawnerInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteInfo::updateDevInfoInfo));
+        INFO_ENTRIES.add(InfoEntry.of(() -> HwiteInfo.unlocalizedNameInfo));
+        INFO_ENTRIES.add(InfoEntry.of(HwiteInfo::updateHiwlaExtraInfo));
     }
-
-    private static void tryAddEffectInfo(List<String> list) {
-        if (!Objects.equals(HwiteInfo.updateEffectInfo(mc.objectMouseOver), "")) {
-            list.add(HwiteInfo.updateEffectInfo(mc.objectMouseOver));
-        }
-    }
-
-    private static void tryAddHorseInfo(List<String> list) {
-        if (HwiteConfigs.HorseInfo.getBooleanValue() && !Objects.equals(HwiteInfo.updateHorseInfo(mc.objectMouseOver), "")) {
-            list.add(HwiteInfo.updateHorseInfo(mc.objectMouseOver));
-        }
-    }
-
-    private static void tryAddFurnaceFuelItemInfo(List<String> list) {
-        if (HwiteConfigs.FurnaceInfo.getBooleanValue() && !Objects.equals(HwiteInfo.updateFurnaceFuelItemInfo(mc.objectMouseOver), "")) {
-            list.add(HwiteInfo.updateFurnaceFuelItemInfo(mc.objectMouseOver));
-        }
-    }
-
-    private static void tryAddFurnaceOutputItemInfo(List<String> list) {
-        if (HwiteConfigs.FurnaceInfo.getBooleanValue() && !Objects.equals(HwiteInfo.updateFurnaceOutputItemInfo(mc.objectMouseOver), "")) {
-            list.add(HwiteInfo.updateFurnaceOutputItemInfo(mc.objectMouseOver));
-        }
-    }
-
-    private static void tryAddFurnaceInputItemInfo(List<String> list) {
-        if (HwiteConfigs.FurnaceInfo.getBooleanValue() && !Objects.equals(HwiteInfo.updateFurnaceInputItemInfo(mc.objectMouseOver), "")) {
-            list.add(HwiteInfo.updateFurnaceInputItemInfo(mc.objectMouseOver));
-        }
-    }
-
-    private static void tryAddMITEDetailsInfo(List<String> list) {
-        if (HwiteConfigs.MITEDetailsInfo.getBooleanValue() && !Objects.equals(HwiteInfo.updateMITEDetailsInfo(mc.objectMouseOver, mc.thePlayer), "")) {
-            list.add(HwiteInfo.updateMITEDetailsInfo(mc.objectMouseOver, mc.thePlayer));
-        }
-    }
-
-    private static void tryAddMITEDetailsInfo1(List<String> list) {
-        if (HwiteConfigs.MITEDetailsInfo.getBooleanValue() && !Objects.equals(HwiteInfo.updateInfoLine2(mc.objectMouseOver, mc.thePlayer), "")) {
-            list.add(HwiteInfo.updateInfoLine2(mc.objectMouseOver, mc.thePlayer));
-        }
-    }
-
-    private static void tryAddGrowthValue(List<String> list) {
-        if (HwiteConfigs.GrowthValue.getBooleanValue() && !Objects.equals(HwiteInfo.updateGrowthInfo(mc.objectMouseOver, mc.thePlayer), "")) {
-            list.add(HwiteInfo.updateGrowthInfo(mc.objectMouseOver, mc.thePlayer));
-        }
-    }
-
-    private static void tryAddRedstoneValue(List<String> list) {
-        if (HwiteConfigs.Redstone.getBooleanValue() && !Objects.equals(HwiteInfo.updateRedStoneInfo(mc.objectMouseOver, mc.thePlayer), "")) {
-            list.add(HwiteInfo.updateRedStoneInfo(mc.objectMouseOver, mc.thePlayer));
-        }
-    }
-
-    private static void tryAddSpawnerValue(List<String> list) {
-        if (HwiteConfigs.SpawnerType.getBooleanValue() && !Objects.equals(HwiteInfo.updateMobSpawnerInfo(mc.objectMouseOver, mc.thePlayer), "")) {
-            list.add(HwiteInfo.updateMobSpawnerInfo(mc.objectMouseOver, mc.thePlayer));
-        }
-    }
-
-    private static void tryAddDevValue(List<String> list) {
-        if (!Objects.equals(HwiteInfo.updateDevInfoInfo(mc.objectMouseOver, mc.thePlayer), "")) {
-            list.add(HwiteInfo.updateDevInfoInfo(mc.objectMouseOver, mc.thePlayer));
-        }
-        if (!Objects.equals(HwiteInfo.unlocalizedNameInfo, "")) {
-            list.add(HwiteInfo.unlocalizedNameInfo);
-        }
-    }
-
-    private static void tryAddHiwlaInfo(List<String> list) {
-        if (!Objects.equals(HwiteInfo.updateHiwlaExtraInfo(mc.objectMouseOver, mc.thePlayer), "")) {
-            list.add(HwiteInfo.updateHiwlaExtraInfo(mc.objectMouseOver, mc.thePlayer));
-        }
-    }
-
 }

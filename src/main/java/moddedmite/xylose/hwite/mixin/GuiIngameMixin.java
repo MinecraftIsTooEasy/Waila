@@ -25,11 +25,11 @@ public class GuiIngameMixin extends Gui {
     private void injectRenderHWITEHud(float par1, boolean par2, int par3, int par4, CallbackInfo ci) {
         if (HwiteConfigs.DebugRenderTooltip.getBooleanValue()) {
             if (mc.gameSettings.gui_mode == 0 && !mc.gameSettings.keyBindPlayerList.pressed && !mc.gameSettings.showDebugInfo && HwiteConfigs.DisplayTooltip.getBooleanValue() && !(mc.currentScreen instanceof GuiContainer)) {
-                TooltipRenderer.RenderHWITEHud(this, this.mc);
+                TooltipRenderer.renderHWITEHud(this, this.mc);
             }
         } else {
             if (mc.gameSettings.gui_mode == 0 && !mc.gameSettings.keyBindPlayerList.pressed && HwiteConfigs.DisplayTooltip.getBooleanValue() && !(mc.currentScreen instanceof GuiContainer)) {
-                TooltipRenderer.RenderHWITEHud(this, this.mc);
+                TooltipRenderer.renderHWITEHud(this, this.mc);
             }
         }
     }
