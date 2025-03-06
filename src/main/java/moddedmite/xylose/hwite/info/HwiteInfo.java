@@ -287,7 +287,13 @@ public class HwiteInfo extends Gui {
         if (rc != null) {
             double distance = Double.parseDouble(decimalFormat.format(rc.getDistanceFromOriginToCollisionPoint()));
             if (rc.isBlock()) {
-                EnumDirection direction = rc.getBlockHit().getDirectionFacing(rc.block_hit_metadata);
+                String direction;
+                try {
+                    direction = rc.getBlockHit().getDirectionFacing(rc.block_hit_metadata).toString();
+                } catch (Exception e) {
+                    LOGGER.warn("illegal metadata {} for block {} with id {}", rc.block_hit_metadata, rc.getBlockHit(), rc.getBlockHit().blockID);
+                    direction = "UNKNOWN";
+                }
                 if (HwiteConfigs.ShowBlockOrEntityCoord.getBooleanValue() && HwiteConfigs.ShowDistance.getBooleanValue() && HwiteConfigs.ShowDirection.getBooleanValue() && direction != null) {
                     return devInfo = gray + String.valueOf(rc.block_hit_x) + " " + rc.block_hit_y + " " + rc.block_hit_z + " [" + distance + "]" + " {" + direction + "}";
                 } else if (HwiteConfigs.ShowBlockOrEntityCoord.getBooleanValue() && HwiteConfigs.ShowDistance.getBooleanValue()) {
