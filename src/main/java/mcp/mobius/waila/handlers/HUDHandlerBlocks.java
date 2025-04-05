@@ -64,6 +64,8 @@ public class HUDHandlerBlocks implements IWailaDataProvider {
     @Override
     public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
             IWailaConfigHandler config) {
+        if (!WailaConfig.showMods.getBooleanValue()) return currenttip;
+
         currenttip.add(RENDER + "{Plip}" + RENDER + "{Plop,thisisatest,222,333}");
 
         String modName = ModIdentification.nameFromStack(itemStack);

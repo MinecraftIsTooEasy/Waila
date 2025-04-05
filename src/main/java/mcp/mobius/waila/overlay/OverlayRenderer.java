@@ -4,6 +4,7 @@ import fi.dy.masa.malilib.util.Color4f;
 import moddedmite.waila.api.IBreakingProgress;
 import moddedmite.waila.config.EnumTooltipTheme;
 import moddedmite.waila.config.WailaConfig;
+import net.minecraft.BossStatus;
 import net.minecraft.Minecraft;
 import net.minecraft.RaycastCollision;
 import net.minecraft.RenderHelper;
@@ -78,6 +79,8 @@ public class OverlayRenderer {
             GL11.glPopMatrix();
             return;
         }
+
+        if (BossStatus.bossName != null && BossStatus.statusBarLength > 0) tooltip.y += 20;
 
         GL11.glScalef(OverlayConfig.scale, OverlayConfig.scale, 1.0f);
 
@@ -218,7 +221,7 @@ public class OverlayRenderer {
             }
 
             if (currentProgressLine > 0) {
-                DisplayUtil.drawGradientRect(x + 1, y + h - 2, currentProgressLine, 1, 0xFF74766B, 0xFF74766B);
+                DisplayUtil.drawGradientRect(x + 1, y + h - 1, currentProgressLine, 1, 0xFF74766B, 0xFF74766B);
             }
         }
     }

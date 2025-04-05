@@ -6,8 +6,10 @@ import static mcp.mobius.waila.api.SpecialChars.ITALIC;
 import static mcp.mobius.waila.api.SpecialChars.WHITE;
 import static mcp.mobius.waila.api.SpecialChars.getRenderString;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
+import mcp.mobius.waila.cbcore.LangUtil;
 import mcp.mobius.waila.utils.ModIdentification;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.*;
@@ -40,37 +42,61 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
     @Override
     public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
             IWailaConfigHandler config) {
-        if (!WailaConfig.showhp.getBooleanValue()) return currenttip;
+        this.getEntityHeath(entity, currenttip, accessor, config);
+        this.getEntityAttack(entity, currenttip, accessor, config);
+        return currenttip;
+    }
 
-        if (entity instanceof EntityLivingBase) {
+    public void getEntityHeath(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
+                                     IWailaConfigHandler config) {
+        if (!WailaConfig.showhp.getBooleanValue()) return;
+
+        if (entity instanceof EntityLivingBase entityLivingBase) {
 
             nhearts = nhearts <= 0 ? 20 : nhearts;
 
-            float health = ((EntityLivingBase) entity).getHealth() / 2.0f;
-            float maxhp = ((EntityLivingBase) entity).getMaxHealth() / 2.0f;
+            float health = entityLivingBase.getHealth() / 2.0f;
+            float maxhp = entityLivingBase.getMaxHealth() / 2.0f;
 
-            if (((EntityLivingBase) entity).getMaxHealth() > maxhpfortext) currenttip.add(
+            if (entityLivingBase.getMaxHealth() > maxhpfortext) currenttip.add(
                     String.format(
-                            "HP : " + WHITE + "%.0f" + GRAY + " / " + WHITE + "%.0f",
+                            LangUtil.translateG("hud.msg.health") + WHITE + "%.0f" + GRAY + " / " + WHITE + "%.0f",
                             ((EntityLivingBase) entity).getHealth(),
                             ((EntityLivingBase) entity).getMaxHealth()));
 
             else {
                 currenttip.add(
                         getRenderString(
-                                        "waila.health",
+                                "waila.health",
                                 String.valueOf(nhearts),
                                 String.valueOf(health),
-                                String.valueOf(maxhp)));
+                                String.valueOf(maxhp)) +
+                                (WailaConfig.showMods.getBooleanValue() ? "" : " "));
             }
         }
+    }
 
-        return currenttip;
+    public void getEntityAttack(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
+                               IWailaConfigHandler config) {
+        if (!WailaConfig.showatk.getBooleanValue()) return;
+
+        if (entity instanceof EntityLivingBase entityLivingBase) {
+            float total_melee_damage = 0.0F;
+            DecimalFormat damageFormat = new DecimalFormat("0.00");
+            if (entityLivingBase.isEntityPlayer()) {
+                total_melee_damage = Float.parseFloat(damageFormat.format(entityLivingBase.getAsPlayer().calcRawMeleeDamageVs(entityLivingBase, false, false)));
+            } else if (entityLivingBase.hasEntityAttribute(SharedMonsterAttributes.attackDamage)) {
+                total_melee_damage = Float.parseFloat(damageFormat.format((float) entityLivingBase.getEntityAttributeValue(SharedMonsterAttributes.attackDamage)));
+            }
+            if (total_melee_damage != 0.0F)
+                currenttip.add(LangUtil.translateG("hud.msg.attack", total_melee_damage));
+        }
     }
 
     @Override
     public List<String> getWailaTail(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
             IWailaConfigHandler config) {
+        if (!WailaConfig.showMods.getBooleanValue()) return currenttip;
         try {
             currenttip.add(BLUE + ITALIC + ModIdentification.getEntityMod(entity));
         } catch (Exception e) {

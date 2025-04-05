@@ -147,9 +147,10 @@ option.thaumcraft.aspects=Show aspects
 
 config.name.screen.label.scale=Scale
 config.name.choice.showhidewaila=Show/Hide Waila
+config.name.choice.showmods=Show Mods
 config.name.choice.showhideidmeta=Show ID:Metadata
 config.name.choice.toggledmaintained=Toggled/Maintained
-config.name.choice.showliquids=Liquids
+config.name.choice.showliquids=Show liquids
 config.name.choice.shifttoggledblock=Sneak toggle blocks
 config.name.choice.shifttoggledents=Sneak toggle entities
 config.name.waila.keybind.wailaconfig=[Waila] Config screen
@@ -166,6 +167,7 @@ config.name.option.vanilla.redstone=Redstone power
 config.name.option.vanilla.jukebox=Jukebox disk
 config.name.option.vanilla.silverfish=Hide silverfish
 config.name.option.general.showhp=Show entities health
+config.name.option.general.showatk=Show entities attack
 config.name.option.general.showcrop=Show crop growth
 
 config.tab.waila.general=General
@@ -186,3 +188,6 @@ config.name.screen.label.fontcolor=Font Color
 config.name.option.vanilla.skulltype=Skull Type
 tile.melon_stem.name=Melon Stem
 tile.pumpkin_stem.name=Pumpkin Stem
+
+hud.msg.attack=Atk: %s
+hud.msg.health=HP:

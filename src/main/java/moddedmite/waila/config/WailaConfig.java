@@ -21,6 +21,7 @@ import java.util.*;
 public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
     public static final ConfigBoolean showTooltip = new ConfigBoolean("choice.showhidewaila", true);
+    public static final ConfigBoolean showMods = new ConfigBoolean("choice.showmods", true);
     public static final ConfigBoolean showEnts = new ConfigBoolean("choice.showEnts", true);
     public static final ConfigBoolean metadata = new ConfigBoolean("choice.showhideidmeta", false);
     public static final ConfigBoolean liquid = new ConfigBoolean("choice.showliquids", false);
@@ -29,6 +30,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     public static final ConfigBoolean devMoveDownTooltip = new ConfigBoolean("choice.devMoveDownTooltip", false);
 
     public static final ConfigBoolean showhp = new ConfigBoolean("option.general.showhp", true);
+    public static final ConfigBoolean showatk = new ConfigBoolean("option.general.showatk", true);
     public static final ConfigBoolean showcrop = new ConfigBoolean("option.general.showcrop", true);
     public static final ConfigBoolean spawnertype = new ConfigBoolean("option.vanilla.spawntype", true);
     public static final ConfigBoolean repeater = new ConfigBoolean("option.vanilla.repeater", true);
@@ -67,8 +69,8 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     }
 
     static {
-        general = List.of(showTooltip, showEnts, metadata, liquid, shiftblock, shiftents, devMoveDownTooltip);
-        features = List.of(showhp, showcrop, spawnertype, repeater, redstone, comparator, leverstate, skulltype);
+        general = List.of(showTooltip, showMods, showEnts, metadata, liquid, shiftblock, shiftents, devMoveDownTooltip);
+        features = List.of(showhp, showatk, showcrop, spawnertype, repeater, redstone, comparator, leverstate, skulltype);
         screen = List.of(posX, posY, alpha, scale, icon, theme, bgcolor, gradient1, gradient2, fontcolor);
         keybinding = List.of(wailaconfig, wailadisplay, keyliquid, recipe, usage);
         ArrayList<ConfigBase> values = new ArrayList<>();
@@ -96,15 +98,15 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
         if (FishModLoader.hasMod("emi")) {
             try {
                 recipe.getKeybind().setCallback(((keyAction, iKeybind) -> {
-                    dev.emi.emi.api.EmiApi.displayRecipes(Objects.requireNonNull(EMIHandler.updateEmiStack()));
+                    EMIHandler.displayRecipes();
                     return true;
                 }));
                 usage.getKeybind().setCallback(((keyAction, iKeybind) -> {
-                    dev.emi.emi.api.EmiApi.displayUses(Objects.requireNonNull(EMIHandler.updateEmiStack()));
+                    EMIHandler.displayUses();
                     return true;
                 }));
             } catch (Exception ignored) {
-                Waila.log.warn("You don't have EMI mod installed");
+                Waila.log.warn("You don't have EMI Mod installed");
             }
         }
     }
