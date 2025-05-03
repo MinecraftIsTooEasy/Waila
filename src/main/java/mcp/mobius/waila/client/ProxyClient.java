@@ -1,6 +1,7 @@
 package mcp.mobius.waila.client;
 
 import mcp.mobius.waila.addons.vanillamc.HUDHandlerFurnace;
+import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderArmor;
 import net.minecraft.*;
 
 import mcp.mobius.waila.Waila;
@@ -50,6 +51,7 @@ public class ProxyClient extends ProxyServer {
         ModuleRegistrar.instance().registerTooltipRenderer("waila.health", new TTRenderHealth());
         ModuleRegistrar.instance().registerTooltipRenderer("waila.stack", new TTRenderStack());
         ModuleRegistrar.instance().registerTooltipRenderer("waila.progress", new TTRenderProgressBar());
+        ModuleRegistrar.instance().registerTooltipRenderer("waila.armor", new TTRenderArmor());
 
     }
 

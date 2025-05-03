@@ -31,6 +31,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
     public static final ConfigBoolean showhp = new ConfigBoolean("option.general.showhp", true);
     public static final ConfigBoolean showatk = new ConfigBoolean("option.general.showatk", true);
+    public static final ConfigBoolean showarmor = new ConfigBoolean("option.general.showarmor", true);
     public static final ConfigBoolean showcrop = new ConfigBoolean("option.general.showcrop", true);
     public static final ConfigBoolean spawnertype = new ConfigBoolean("option.vanilla.spawntype", true);
     public static final ConfigBoolean repeater = new ConfigBoolean("option.vanilla.repeater", true);
@@ -42,7 +43,8 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     public static final ConfigInteger posX = new ConfigInteger("screen.label.posX", 50, 0, 100, true, "");
     public static final ConfigInteger posY = new ConfigInteger("screen.label.posY", 1, 0, 100, true, "");
     public static final ConfigInteger alpha = new ConfigInteger("screen.label.alpha", 80, 0, 100, true, "");
-    public static final ConfigDouble scale = new ConfigDouble("screen.label.scale", 1, 0.2, 2, true, "");
+    public static final ConfigDouble scale = new ConfigDouble("screen.label.scale", 1.0, 0.2, 2.0, true, "");
+    public static final ConfigDouble lerpfactor = new ConfigDouble("screen.label.lerpfactor", 0.3, 0.1, 1.0, true, "");
     public static final ConfigBoolean icon = new ConfigBoolean("screen.label.icon", true);
     public static final ConfigEnum<EnumTooltipTheme> theme = new ConfigEnum<>("screen.label.TooltipTheme", EnumTooltipTheme.Waila);
     public static final ConfigColor bgcolor = new ConfigColor("screen.label.bgcolor", "#FF100010");
@@ -70,8 +72,8 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
     static {
         general = List.of(showTooltip, showMods, showEnts, metadata, liquid, shiftblock, shiftents, devMoveDownTooltip);
-        features = List.of(showhp, showatk, showcrop, spawnertype, repeater, redstone, comparator, leverstate, skulltype);
-        screen = List.of(posX, posY, alpha, scale, icon, theme, bgcolor, gradient1, gradient2, fontcolor);
+        features = List.of(showhp, showatk, showarmor, showcrop, spawnertype, repeater, redstone, comparator, leverstate, skulltype);
+        screen = List.of(posX, posY, alpha, scale, lerpfactor, icon, theme, bgcolor, gradient1, gradient2, fontcolor);
         keybinding = List.of(wailaconfig, wailadisplay, keyliquid, recipe, usage);
         ArrayList<ConfigBase> values = new ArrayList<>();
         values.addAll(features);

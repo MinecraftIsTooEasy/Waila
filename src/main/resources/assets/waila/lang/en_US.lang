@@ -146,6 +146,7 @@ option.stevescarts.shifttoggle=Shift toggle
 option.thaumcraft.aspects=Show aspects
 
 config.name.screen.label.scale=Scale
+config.name.screen.label.lerpfactor=Lerp Factor
 config.name.choice.showhidewaila=Show/Hide Waila
 config.name.choice.showmods=Show Mods
 config.name.choice.showhideidmeta=Show ID:Metadata
@@ -168,6 +169,7 @@ config.name.option.vanilla.jukebox=Jukebox disk
 config.name.option.vanilla.silverfish=Hide silverfish
 config.name.option.general.showhp=Show entities health
 config.name.option.general.showatk=Show entities attack
+config.name.option.general.showarmor=Show entities armor
 config.name.option.general.showcrop=Show crop growth
 
 config.tab.waila.general=General
@@ -191,3 +193,4 @@ tile.pumpkin_stem.name=Pumpkin Stem
 
 hud.msg.attack=Atk: %s
 hud.msg.health=HP:
+hud.msg.armor=Armor：%s

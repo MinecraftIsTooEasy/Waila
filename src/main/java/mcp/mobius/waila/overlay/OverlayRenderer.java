@@ -1,6 +1,7 @@
 package mcp.mobius.waila.overlay;
 
 import fi.dy.masa.malilib.util.Color4f;
+import mcp.mobius.waila.Waila;
 import moddedmite.waila.api.IBreakingProgress;
 import moddedmite.waila.config.EnumTooltipTheme;
 import moddedmite.waila.config.WailaConfig;
@@ -24,7 +25,7 @@ public class OverlayRenderer {
     private static int lastProgressLine = 0;
     private static int targetX = 0, targetY = 0, targetW = 0, targetH = 0;
     private static float currentX = 0, currentY = 0, currentW = 0, currentH = 0;
-    private static final float LERP_FACTOR = 0.3f;
+    private static float LERP_FACTOR = (float) WailaConfig.lerpfactor.getDoubleValue();
     private static float lastBreakProgress = 0f;
     private static float currentAlpha = 0f;
     private static final float FADE_SPEED = 0.1f;

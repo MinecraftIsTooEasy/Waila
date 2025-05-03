@@ -147,6 +147,7 @@ option.thaumcraft.aspects=显示要素
 
 
 config.name.screen.label.scale=缩放
+config.name.screen.label.lerpfactor=动画速率
 config.name.choice.showhidewaila=显示/隐藏Waila
 config.name.choice.showmods=显示模组
 config.name.choice.showEnts=实体
@@ -170,6 +171,7 @@ config.name.option.vanilla.jukebox=唱片内容
 config.name.option.vanilla.silverfish=隐藏蠹虫
 config.name.option.general.showhp=显示实体生命值
 config.name.option.general.showatk=显示实体攻击力
+config.name.option.general.showarmor=显示实体护甲值
 config.name.option.general.showcrop=显示作物生长状态
 
 config.tab.waila.general=通用
@@ -193,3 +195,4 @@ tile.pumpkin_stem.name=南瓜茎
 
 hud.msg.attack=攻击力：%s
 hud.msg.health=生命值：
+hud.msg.armor=护甲值：%s

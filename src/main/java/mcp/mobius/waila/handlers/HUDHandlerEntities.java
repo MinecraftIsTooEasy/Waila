@@ -22,6 +22,8 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
     public static int nhearts = 20;
     public static float maxhpfortext = 40.0f;
+    public static int nArmorIconsPerLine = 20;
+    public static float maxArmorForText = 20.0f;
 
     @Override
     public Entity getWailaOverride(IWailaEntityAccessor accessor, IWailaConfigHandler config) {
@@ -43,6 +45,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
     public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
             IWailaConfigHandler config) {
         this.getEntityHeath(entity, currenttip, accessor, config);
+        this.getEntityArmor(entity, currenttip, accessor, config);
         this.getEntityAttack(entity, currenttip, accessor, config);
         return currenttip;
     }
@@ -70,8 +73,33 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
                                 "waila.health",
                                 String.valueOf(nhearts),
                                 String.valueOf(health),
-                                String.valueOf(maxhp)) +
-                                (WailaConfig.showMods.getBooleanValue() ? "" : " "));
+                                String.valueOf(maxhp)));
+            }
+        }
+    }
+
+    public void getEntityArmor(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
+                               IWailaConfigHandler config) {
+        if (!WailaConfig.showarmor.getBooleanValue()) return;
+
+        if (entity instanceof EntityLivingBase entityLivingBase) {
+
+            float armor = entityLivingBase.getTotalProtection(DamageSource.causeMobDamage((EntityLivingBase) null));
+
+            if (armor > maxArmorForText) {
+                currenttip.add(
+                        String.format(
+                                LangUtil.translateG("hud.msg.armor") + WHITE + "%.0f",
+                                armor
+                        )
+                );
+            } else {
+                currenttip.add(
+                        getRenderString(
+                                "waila.armor",
+                                String.valueOf(nArmorIconsPerLine),
+                                String.valueOf(armor),
+                                String.valueOf(armor)));
             }
         }
     }

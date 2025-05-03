@@ -74,6 +74,6 @@ public class SpecialChars {
             result.append(",").append(s);
         }
         result.append("}");
-        return result.toString();
+        return result.toString() + " ";
     }
 }
