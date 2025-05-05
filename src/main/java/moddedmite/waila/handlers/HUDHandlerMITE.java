@@ -1,6 +1,5 @@
 package moddedmite.waila.handlers;
 
-import mcp.mobius.waila.addons.vanillamc.HUDHandlerVanilla;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -18,7 +17,7 @@ public class HUDHandlerMITE implements IWailaDataProvider {
         Block block = accessor.getBlock();
 
         if (block == onions) {
-            return new ItemStack(Item.redstone);
+            return new ItemStack(Item.onion);
         }
         return null;
     }
