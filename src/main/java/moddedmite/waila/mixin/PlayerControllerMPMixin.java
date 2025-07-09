@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(PlayerControllerMP.class)
 public abstract class PlayerControllerMPMixin implements IBreakingProgress {
     @Shadow
-    private float curBlockDamageMP;
+    public float curBlockDamageMP;
 
     @Override
     public float getCurrentBreakingProgress() {

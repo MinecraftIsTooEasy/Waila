@@ -35,7 +35,7 @@ public class OverlayRenderer {
 
     public void renderOverlay() {
         Minecraft mc = Minecraft.getMinecraft();
-        RaycastCollision rc = mc.objectMouseOver;
+        RaycastCollision rc = mc.objectMouseOver;//mop
 
         // change too many && to simple returns
         if (mc.currentScreen != null) return;
@@ -63,25 +63,12 @@ public class OverlayRenderer {
         GL11.glPushMatrix();
         saveGLState();
 
-        if (tooltip != null) {
-            currentAlpha = DisplayUtil.lerp(currentAlpha, 1f, FADE_SPEED);
-            if (currentAlpha > 0.99f) {
-                currentAlpha = 1f;
-            }
-        } else {
-            currentAlpha = DisplayUtil.lerp(currentAlpha, 0f, FADE_SPEED);
-            if (currentAlpha < 0.01f) {
-                currentAlpha = 0f;
-            }
-        }
-
+        handleLerp(tooltip);
         if (currentAlpha <= 0f) {
             loadGLState();
             GL11.glPopMatrix();
             return;
         }
-
-        if (BossStatus.bossName != null && BossStatus.statusBarLength > 0) tooltip.y += 20;
 
         GL11.glScalef(OverlayConfig.scale, OverlayConfig.scale, 1.0f);
 
@@ -157,6 +144,20 @@ public class OverlayRenderer {
         GL11.glPopAttrib();
     }
 
+    public static void handleLerp(Tooltip tooltip) {
+        if (tooltip != null) {
+            currentAlpha = DisplayUtil.lerp(currentAlpha, 1f, FADE_SPEED);
+            if (currentAlpha > 0.99f) {
+                currentAlpha = 1f;
+            }
+        } else {
+            currentAlpha = DisplayUtil.lerp(currentAlpha, 0f, FADE_SPEED);
+            if (currentAlpha < 0.01f) {
+                currentAlpha = 0f;
+            }
+        }
+    }
+
     public static void drawTooltipBox(int x, int y, int w, int h, int bg, int grad1, int grad2, boolean center, boolean frame, boolean gradient) {
         targetX = x;
         targetY = y;
@@ -175,21 +176,21 @@ public class OverlayRenderer {
 
         EnumTooltipTheme theme = WailaConfig.theme.getEnumValue();
         if (theme.center) {
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, drawH - 1, bg, bg); // 中心区域
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, drawH - 1, bg, bg); // center
         }
         if (theme.frame) {
-            DisplayUtil.drawGradientRect(drawX + 1, drawY, drawW - 1, 1, bg, bg); // 顶部边框
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH, drawW - 1, 1, bg, bg); // 底部边框
-            DisplayUtil.drawGradientRect(drawX, drawY + 1, 1, drawH - 1, bg, bg); // 左侧边框
-            DisplayUtil.drawGradientRect(drawX + drawW, drawY + 1, 1, drawH - 1, bg, bg); // 右侧边框
+            DisplayUtil.drawGradientRect(drawX + 1, drawY, drawW - 1, 1, bg, bg); // top frame
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH, drawW - 1, 1, bg, bg); // bottom frame
+            DisplayUtil.drawGradientRect(drawX, drawY + 1, 1, drawH - 1, bg, bg); // left frame
+            DisplayUtil.drawGradientRect(drawX + drawW, drawY + 1, 1, drawH - 1, bg, bg); // right frame
         }
         if (theme.gradient) {
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + 2, 1, drawH - 3, grad1, grad2); // 左侧渐变
-            DisplayUtil.drawGradientRect(drawX + drawW - 1, drawY + 2, 1, drawH - 3, grad1, grad2); // 右侧渐变
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, 1, grad1, grad1); // 顶部渐变
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH - 1, drawW - 1, 1, grad2, grad2); // 底部渐变
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, 1, grad1, grad1); // top gradient
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH - 1, drawW - 1, 1, grad2, grad2); // bottom gradient
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 2, 1, drawH - 3, grad1, grad2); // left gradient
+            DisplayUtil.drawGradientRect(drawX + drawW - 1, drawY + 2, 1, drawH - 3, grad1, grad2); // right gradient
         }
-        if (theme.coarseGradient) {
+        if (theme.coarseGradient) {//WIP
             DisplayUtil.drawGradientRect(drawX, drawY + 2, 3, drawH - 3, grad1, grad2);
             DisplayUtil.drawGradientRect(drawX + drawW - 3, drawY + 2, 3, drawH - 3, grad1, grad2);
             DisplayUtil.drawGradientRect(drawX, drawY, drawW, 3, grad1, grad1);
@@ -197,9 +198,7 @@ public class OverlayRenderer {
         }
     }
 
-
-
-    public static void drawBreakProgress(int x, int y, int w, int h) {
+    public void drawBreakProgress(int x, int y, int w, int h) {
         float breakProgress;
         if (Minecraft.getMinecraft().playerController != null) {
             breakProgress = ((IBreakingProgress) Minecraft.getMinecraft().playerController).getCurrentBreakingProgress();
@@ -222,7 +221,7 @@ public class OverlayRenderer {
             }
 
             if (currentProgressLine > 0) {
-                DisplayUtil.drawGradientRect(x + 1, y + h - 1, currentProgressLine, 1, 0xFF74766B, 0xFF74766B);
+                DisplayUtil.drawGradientRect(x + 1, y + (h - 2), currentProgressLine, 1, 0xFF74766B, 0xFF74766B);
             }
         }
     }

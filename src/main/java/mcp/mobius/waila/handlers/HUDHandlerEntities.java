@@ -60,6 +60,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
             float health = entityLivingBase.getHealth() / 2.0f;
             float maxhp = entityLivingBase.getMaxHealth() / 2.0f;
+            if (maxhp <= 0) return;
 
             if (entityLivingBase.getMaxHealth() > maxhpfortext) currenttip.add(
                     String.format(
@@ -85,6 +86,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         if (entity instanceof EntityLivingBase entityLivingBase) {
 
             float armor = entityLivingBase.getTotalProtection(DamageSource.causeMobDamage((EntityLivingBase) null));
+            if (armor <= 0) return;
 
             if (armor > maxArmorForText) {
                 currenttip.add(
@@ -116,7 +118,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
             } else if (entityLivingBase.hasEntityAttribute(SharedMonsterAttributes.attackDamage)) {
                 total_melee_damage = Float.parseFloat(damageFormat.format((float) entityLivingBase.getEntityAttributeValue(SharedMonsterAttributes.attackDamage)));
             }
-            if (total_melee_damage != 0.0F)
+            if (total_melee_damage > 0.0F)
                 currenttip.add(LangUtil.translateG("hud.msg.attack", total_melee_damage));
         }
     }
