@@ -90,10 +90,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
             if (armor > maxArmorForText) {
                 currenttip.add(
-                        String.format(
-                                LangUtil.translateG("hud.msg.armor") + WHITE + "%.0f",
-                                armor
-                        )
+                        String.format(LangUtil.translateG("hud.msg.armor", armor))
                 );
             } else {
                 currenttip.add(
