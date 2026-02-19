@@ -8,6 +8,9 @@ import net.minecraft.*;
 
 import java.util.List;
 
+//2.0.4更新 添加HUDHandlerAnvil类
+import mcp.mobius.waila.handlers.HUDHandlerAnvil;
+
 public class HUDHandlerMITE implements IWailaDataProvider {
 
     static Block onions = Block.onions;
@@ -46,5 +49,8 @@ public class HUDHandlerMITE implements IWailaDataProvider {
         IWailaDataProvider provider = new HUDHandlerMITE();
 
         ModuleRegistrar.instance().registerStackProvider(provider, onions.getClass());
+
+        //2.0.4更新 添加HUDHandlerAnvil类注册
+        HUDHandlerAnvil.register();
     }
 }
