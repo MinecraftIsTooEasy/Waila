@@ -196,3 +196,4 @@ tile.pumpkin_stem.name=南瓜茎
 hud.msg.attack=攻击力：%s
 hud.msg.health=生命值：
 hud.msg.armor=护甲值：%s
+hud.msg.anvil.durability=耐久: %d/%d

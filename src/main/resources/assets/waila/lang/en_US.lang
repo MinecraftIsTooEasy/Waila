@@ -194,3 +194,4 @@ tile.pumpkin_stem.name=Pumpkin Stem
 hud.msg.attack=Atk: %s
 hud.msg.health=HP:
 hud.msg.armor=Armor：%s
+hud.msg.anvil.durability=Durability: %d/%d

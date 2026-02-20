@@ -4,12 +4,12 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
+import mcp.mobius.waila.cbcore.LangUtil;
 import net.minecraft.*;
 
 import java.util.List;
 
-//2.0.4更新 添加HUDHandlerAnvil类
-import mcp.mobius.waila.handlers.HUDHandlerAnvil;
+import net.minecraft.server.MinecraftServer;
 
 public class HUDHandlerMITE implements IWailaDataProvider {
 
@@ -32,6 +32,24 @@ public class HUDHandlerMITE implements IWailaDataProvider {
 
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        if (!(accessor.getBlock() instanceof BlockAnvil)) {
+            return currenttip;
+        }
+        
+        TileEntity te = accessor.getTileEntity();
+        if (!(te instanceof TileEntityAnvil tea)) {
+            return currenttip;
+        }
+        
+        if (itemStack.getItem() instanceof ItemAnvilBlock ia) {
+            int maxDurability = ia.getMaxDamage(itemStack);
+            int durability = getAnvilDamage(tea.xCoord, tea.yCoord, tea.zCoord);
+            if (durability == maxDurability) return currenttip;
+            currenttip.add(LangUtil.translateG(
+                            "hud.msg.anvil.durability",
+                            maxDurability - durability, maxDurability));
+        }
+        
         return currenttip;
     }
 
@@ -44,13 +62,28 @@ public class HUDHandlerMITE implements IWailaDataProvider {
     public NBTTagCompound getNBTData(ServerPlayer player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z) {
         return tag;
     }
+    
+    private int getAnvilDamage(int x, int y, int z) {
+        List<TileEntity> tes = MinecraftServer.getServer().worldServers[0].loadedTileEntityList;
+        
+        for (TileEntity te : tes) {
+            if (!(te instanceof TileEntityAnvil tea)) continue;
+            
+            int teX = tea.xCoord;
+            int teY = tea.yCoord;
+            int teZ = tea.zCoord;
+            
+            if (teX == x && teY == y && teZ == z) {
+                return tea.damage;
+            }
+        }
+        return 0;
+    }
 
     public static void register() {
         IWailaDataProvider provider = new HUDHandlerMITE();
 
         ModuleRegistrar.instance().registerStackProvider(provider, onions.getClass());
-
-        //2.0.4更新 添加HUDHandlerAnvil类注册
-        HUDHandlerAnvil.register();
+        ModuleRegistrar.instance().registerBodyProvider(provider, BlockAnvil.class);
     }
 }

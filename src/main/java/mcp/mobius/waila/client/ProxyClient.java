@@ -1,6 +1,5 @@
 package mcp.mobius.waila.client;
 
-import mcp.mobius.waila.addons.vanillamc.HUDHandlerFurnace;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderArmor;
 import net.minecraft.*;
 
