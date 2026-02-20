@@ -32,19 +32,12 @@ public class HUDHandlerMITE implements IWailaDataProvider {
 
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        if (!(accessor.getBlock() instanceof BlockAnvil)) {
-            return currenttip;
-        }
-        
-        TileEntity te = accessor.getTileEntity();
-        if (!(te instanceof TileEntityAnvil tea)) {
-            return currenttip;
-        }
-        
+        if (!(accessor.getTileEntity() instanceof TileEntityAnvil tea)) return currenttip;
+
         if (itemStack.getItem() instanceof ItemAnvilBlock ia) {
             int maxDurability = ia.getMaxDamage(itemStack);
-            int durability = getAnvilDamage(tea.xCoord, tea.yCoord, tea.zCoord);
-            if (durability == maxDurability) return currenttip;
+            int durability = getAnvilDurability(accessor.getTileEntity().getWorldObj().getDimensionId(), tea.xCoord, tea.yCoord, tea.zCoord);
+            if (durability == maxDurability || durability == 0) return currenttip;
             currenttip.add(LangUtil.translateG(
                             "hud.msg.anvil.durability",
                             maxDurability - durability, maxDurability));
@@ -63,17 +56,12 @@ public class HUDHandlerMITE implements IWailaDataProvider {
         return tag;
     }
     
-    private int getAnvilDamage(int x, int y, int z) {
-        List<TileEntity> tes = MinecraftServer.getServer().worldServers[0].loadedTileEntityList;
+    private int getAnvilDurability(int dimension, int x, int y, int z) {
+        List<TileEntity> tes = MinecraftServer.getServer().worldServerForDimension(dimension).loadedTileEntityList;
         
         for (TileEntity te : tes) {
             if (!(te instanceof TileEntityAnvil tea)) continue;
-            
-            int teX = tea.xCoord;
-            int teY = tea.yCoord;
-            int teZ = tea.zCoord;
-            
-            if (teX == x && teY == y && teZ == z) {
+            if (tea.xCoord == x && tea.yCoord == y && tea.zCoord == z) {
                 return tea.damage;
             }
         }
