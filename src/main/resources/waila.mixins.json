@@ -4,16 +4,19 @@
   "compatibilityLevel": "JAVA_17",
   "target": "DEFAULT",
   "minVersion": "0.8.3",
-  "mixins": [
-    "client.GuiInGameMixin",
-    "ItemAnvilBlockMixin",
+  "client": [
     "client.MinecraftMixin",
-    "client.NetClientHandlerMixin",
-    "NetServerHandlerMixin",
+    "client.GuiInGameMixin",
+    "client.NetClientHandlerMixin"
+  ],
+  "mixins": [
+    "accessor.EntityArachnidAccessor",
+    "accessor.EntityLivestockAccessor",
+    "ItemAnvilBlockMixin",
     "PlayerControllerMPMixin",
-    "accessor.EntityArachnidAccessor"
+    "NetServerHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-	}
+  }
 }

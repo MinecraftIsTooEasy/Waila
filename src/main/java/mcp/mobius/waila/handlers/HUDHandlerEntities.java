@@ -19,6 +19,7 @@ import mcp.mobius.waila.api.IWailaEntityAccessor;
 import mcp.mobius.waila.api.IWailaEntityProvider;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
 import moddedmite.waila.mixin.accessor.EntityArachnidAccessor;
+import moddedmite.waila.mixin.accessor.EntityLivestockAccessor;
 import net.minecraft.server.MinecraftServer;
 
 public class HUDHandlerEntities implements IWailaEntityProvider {
@@ -51,6 +52,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         this.getEntityArmor(entity, currenttip, accessor, config);
         this.getEntityAttack(entity, currenttip, accessor, config);
         this.getAnimalInfo(entity, currenttip, accessor, config);
+        this.getLivestockInfo(entity, currenttip, accessor, config);
         this.getSpiderWebInfo(entity, currenttip, accessor, config);
         return currenttip;
     }
@@ -140,6 +142,55 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         }
     }
 
+    public void getLivestockInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
+                                 IWailaConfigHandler config) {
+        if (!WailaConfig.showlivestock.getBooleanValue()) return;
+        if (!(entity instanceof EntityLivestock)) return;
+
+        float food, water, freedom;
+
+        MinecraftServer server = MinecraftServer.getServer();
+        if (server != null) {
+            Entity serverEntity = null;
+            for (World w : server.worldServers) {
+                if (w != null) {
+                    serverEntity = w.getEntityByID(entity.entityId);
+                    if (serverEntity != null) break;
+                }
+            }
+            if (!(serverEntity instanceof EntityLivestockAccessor ls)) return;
+            food = ls.getFood();
+            water = ls.getWater();
+            freedom = ls.getFreedom();
+        } else {
+            NBTTagCompound tag = accessor.getNBTData();
+            if (tag == null || !tag.hasKey("WailaFood")) return;
+            food = tag.getFloat("WailaFood");
+            water = tag.getFloat("WailaWater");
+            freedom = tag.getFloat("WailaFreedom");
+        }
+
+        if (food < 0.05F) {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.food.desperate"));
+        } else if (food < 0.25F) {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.food.very_hungry"));
+        } else if (food < 0.5F) {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.food.hungry"));
+        }
+
+        if (water < 0.05F) {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.water.desperate"));
+        } else if (water < 0.25F) {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.water.very_thirsty"));
+        } else if (water < 0.5F) {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.water.thirsty"));
+        }
+
+        if (freedom < 0.25F) {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.freedom.crowded"));
+        }
+    }
+
     public void getSpiderWebInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
                                  IWailaConfigHandler config) {
         if (!WailaConfig.showspiderweb.getBooleanValue()) return;
@@ -193,10 +244,17 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         if (te instanceof EntityArachnidAccessor arachnid) {
             tag.setInteger("WailaNumWebs", arachnid.getNumWebs());
         }
+        if (te instanceof EntityLivestockAccessor ls) {
+            tag.setFloat("WailaFood", ls.getFood());
+            tag.setFloat("WailaWater", ls.getWater());
+            tag.setFloat("WailaFreedom", ls.getFreedom());
+        }
         return tag;
     }
 
     public static void register() {
-        ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerEntities(), EntityArachnid.class);
+        HUDHandlerEntities provider = new HUDHandlerEntities();
+        ModuleRegistrar.instance().registerNBTProvider(provider, EntityArachnid.class);
+        ModuleRegistrar.instance().registerNBTProvider(provider, EntityLivestock.class);
     }
 }
