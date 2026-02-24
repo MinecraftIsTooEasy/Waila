@@ -79,5 +79,6 @@ public class Waila implements ModInitializer {
         WailaConfig.getInstance().load();
         ConfigManager.getInstance().registerConfig(WailaConfig.getInstance());
         WailaPackets.registerClientReaders();
+        new ProxyServer().registerMods();
     }
 }

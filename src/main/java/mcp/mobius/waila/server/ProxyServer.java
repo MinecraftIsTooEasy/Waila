@@ -7,6 +7,7 @@ import mcp.mobius.waila.addons.vanillamc.HUDHandlerVanilla;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
 import mcp.mobius.waila.handlers.DecoratorFMP;
+import mcp.mobius.waila.handlers.HUDHandlerEntities;
 import mcp.mobius.waila.handlers.HUDHandlerFMP;
 import moddedmite.waila.handlers.HUDHandlerMITE;
 
@@ -24,6 +25,7 @@ public class ProxyServer {
         DecoratorFMP.register();
 
         HUDHandlerMITE.register();
+        HUDHandlerEntities.register();
     }
 
     public void registerIMCs() {

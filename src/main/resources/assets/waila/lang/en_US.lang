@@ -171,6 +171,8 @@ config.name.option.general.showhp=Show entities health
 config.name.option.general.showatk=Show entities attack
 config.name.option.general.showarmor=Show entities armor
 config.name.option.general.showcrop=Show crop growth
+config.name.option.general.showanimal=Show animal info
+config.name.option.general.showspiderweb=Show spider webs info
 
 config.tab.waila.general=General
 config.tab.waila.features=Features
@@ -195,3 +197,8 @@ hud.msg.attack=Atk: %s
 hud.msg.health=HP:
 hud.msg.armor=Armor：%s
 hud.msg.anvil.durability=Durability: %d/%d
+
+hud.msg.animal.grow=Grows up in: %ds
+hud.msg.animal.breed_cooldown=Breed cooldown: %ds
+hud.msg.spider.web_count=Webs: %d
+hud.msg.spider.no_web=No webs

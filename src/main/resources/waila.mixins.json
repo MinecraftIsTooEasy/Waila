@@ -5,10 +5,13 @@
   "target": "DEFAULT",
   "minVersion": "0.8.3",
   "mixins": [
-    "GuiInGameMixin",
+    "client.GuiInGameMixin",
     "ItemAnvilBlockMixin",
-    "MinecraftMixin",
-    "PlayerControllerMPMixin"
+    "client.MinecraftMixin",
+    "client.NetClientHandlerMixin",
+    "NetServerHandlerMixin",
+    "PlayerControllerMPMixin",
+    "accessor.EntityArachnidAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

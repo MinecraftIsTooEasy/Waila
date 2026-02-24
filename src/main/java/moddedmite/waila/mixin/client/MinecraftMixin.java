@@ -1,4 +1,4 @@
-package moddedmite.waila.mixin;
+package moddedmite.waila.mixin.client;
 
 import mcp.mobius.waila.Waila;
 import net.minecraft.Minecraft;

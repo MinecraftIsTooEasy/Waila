@@ -17,6 +17,9 @@ import net.minecraft.*;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaEntityAccessor;
 import mcp.mobius.waila.api.IWailaEntityProvider;
+import mcp.mobius.waila.api.impl.ModuleRegistrar;
+import moddedmite.waila.mixin.accessor.EntityArachnidAccessor;
+import net.minecraft.server.MinecraftServer;
 
 public class HUDHandlerEntities implements IWailaEntityProvider {
 
@@ -47,6 +50,8 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         this.getEntityHeath(entity, currenttip, accessor, config);
         this.getEntityArmor(entity, currenttip, accessor, config);
         this.getEntityAttack(entity, currenttip, accessor, config);
+        this.getAnimalInfo(entity, currenttip, accessor, config);
+        this.getSpiderWebInfo(entity, currenttip, accessor, config);
         return currenttip;
     }
 
@@ -120,6 +125,55 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         }
     }
 
+    public void getAnimalInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
+                              IWailaConfigHandler config) {
+        if (!(entity instanceof EntityAnimal animal)) return;
+        if (!WailaConfig.showanimal.getBooleanValue()) return;
+
+        int growingAge = animal.getGrowingAge();
+        if (growingAge < 0) {
+            int seconds = -growingAge / 20;
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.animal.grow", seconds));
+        } else if (growingAge > 0) {
+            int seconds = growingAge / 20;
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.animal.breed_cooldown", seconds));
+        }
+    }
+
+    public void getSpiderWebInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
+                                 IWailaConfigHandler config) {
+        if (!WailaConfig.showspiderweb.getBooleanValue()) return;
+        if (!(entity instanceof EntityArachnid)) return;
+
+        int numWebs = -1;
+
+        MinecraftServer server = MinecraftServer.getServer();
+        if (server != null) {
+            for (World w : server.worldServers) {
+                if (w != null) {
+                    Entity serverEntity = w.getEntityByID(entity.entityId);
+                    if (serverEntity instanceof EntityArachnidAccessor arachnid) {
+                        numWebs = arachnid.getNumWebs();
+                        break;
+                    }
+                }
+            }
+        } else {
+            NBTTagCompound tag = accessor.getNBTData();
+            if (tag != null && tag.hasKey("WailaNumWebs")) {
+                numWebs = tag.getInteger("WailaNumWebs");
+            }
+        }
+
+        if (numWebs < 0) return;
+
+        if (numWebs > 0) {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.spider.web_count", numWebs));
+        } else {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.spider.no_web"));
+        }
+    }
+
     @Override
     public List<String> getWailaTail(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
             IWailaConfigHandler config) {
@@ -134,6 +188,15 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
     @Override
     public NBTTagCompound getNBTData(ServerPlayer player, Entity te, NBTTagCompound tag, World world) {
+        if (tag == null || te == null) return tag;
+        tag.setInteger("WailaEntityID", te.entityId);
+        if (te instanceof EntityArachnidAccessor arachnid) {
+            tag.setInteger("WailaNumWebs", arachnid.getNumWebs());
+        }
         return tag;
+    }
+
+    public static void register() {
+        ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerEntities(), EntityArachnid.class);
     }
 }

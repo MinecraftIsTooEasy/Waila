@@ -57,7 +57,12 @@ public class DataAccessorCommon implements IWailaCommonAccessor, IWailaDataAcces
             this.metadata = -1;
             this.tileEntity = null;
             this.stack = null;
-            this.entity = _mop.getEntityHit();
+            Entity newEntity = _mop.getEntityHit();
+            if (newEntity != this.entity) {
+                this.remoteNbt = null;
+                this.timeLastUpdate = 0;
+            }
+            this.entity = newEntity;
         }
 
         if (viewEntity != null) {
@@ -129,8 +134,13 @@ public class DataAccessorCommon implements IWailaCommonAccessor, IWailaDataAcces
         }
 
         if (this.entity != null) {
+            if (this.remoteNbt != null) {
+                return this.remoteNbt;
+            }
             NBTTagCompound tag = new NBTTagCompound();
-            this.entity.writeToNBT(tag);
+            try {
+                this.entity.writeToNBT(tag);
+            } catch (Exception ignored) {}
             return tag;
         }
 
@@ -166,7 +176,7 @@ public class DataAccessorCommon implements IWailaCommonAccessor, IWailaDataAcces
 
         int id = tag.getInteger("WailaEntityID");
 
-        if (id == EntityList.getEntityID(this.entity)) return true;
+        if (id == this.entity.entityId) return true;
         else {
             this.timeLastUpdate = System.currentTimeMillis() - 250;
             return false;

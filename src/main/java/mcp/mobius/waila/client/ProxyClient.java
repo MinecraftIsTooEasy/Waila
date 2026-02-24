@@ -12,6 +12,7 @@ import mcp.mobius.waila.gui.truetyper.TrueTypeFont;
 import mcp.mobius.waila.handlers.HUDHandlerBlocks;
 import mcp.mobius.waila.handlers.HUDHandlerEntities;
 import mcp.mobius.waila.handlers.VanillaTooltipHandler;
+import net.minecraft.EntityArachnid;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderHealth;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderProgressBar;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderStack;
@@ -43,6 +44,7 @@ public class ProxyClient extends ProxyServer {
         ModuleRegistrar.instance().registerHeadProvider(new HUDHandlerEntities(), Entity.class);
         ModuleRegistrar.instance().registerBodyProvider(new HUDHandlerEntities(), Entity.class);
         ModuleRegistrar.instance().registerTailProvider(new HUDHandlerEntities(), Entity.class);
+        ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerEntities(), EntityArachnid.class);
 
 //        ModuleRegistrar.instance().registerBodyProvider(new HUDHandlerFurnace(), BlockFurnace.class);
 //        ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerFurnace(), NBTBase.class);

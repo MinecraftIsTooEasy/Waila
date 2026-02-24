@@ -52,14 +52,11 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation("it.unimi.dsi:fastutil:8.5.12")
 
-//	implementation files("libs\\RustedIronCore-1.5.0.jar")
+//	implementation files("${lib_dir}/RustedIronCore-1.5.0.jar")
 
-    //manylib runclient needs gson
-    implementation files("libs\\gson-2.10.1.jar")
-	implementation files("libs\\ManyLib-2.2.1.jar")
-
-	implementation files("libs\\ModMenu-1.0.0.jar")
-	implementation files("libs\\EMI-1.1.18.jar")
+	implementation files("${lib_dir}/ManyLib-2.2.1.jar")
+	implementation files("${lib_dir}/ModMenu-1.0.0.jar")
+	implementation files("${lib_dir}/EMI-1.1.18.jar")
 	implementation files(loom.getFML().toPath())
 }
 

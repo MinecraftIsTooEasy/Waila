@@ -162,24 +162,21 @@ public class MetaDataProvider {
     public List<String> handleEntityTextData(Entity entity, World world, EntityPlayer player, RaycastCollision mop,
             DataAccessorCommon accessor, List<String> currenttip, Layout layout) {
 
-        if (accessor.getEntity() != null && Waila.instance.serverPresent && accessor.isTimeElapsed(250)) {
+        if (accessor.getEntity() != null && accessor.isTimeElapsed(250)) {
             accessor.resetTimer();
             HashSet<String> keys = new HashSet<>();
 
             if (ModuleRegistrar.instance().hasSyncedNBTKeys(accessor.getEntity()))
                 keys.addAll(ModuleRegistrar.instance().getSyncedNBTKeys(accessor.getEntity()));
 
-            if (!keys.isEmpty() || ModuleRegistrar.instance().hasNBTEntityProviders(accessor.getEntity()))
-                PacketDispatcher.sendPacketToServer(Packet0x03EntRequest.create(world, player, keys));
-
-        } else if (accessor.getEntity() != null && !Waila.instance.serverPresent && accessor.isTimeElapsed(250)) {
-
-            try {
-                NBTTagCompound tag = new NBTTagCompound();
-                accessor.getEntity().writeToNBT(tag);
-                accessor.remoteNbt = tag;
-            } catch (Exception e) {
-                WailaExceptionHandler.handleErr(e, this.getClass().getName(), null);
+            if (!keys.isEmpty() || ModuleRegistrar.instance().hasNBTEntityProviders(accessor.getEntity())) {
+                PacketDispatcher.sendPacketToServer(Packet0x03EntRequest.create(world, entity, keys));
+            } else {
+                try {
+                    NBTTagCompound tag = new NBTTagCompound();
+                    accessor.getEntity().writeToNBT(tag);
+                    accessor.remoteNbt = tag;
+                } catch (Exception ignored) {}
             }
         }
 
