@@ -148,6 +148,12 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
         {
             if (block instanceof BlockCrops cropBlock)
             {
+                if (cropBlock.isDead())
+                {
+                    currenttip.add(SpecialChars.GRAY + LangUtil.translateG("hud.msg.crop.dead"));
+                    return currenttip;
+                }
+
                 int rawMeta = accessor.getMetadata();
                 int growth       = cropBlock.getGrowth(rawMeta);
                 int maxGrowth    = cropBlock.getMaxGrowth();
@@ -179,12 +185,15 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                     if (below == Block.tilledField)
                     {
                         int farmMeta = world2.getBlockMetadata(bx, by - 1, bz);
+                        int wetness = BlockFarmland.getWetness(farmMeta);
 
-                        if (BlockFarmland.getWetness(farmMeta) == 0)
+                        if (!BlockFarmland.isWaterNearby(world2, bx, by - 1, bz))
                         {
-                            boolean waterNearby = BlockFarmland.isWaterNearby(world2, bx, by - 1, bz);
-
-                            if (!waterNearby)
+                            if (wetness > 0)
+                            {
+                                currenttip.add(SpecialChars.YELLOW + LangUtil.translateG("hud.msg.crop.drying_out"));
+                            }
+                            else
                             {
                                 currenttip.add(SpecialChars.YELLOW + LangUtil.translateG("hud.msg.crop.no_water"));
                             }

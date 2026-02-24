@@ -84,10 +84,12 @@ hud.msg.black=Black
 
 hud.msg.growth=Growth
 hud.msg.crop.blighted=Blighted
+hud.msg.crop.dead=Dead
 hud.msg.crop.growth_rate=Growth Rate
 hud.msg.crop.blight_chance=Blight Chance/Tick
 hud.msg.crop.no_light=Insufficient Light, Growth Stopped
 hud.msg.crop.no_water=No Water Nearby, Growth Stopped
+hud.msg.crop.drying_out=No Water Nearby, Drying Out
 hud.msg.crop.stopped=Growth Stopped
 hud.msg.mature=Mature
 hud.msg.off=Off
