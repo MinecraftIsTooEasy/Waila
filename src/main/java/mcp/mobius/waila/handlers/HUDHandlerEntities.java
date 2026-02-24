@@ -230,6 +230,8 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
         if (!(entity instanceof EntityArachnid)) return;
 
+        if (entity instanceof EntityWoodSpider) return;
+
         int numWebs = -1;
 
         MinecraftServer server = MinecraftServer.getServer();
