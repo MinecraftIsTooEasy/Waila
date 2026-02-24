@@ -20,6 +20,7 @@ import mcp.mobius.waila.api.IWailaEntityProvider;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
 import moddedmite.waila.mixin.accessor.EntityArachnidAccessor;
 import moddedmite.waila.mixin.accessor.EntityLivestockAccessor;
+import moddedmite.waila.mixin.accessor.EntityPhaseSpiderAccessor;
 import net.minecraft.server.MinecraftServer;
 
 public class HUDHandlerEntities implements IWailaEntityProvider {
@@ -35,8 +36,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
     }
 
     @Override
-    public List<String> getWailaHead(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
-            IWailaConfigHandler config) {
+    public List<String> getWailaHead(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
         try {
             currenttip.add(WHITE + entity.getEntityName());
         } catch (Exception e) {
@@ -46,8 +46,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
     }
 
     @Override
-    public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
-            IWailaConfigHandler config) {
+    public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
         this.getEntityHeath(entity, currenttip, accessor, config);
         this.getEntityArmor(entity, currenttip, accessor, config);
         this.getEntityAttack(entity, currenttip, accessor, config);
@@ -57,8 +56,8 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         return currenttip;
     }
 
-    public void getEntityHeath(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
-                                     IWailaConfigHandler config) {
+    public void getEntityHeath(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
+
         if (!WailaConfig.showhp.getBooleanValue()) return;
 
         if (entity instanceof EntityLivingBase entityLivingBase) {
@@ -127,101 +126,174 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         }
     }
 
-    public void getAnimalInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
-                              IWailaConfigHandler config) {
+    public void getAnimalInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
+
         if (!(entity instanceof EntityAnimal animal)) return;
+
         if (!WailaConfig.showanimal.getBooleanValue()) return;
 
+
         int growingAge = animal.getGrowingAge();
-        if (growingAge < 0) {
+
+        if (growingAge < 0)
+        {
             int seconds = -growingAge / 20;
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.animal.grow", seconds));
-        } else if (growingAge > 0) {
+        }
+        else if (growingAge > 0)
+        {
             int seconds = growingAge / 20;
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.animal.breed_cooldown", seconds));
         }
     }
 
-    public void getLivestockInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
-                                 IWailaConfigHandler config) {
+    public void getLivestockInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
+
         if (!WailaConfig.showlivestock.getBooleanValue()) return;
+
         if (!(entity instanceof EntityLivestock)) return;
 
         float food, water, freedom;
 
         MinecraftServer server = MinecraftServer.getServer();
-        if (server != null) {
+
+        if (server != null)
+        {
             Entity serverEntity = null;
-            for (World w : server.worldServers) {
-                if (w != null) {
+            for (World w : server.worldServers)
+            {
+                if (w != null)
+                {
                     serverEntity = w.getEntityByID(entity.entityId);
+
                     if (serverEntity != null) break;
                 }
             }
-            if (!(serverEntity instanceof EntityLivestockAccessor ls)) return;
-            food = ls.getFood();
-            water = ls.getWater();
-            freedom = ls.getFreedom();
-        } else {
+            if (!(serverEntity instanceof EntityLivestockAccessor livestock)) return;
+
+            food = livestock.getFood();
+            water = livestock.getWater();
+            freedom = livestock.getFreedom();
+        }
+        else
+        {
             NBTTagCompound tag = accessor.getNBTData();
+
             if (tag == null || !tag.hasKey("WailaFood")) return;
+
             food = tag.getFloat("WailaFood");
             water = tag.getFloat("WailaWater");
             freedom = tag.getFloat("WailaFreedom");
         }
 
-        if (food < 0.05F) {
+        if (food < 0.05F)
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.food.desperate"));
-        } else if (food < 0.25F) {
+        }
+        else if (food < 0.25F)
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.food.very_hungry"));
-        } else if (food < 0.5F) {
+        }
+        else if (food < 0.5F)
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.food.hungry"));
         }
 
-        if (water < 0.05F) {
+        if (water < 0.05F)
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.water.desperate"));
-        } else if (water < 0.25F) {
+        }
+        else if (water < 0.25F)
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.water.very_thirsty"));
-        } else if (water < 0.5F) {
+        }
+        else if (water < 0.5F)
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.water.thirsty"));
         }
 
-        if (freedom < 0.25F) {
+        if (freedom < 0.25F)
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.freedom.crowded"));
         }
     }
 
-    public void getSpiderWebInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
-                                 IWailaConfigHandler config) {
+    public void getSpiderWebInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
+
         if (!WailaConfig.showspiderweb.getBooleanValue()) return;
+
         if (!(entity instanceof EntityArachnid)) return;
 
         int numWebs = -1;
 
         MinecraftServer server = MinecraftServer.getServer();
-        if (server != null) {
-            for (World w : server.worldServers) {
-                if (w != null) {
-                    Entity serverEntity = w.getEntityByID(entity.entityId);
-                    if (serverEntity instanceof EntityArachnidAccessor arachnid) {
+        if (server != null)
+        {
+            for (World world : server.worldServers)
+            {
+                if (world != null)
+                {
+                    Entity serverEntity = world.getEntityByID(entity.entityId);
+
+                    if (serverEntity instanceof EntityArachnidAccessor arachnid)
+                    {
                         numWebs = arachnid.getNumWebs();
                         break;
                     }
                 }
             }
-        } else {
+        }
+        else
+        {
             NBTTagCompound tag = accessor.getNBTData();
-            if (tag != null && tag.hasKey("WailaNumWebs")) {
+            if (tag != null && tag.hasKey("WailaNumWebs"))
+            {
                 numWebs = tag.getInteger("WailaNumWebs");
             }
         }
 
         if (numWebs < 0) return;
 
-        if (numWebs > 0) {
+        if (numWebs > 0)
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.spider.web_count", numWebs));
-        } else {
+        }
+        else
+        {
             currenttip.add(GRAY + LangUtil.translateG("hud.msg.spider.no_web"));
+        }
+
+        if (entity instanceof EntityPhaseSpider && WailaConfig.showphaseevasions.getBooleanValue()) {
+            int numEvasions = -1;
+            if (server != null)
+            {
+                for (World w : server.worldServers)
+                {
+                    if (w != null)
+                    {
+                        Entity serverEntity = w.getEntityByID(entity.entityId);
+
+                        if (serverEntity instanceof EntityPhaseSpiderAccessor ps)
+                        {
+                            numEvasions = ps.getNumEvasions();
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                NBTTagCompound tag = accessor.getNBTData();
+
+                if (tag != null && tag.hasKey("WailaNumEvasions"))
+                {
+                    numEvasions = tag.getInteger("WailaNumEvasions");
+                }
+            }
+            if (numEvasions >= 0)
+            {
+                currenttip.add(GRAY + LangUtil.translateG("hud.msg.spider.phase_evasions", numEvasions));
+            }
         }
     }
 
@@ -238,23 +310,36 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
     }
 
     @Override
-    public NBTTagCompound getNBTData(ServerPlayer player, Entity te, NBTTagCompound tag, World world) {
-        if (tag == null || te == null) return tag;
-        tag.setInteger("WailaEntityID", te.entityId);
-        if (te instanceof EntityArachnidAccessor arachnid) {
+    public NBTTagCompound getNBTData(ServerPlayer player, Entity entity, NBTTagCompound tag, World world) {
+
+        if (tag == null || entity == null) return tag;
+
+        tag.setInteger("WailaEntityID", entity.entityId);
+
+        if (entity instanceof EntityArachnidAccessor arachnid)
+        {
             tag.setInteger("WailaNumWebs", arachnid.getNumWebs());
         }
-        if (te instanceof EntityLivestockAccessor ls) {
+
+        if (entity instanceof EntityPhaseSpiderAccessor ps)
+        {
+            tag.setInteger("WailaNumEvasions", ps.getNumEvasions());
+        }
+
+        if (entity instanceof EntityLivestockAccessor ls)
+        {
             tag.setFloat("WailaFood", ls.getFood());
             tag.setFloat("WailaWater", ls.getWater());
             tag.setFloat("WailaFreedom", ls.getFreedom());
         }
+
         return tag;
     }
 
     public static void register() {
         HUDHandlerEntities provider = new HUDHandlerEntities();
         ModuleRegistrar.instance().registerNBTProvider(provider, EntityArachnid.class);
+        ModuleRegistrar.instance().registerNBTProvider(provider, EntityPhaseSpider.class);
         ModuleRegistrar.instance().registerNBTProvider(provider, EntityLivestock.class);
     }
 }
