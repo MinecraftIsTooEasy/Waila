@@ -31,7 +31,7 @@ repositories {
 loom {
 	accessWidenerPath = file("src/main/resources/waila.accesswidener")
 	mergedMinecraftJar()
-	setFML(new File("D:\\Projects\\IDEA\\Minecraft\\MITE\\FishModLoader-v3.4.1.jar"))
+    setFML(new File("${lib_dir}/${fml_file_name}${fml_version}.jar"))
 	mods {
 		"Waila" {
 			sourceSet sourceSets.main
@@ -40,8 +40,9 @@ loom {
 
 }
 
-runClient{
-	args("--username", "Dev", "--session", "a.a.a.a", "--width", 854, "--height", 480)
+tasks.named('runClient', JavaExec).configure { exec ->
+    def user = project.hasProperty('username') ? project.username : 'Dev'
+    exec.setArgs(['--username', user, '--session', '0', '--width', '854', '--height', '480'])
 }
 
 dependencies {
@@ -51,8 +52,12 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation("it.unimi.dsi:fastutil:8.5.12")
 
-//	implementation files("libs\\RustedIronCore-1.3.9.jar")
+//	implementation files("libs\\RustedIronCore-1.5.0.jar")
+
+    //manylib runclient needs gson
+    implementation files("libs\\gson-2.10.1.jar")
 	implementation files("libs\\ManyLib-2.2.1.jar")
+
 	implementation files("libs\\ModMenu-1.0.0.jar")
 	implementation files("libs\\EMI-1.1.18.jar")
 	implementation files(loom.getFML().toPath())

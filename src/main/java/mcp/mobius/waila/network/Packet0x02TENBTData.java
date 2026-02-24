@@ -2,7 +2,6 @@ package mcp.mobius.waila.network;
 
 import java.io.*;
 
-import moddedmite.rustedironcore.network.PacketByteBuf;
 import net.minecraft.*;
 
 public class Packet0x02TENBTData {
