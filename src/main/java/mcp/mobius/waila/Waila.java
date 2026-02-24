@@ -79,6 +79,10 @@ public class Waila implements ModInitializer {
         WailaConfig.getInstance().load();
         ConfigManager.getInstance().registerConfig(WailaConfig.getInstance());
         WailaPackets.registerClientReaders();
-        new ProxyServer().registerMods();
+
+        if (FishModLoader.getEnvironmentType() == EnvType.SERVER) {
+            new ProxyServer().registerMods();
+        }
     }
+
 }

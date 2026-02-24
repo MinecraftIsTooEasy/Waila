@@ -1,6 +1,7 @@
 package mcp.mobius.waila.addons.vanillamc;
 
 import java.util.List;
+import java.text.DecimalFormat;
 
 import mcp.mobius.waila.Waila;
 import moddedmite.waila.config.WailaConfig;
@@ -23,6 +24,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
     static Block pumpkinStem = Block.pumpkinStem;
     static Block carrot = Block.carrot;
     static Block potato = Block.potato;
+    static Block onions = Block.onions;
     static Block lever = Block.lever;
     static Block repeaterIdle = Block.redstoneRepeaterIdle;
     static Block repeaterActv = Block.redstoneRepeaterActive;
@@ -72,6 +74,10 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
 
         if (block == potato) {
             return new ItemStack(Item.potato);
+        }
+
+        if (block == onions) {
+            return new ItemStack(Item.onion);
         }
 
         if ((block == leave) && (accessor.getMetadata() > 3)) {
@@ -132,84 +138,171 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
     }
 
     @Override
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-            IWailaConfigHandler config) {
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+
         Block block = accessor.getBlock();
+
         String skull2;
-        /* Crops */
-        boolean iscrop = crops.getClass().isInstance(block); // Done to cover all inheriting mods
+
         if (WailaConfig.showcrop.getBooleanValue())
-            if (iscrop || block == melonStem || block == pumpkinStem || block == carrot || block == potato) {
-                float growthValue = (accessor.getMetadata() / 7.0F) * 100.0F;
-                if (growthValue < 100.0)
-                    currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
-                else currenttip.add(
-                        String.format(
-                                "%s : %s",
-                                LangUtil.translateG("hud.msg.growth"),
-                                LangUtil.translateG("hud.msg.mature")));
+        {
+            if (block instanceof BlockCrops cropBlock)
+            {
+                int rawMeta = accessor.getMetadata();
+                int growth       = cropBlock.getGrowth(rawMeta);
+                int maxGrowth    = cropBlock.getMaxGrowth();
+                float growthPct  = maxGrowth > 0 ? (growth / (float) maxGrowth) * 100.0F : 100.0F;
+                boolean blighted = cropBlock.isBlighted(rawMeta);
+                boolean mature   = cropBlock.isMature(rawMeta);
+
+                if (blighted)
+                {
+                    String matStr = mature ? "(" + LangUtil.translateG("hud.msg.mature") + ")" : String.format("(%.0f %%)", growthPct);
+                    currenttip.add(LangUtil.translateG("hud.msg.crop.blighted") + " " + matStr);
+                }
+                else if (mature)
+                {
+                    currenttip.add(LangUtil.translateG("hud.msg.growth") + " : " + LangUtil.translateG("hud.msg.mature"));
+                }
+                else
+                {
+                    currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthPct));
+                }
+
+                if (WailaConfig.showcropdetails.getBooleanValue() && !mature && !blighted)
+                {
+                    World world2 = accessor.getWorld();
+                    RaycastCollision pos = accessor.getPosition();
+                    int bx = pos.block_hit_x, by = pos.block_hit_y, bz = pos.block_hit_z;
+                    Block below = world2.getBlock(bx, by - 1, bz);
+
+                    if (below == Block.tilledField)
+                    {
+                        int farmMeta = world2.getBlockMetadata(bx, by - 1, bz);
+
+                        if (BlockFarmland.getWetness(farmMeta) == 0)
+                        {
+                            boolean waterNearby = BlockFarmland.isWaterNearby(world2, bx, by - 1, bz);
+
+                            if (!waterNearby)
+                            {
+                                currenttip.add(SpecialChars.YELLOW + LangUtil.translateG("hud.msg.crop.no_water"));
+                            }
+                        }
+                    }
+
+                    int lightLevel = world2.getBlockLightValue(bx, by + 1, bz);
+
+                    if (!cropBlock.isLightLevelSuitableForGrowth(lightLevel))
+                    {
+                        currenttip.add(SpecialChars.YELLOW + String.format("%s (%d/%d)", LangUtil.translateG("hud.msg.crop.no_light"), lightLevel, cropBlock.getMinAllowedLightValueForGrowth()));
+                    }
+
+                    float growthRate = cropBlock.getGrowthRate(world2, bx, by, bz);
+
+                    if (growthRate > 0.0F)
+                    {
+                        currenttip.add(String.format("%s: %.2f", LangUtil.translateG("hud.msg.crop.growth_rate"), growthRate));
+                    }
+                    else
+                    {
+                        currenttip.add(SpecialChars.YELLOW + LangUtil.translateG("hud.msg.crop.stopped"));
+                    }
+
+                    if (cropBlock.chanceOfBlightPerRandomTick() > 0.0F)
+                    {
+                        currenttip.add(String.format("%s: %s%%", LangUtil.translateG("hud.msg.crop.blight_chance"), new DecimalFormat("0.##").format(cropBlock.chanceOfBlightPerRandomTick() * 100.0F)));
+                    }
+                }
+
                 return currenttip;
             }
 
-        if (block == cocoa && WailaConfig.showcrop.getBooleanValue()) {
+            if (block == melonStem || block == pumpkinStem)
+            {
+                int rawMeta = accessor.getMetadata();
+                float growthPct = (rawMeta / 7.0F) * 100.0F;
 
+                if (growthPct < 100.0F)
+                    currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthPct));
+
+                else
+                    currenttip.add(LangUtil.translateG("hud.msg.growth") + " : " + LangUtil.translateG("hud.msg.mature"));
+
+                return currenttip;
+            }
+        }
+
+        if (block == cocoa && WailaConfig.showcrop.getBooleanValue())
+        {
             float growthValue = ((accessor.getMetadata() >> 2) / 2.0F) * 100.0F;
+
             if (growthValue < 100.0)
                 currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
-            else currenttip.add(
-                    String.format(
-                            "%s : %s",
-                            LangUtil.translateG("hud.msg.growth"),
-                            LangUtil.translateG("hud.msg.mature")));
+
+            else currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.growth"), LangUtil.translateG("hud.msg.mature")));
+
             return currenttip;
         }
 
-        if (block == netherwart && WailaConfig.showcrop.getBooleanValue()) {
+        if (block == netherwart && WailaConfig.showcrop.getBooleanValue())
+        {
             float growthValue = (accessor.getMetadata() / 3.0F) * 100.0F;
+
             if (growthValue < 100.0)
                 currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
-            else currenttip.add(
-                    String.format(
-                            "%s : %s",
-                            LangUtil.translateG("hud.msg.growth"),
-                            LangUtil.translateG("hud.msg.mature")));
+
+            else currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.growth"), LangUtil.translateG("hud.msg.mature")));
+
             return currenttip;
         }
 
-        if (WailaConfig.leverstate.getBooleanValue()) if (block == lever) {
-            String redstoneOn = (accessor.getMetadata() & 8) == 0 ? LangUtil.translateG("hud.msg.off")
-                    : LangUtil.translateG("hud.msg.on");
+        if (WailaConfig.leverstate.getBooleanValue()) if (block == lever)
+        {
+            String redstoneOn = (accessor.getMetadata() & 8) == 0 ? LangUtil.translateG("hud.msg.off") : LangUtil.translateG("hud.msg.on");
             currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.state"), redstoneOn));
+
             return currenttip;
         }
 
-        if (WailaConfig.repeater.getBooleanValue()) if ((block == repeaterIdle) || (block == repeaterActv)) {
+        if (WailaConfig.repeater.getBooleanValue()) if ((block == repeaterIdle) || (block == repeaterActv))
+        {
             int tick = (accessor.getMetadata() >> 2) + 1;
+
             if (tick == 1) currenttip.add(String.format("%s : %s tick", LangUtil.translateG("hud.msg.delay"), tick));
+
             else currenttip.add(String.format("%s : %s ticks", LangUtil.translateG("hud.msg.delay"), tick));
+
             return currenttip;
         }
 
-        if (WailaConfig.comparator.getBooleanValue()) if ((block == comparatorIdl) || (block == comparatorAct)) {
-            String mode = ((accessor.getMetadata() >> 2) & 1) == 0 ? LangUtil.translateG("hud.msg.comparator")
-                    : LangUtil.translateG("hud.msg.substractor");
+        if (WailaConfig.comparator.getBooleanValue()) if ((block == comparatorIdl) || (block == comparatorAct))
+        {
+            String mode = ((accessor.getMetadata() >> 2) & 1) == 0 ? LangUtil.translateG("hud.msg.comparator") : LangUtil.translateG("hud.msg.substractor");
             currenttip.add("Mode : " + mode);
+
             return currenttip;
         }
 
-        if (WailaConfig.redstone.getBooleanValue()) if (block == redstone) {
+        if (WailaConfig.redstone.getBooleanValue()) if (block == redstone)
+        {
             currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.power"), accessor.getMetadata()));
+
             return currenttip;
         }
 
-        if (WailaConfig.spawnertype.getBooleanValue() && block == mobSpawner && (accessor.getTileEntity() instanceof TileEntityMobSpawner)) {
+        if (WailaConfig.spawnertype.getBooleanValue() && block == mobSpawner && (accessor.getTileEntity() instanceof TileEntityMobSpawner))
+        {
             currenttip.add(String.format("Type: %s", ((TileEntityMobSpawner) accessor.getTileEntity()).getSpawnerLogic().getEntityNameToSpawn()));
         }
 
-        if (WailaConfig.skulltype.getBooleanValue() && block == skull && (accessor.getTileEntity() instanceof TileEntitySkull) && Waila.instance.serverPresent) {
+        if (WailaConfig.skulltype.getBooleanValue() && block == skull && (accessor.getTileEntity() instanceof TileEntitySkull) && Waila.instance.serverPresent)
+        {
             NBTTagCompound tag = accessor.getNBTData();
             byte type = tag.getByte("SkullType");
-            skull2 = switch (type) {
+
+            skull2 = switch (type)
+            {
                 case 0 -> StatCollector.translateToLocal("item.skull.skeleton.name");
                 case 1 -> StatCollector.translateToLocal("item.skull.wither.name");
                 case 2 -> StatCollector.translateToLocal("item.skull.zombie.name");
@@ -274,8 +367,6 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
         ModuleRegistrar.instance().registerNBTProvider(provider, crops.getClass());
         ModuleRegistrar.instance().registerNBTProvider(provider, melonStem.getClass());
         ModuleRegistrar.instance().registerNBTProvider(provider, pumpkinStem.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, carrot.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, potato.getClass());
         ModuleRegistrar.instance().registerNBTProvider(provider, lever.getClass());
         ModuleRegistrar.instance().registerNBTProvider(provider, repeaterIdle.getClass());
         ModuleRegistrar.instance().registerNBTProvider(provider, repeaterActv.getClass());
