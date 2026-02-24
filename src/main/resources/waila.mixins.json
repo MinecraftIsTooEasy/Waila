@@ -16,9 +16,10 @@
     "compat.EntitySkeletonBossAccessor",
     "compat.EntitySkeletonShadowAccessor",
     "compat.EntityUltimateAnnihilationSkeletonAccessor",
+    "accessor.EntityLivestockAccessor",
+    "accessor.EntityZombieAccessor",
     "accessor.EntityArachnidAccessor",
     "accessor.EntityPhaseSpiderAccessor",
-    "accessor.EntityLivestockAccessor",
     "ItemAnvilBlockMixin",
     "PlayerControllerMPMixin",
     "NetServerHandlerMixin"

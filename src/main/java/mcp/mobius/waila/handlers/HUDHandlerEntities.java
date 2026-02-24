@@ -18,8 +18,9 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaEntityAccessor;
 import mcp.mobius.waila.api.IWailaEntityProvider;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import moddedmite.waila.mixin.accessor.EntityArachnidAccessor;
 import moddedmite.waila.mixin.accessor.EntityLivestockAccessor;
+import moddedmite.waila.mixin.accessor.EntityZombieAccessor;
+import moddedmite.waila.mixin.accessor.EntityArachnidAccessor;
 import moddedmite.waila.mixin.accessor.EntityPhaseSpiderAccessor;
 import moddedmite.waila.compat.ModCompat;
 import net.minecraft.server.MinecraftServer;
@@ -53,6 +54,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         this.getEntityAttack(entity, currenttip, accessor, config);
         this.getAnimalInfo(entity, currenttip, accessor, config);
         this.getLivestockInfo(entity, currenttip, accessor, config);
+        this.getZombieConversionInfo(entity, currenttip, accessor, config);
         this.getSpiderWebInfo(entity, currenttip, accessor, config);
         this.getITFRBEvasionInfo(entity, currenttip, accessor, config);
         this.getExtremeExchangerInfo(entity, currenttip, accessor, config);
@@ -435,6 +437,51 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         }
     }
 
+    public void getZombieConversionInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
+
+        if (!WailaConfig.showzombieconversion.getBooleanValue()) return;
+
+        if (!(entity instanceof EntityZombie zombie)) return;
+
+        if (!zombie.isConverting()) return;
+
+        int conversionTime = -1;
+
+        MinecraftServer server = MinecraftServer.getServer();
+
+        if (server != null)
+        {
+            for (World world : server.worldServers)
+            {
+                if (world != null)
+                {
+                    Entity serverEntity = world.getEntityByID(entity.entityId);
+
+                    if (serverEntity instanceof EntityZombieAccessor za)
+                    {
+                        conversionTime = za.getConversionTime();
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            NBTTagCompound tag = accessor.getNBTData();
+
+            if (tag != null && tag.hasKey("WailaConversionTime"))
+            {
+                conversionTime = tag.getInteger("WailaConversionTime");
+            }
+        }
+
+        if (conversionTime > 0)
+        {
+            int seconds = conversionTime / 20;
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.zombie.converting", seconds));
+        }
+    }
+
     @Override
     public List<String> getWailaTail(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,
             IWailaConfigHandler config) {
@@ -453,6 +500,11 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         if (tag == null || entity == null) return tag;
 
         tag.setInteger("WailaEntityID", entity.entityId);
+
+        if (entity instanceof EntityZombie zombie && zombie.isConverting() && entity instanceof EntityZombieAccessor za)
+        {
+            tag.setInteger("WailaConversionTime", za.getConversionTime());
+        }
 
         if (entity instanceof EntityArachnidAccessor arachnid)
         {
@@ -497,6 +549,7 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
     public static void register() {
         HUDHandlerEntities provider = new HUDHandlerEntities();
+        ModuleRegistrar.instance().registerNBTProvider(provider, EntityZombie.class);
         ModuleRegistrar.instance().registerNBTProvider(provider, EntityArachnid.class);
         ModuleRegistrar.instance().registerNBTProvider(provider, EntityPhaseSpider.class);
         ModuleRegistrar.instance().registerNBTProvider(provider, EntityLivestock.class);

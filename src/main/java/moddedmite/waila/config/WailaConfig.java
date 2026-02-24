@@ -35,6 +35,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     public static final ConfigBoolean showcrop = new ConfigBoolean("option.general.showcrop", true);
     public static final ConfigBoolean showanimal = new ConfigBoolean("option.general.showanimal", true);
     public static final ConfigBoolean showlivestock = new ConfigBoolean("option.general.showlivestock", true);
+    public static final ConfigBoolean showzombieconversion = new ConfigBoolean("option.general.showzombieconversion", true);
     public static final ConfigBoolean showspiderweb = new ConfigBoolean("option.general.showspiderweb", true);
     public static final ConfigBoolean showphaseevasions = new ConfigBoolean("option.general.showphaseevasions", true);
     public static final ConfigBoolean spawnertype = new ConfigBoolean("option.vanilla.spawntype", true);
@@ -76,7 +77,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
     static {
         general = List.of(showTooltip, showMods, showEnts, metadata, liquid, shiftblock, shiftents, devMoveDownTooltip);
-        features = List.of(showhp, showatk, showarmor, showcrop, showanimal, showlivestock, showspiderweb, showphaseevasions, spawnertype, repeater, redstone, comparator, leverstate, skulltype);
+        features = List.of(showhp, showatk, showarmor, showcrop, showanimal, showlivestock, showzombieconversion, showspiderweb, showphaseevasions, spawnertype, repeater, redstone, comparator, leverstate, skulltype);
         screen = List.of(posX, posY, alpha, scale, lerpfactor, icon, theme, bgcolor, gradient1, gradient2, fontcolor);
         keybinding = List.of(wailaconfig, wailadisplay, keyliquid, recipe, usage);
         ArrayList<ConfigBase> values = new ArrayList<>();

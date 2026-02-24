@@ -174,6 +174,7 @@ config.name.option.general.showarmor=显示实体护甲值
 config.name.option.general.showcrop=显示作物生长状态
 config.name.option.general.showanimal=显示动物信息
 config.name.option.general.showlivestock=显示动物健康状态
+config.name.option.general.showzombieconversion=显示僵尸村民转化倒计时
 config.name.option.general.showspiderweb=显示蜘蛛类蜘蛛网信息
 config.name.option.general.showphaseevasions=显示相位蜘蛛闪避次数
 
@@ -203,10 +204,6 @@ hud.msg.anvil.durability=耐久: %d/%d
 
 hud.msg.animal.grow=成年倒计时：%d秒
 hud.msg.animal.breed_cooldown=繁殖冷却：%d秒
-hud.msg.spider.web_count=蜘蛛网数量：%d
-hud.msg.spider.no_web=无蜘蛛网
-hud.msg.phase_evasions=剩余闪避次数：%d
-
 hud.msg.livestock.food.hungry=饥饿
 hud.msg.livestock.food.very_hungry=非常饥饿
 hud.msg.livestock.food.desperate=骨瘦如柴
@@ -214,3 +211,8 @@ hud.msg.livestock.water.thirsty=口渴
 hud.msg.livestock.water.very_thirsty=非常口渴
 hud.msg.livestock.water.desperate=喉咙冒烟
 hud.msg.livestock.freedom.crowded=过于拥挤
+
+hud.msg.zombie.converting=转化倒计时：%d秒
+hud.msg.spider.web_count=蜘蛛网数量：%d
+hud.msg.spider.no_web=无蜘蛛网
+hud.msg.phase_evasions=剩余闪避次数：%d
