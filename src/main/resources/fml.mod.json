@@ -33,7 +33,8 @@
     ]
   },
   "mixins": [
-    "waila.mixins.json"
+    "waila.mixins.json",
+    "waila.compat.mixins.json"
   ],
   "accessWidener": "waila.accesswidener"
 }

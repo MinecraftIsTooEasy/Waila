@@ -149,6 +149,7 @@ config.name.screen.label.scale=Scale
 config.name.screen.label.lerpfactor=Lerp Factor
 config.name.choice.showhidewaila=Show/Hide Waila
 config.name.choice.showmods=Show Mods
+config.name.choice.showEnts=Show Entity
 config.name.choice.showhideidmeta=Show ID:Metadata
 config.name.choice.toggledmaintained=Toggled/Maintained
 config.name.choice.showliquids=Show liquids
@@ -204,7 +205,7 @@ hud.msg.animal.grow=Grows up in: %ds
 hud.msg.animal.breed_cooldown=Breed cooldown: %ds
 hud.msg.spider.web_count=Webs: %d
 hud.msg.spider.no_web=No webs
-hud.msg.spider.phase_evasions=Evasions remaining: %d
+hud.msg.phase_evasions=Evasions remaining: %d
 
 hud.msg.livestock.food.hungry=Hungry
 hud.msg.livestock.food.very_hungry=Very Hungry

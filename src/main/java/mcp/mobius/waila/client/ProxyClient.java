@@ -3,23 +3,19 @@ package mcp.mobius.waila.client;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderArmor;
 import net.minecraft.*;
 
-import mcp.mobius.waila.Waila;
-import mcp.mobius.waila.api.impl.DataAccessorCommon;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import mcp.mobius.waila.cbcore.LangUtil;
 import mcp.mobius.waila.gui.truetyper.FontLoader;
 import mcp.mobius.waila.gui.truetyper.TrueTypeFont;
 import mcp.mobius.waila.handlers.HUDHandlerBlocks;
 import mcp.mobius.waila.handlers.HUDHandlerEntities;
-import mcp.mobius.waila.handlers.VanillaTooltipHandler;
 import net.minecraft.EntityArachnid;
 import net.minecraft.EntityLivestock;
 import net.minecraft.EntityPhaseSpider;
+import moddedmite.waila.compat.ModCompat;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderHealth;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderProgressBar;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderStack;
 import mcp.mobius.waila.server.ProxyServer;
-import net.xiaoyu233.fml.FishModLoader;
 
 public class ProxyClient extends ProxyServer {
 
@@ -49,6 +45,16 @@ public class ProxyClient extends ProxyServer {
         ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerEntities(), EntityArachnid.class);
         ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerEntities(), EntityPhaseSpider.class);
         ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerEntities(), EntityLivestock.class);
+
+        if (ModCompat.HAS_ITFRB)
+        {
+            ModCompat.registerITFRBNBTProviders(new HUDHandlerEntities());
+        }
+
+        if (ModCompat.HAS_BEX)
+        {
+            ModCompat.registerBEXOnEXTREMENBTProviders(new HUDHandlerEntities());
+        }
 
 //        ModuleRegistrar.instance().registerBodyProvider(new HUDHandlerFurnace(), BlockFurnace.class);
 //        ModuleRegistrar.instance().registerNBTProvider(new HUDHandlerFurnace(), NBTBase.class);

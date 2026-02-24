@@ -10,6 +10,12 @@
     "client.NetClientHandlerMixin"
   ],
   "mixins": [
+    "compat.EntityLichShadowAccessor",
+    "compat.EntitySpiritAccessor",
+    "compat.EntityLichAccessor",
+    "compat.EntitySkeletonBossAccessor",
+    "compat.EntitySkeletonShadowAccessor",
+    "compat.EntityUltimateAnnihilationSkeletonAccessor",
     "accessor.EntityArachnidAccessor",
     "accessor.EntityPhaseSpiderAccessor",
     "accessor.EntityLivestockAccessor",

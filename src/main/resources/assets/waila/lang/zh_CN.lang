@@ -145,7 +145,6 @@ option.stevescarts.colorblind=色盲模式
 option.stevescarts.shifttoggle=潜行触发
 option.thaumcraft.aspects=显示要素
 
-
 config.name.screen.label.scale=缩放
 config.name.screen.label.lerpfactor=动画速率
 config.name.choice.showhidewaila=显示/隐藏Waila
@@ -206,7 +205,7 @@ hud.msg.animal.grow=成年倒计时：%d秒
 hud.msg.animal.breed_cooldown=繁殖冷却：%d秒
 hud.msg.spider.web_count=蜘蛛网数量：%d
 hud.msg.spider.no_web=无蜘蛛网
-hud.msg.spider.phase_evasions=剩余闪避次数：%d
+hud.msg.phase_evasions=剩余闪避次数：%d
 
 hud.msg.livestock.food.hungry=饥饿
 hud.msg.livestock.food.very_hungry=非常饥饿

@@ -58,6 +58,10 @@ dependencies {
 	implementation files("${lib_dir}/ModMenu-1.0.0.jar")
 	implementation files("${lib_dir}/EMI-1.1.18.jar")
 	implementation files(loom.getFML().toPath())
+
+    compileOnly(files("${lib_dir}/Extreme-0.1.6.11.jar"))
+    compileOnly(files("${lib_dir}/BeyondExtreme-3.0.7.jar"))
+    compileOnly(files("${lib_dir}/MITE-ITF-Reborn-17.2.21-mc1.6.4-MITE-20260130.jar"))
 }
 
 processResources {
