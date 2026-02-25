@@ -2,7 +2,6 @@ package moddedmite.waila.config;
 
 import fi.dy.masa.malilib.config.interfaces.IConfigHandler;
 import fi.dy.masa.malilib.gui.screen.DefaultConfigScreen;
-import fi.dy.masa.malilib.gui.screen.util.ProgressSaving;
 import mcp.mobius.waila.api.SpecialChars;
 import mcp.mobius.waila.api.impl.TipList;
 import mcp.mobius.waila.overlay.OverlayRenderer;

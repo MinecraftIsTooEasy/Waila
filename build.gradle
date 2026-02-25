@@ -21,48 +21,52 @@ base {
 }
 
 repositories {
-	mavenLocal()
-	maven {
-		name = "Spongepowered"
-		url = "https://repo.spongepowered.org/repository/maven-public/"
-	}
+    mavenLocal()
+    maven {
+        name = "ModdedMITE"
+        url = ("http://maven.limingzxc.top/repository/maven-public/")
+        allowInsecureProtocol = true
+    }
 }
 
+configurations {
+    fml
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    fml "com.github.MinecraftIsTooEasy:FishModLoader:3.4.2"
+    implementation "com.github.MinecraftIsTooEasy:FishModLoader:3.4.2"
+
+	implementation "com.github.MinecraftIsTooEasy:RustedIronCore:1.5.0"
+
+    implementation "com.github.MinecraftIsTooEasy:ManyLib:2.3.0"
+    implementation "com.github.MinecraftIsTooEasy:ModMenu:10.1.1"
+
+    implementation "com.github.MinecraftIsTooEasy:Gson:2.10.1"
+    implementation "com.github.MinecraftIsTooEasy:FastUtil:8.5.12"
+    implementation "com.github.MinecraftIsTooEasy:EMI:1.1.24"
+
+    compileOnly "com.github.MinecraftIsTooEasy:Extreme:0.1.6.11"
+    compileOnly "com.github.MinecraftIsTooEasy:BeyondExtreme:3.0.7"
+    compileOnly "com.github.MinecraftIsTooEasy:MITE-ITF-Reborn:17.2.21"
+}
+
+def fmlResolvedFile = configurations.fml.files.iterator().next()
+
 loom {
-	accessWidenerPath = file("src/main/resources/waila.accesswidener")
+	accessWidenerPath = file("src/main/resources/waila.accessWidener")
 	mergedMinecraftJar()
-    setFML(new File("${lib_dir}/${fish_mod_loader}"))
 	mods {
 		"Waila" {
 			sourceSet sourceSets.main
 		}
 	}
-
 }
 
-tasks.named('runClient', JavaExec).configure { exec ->
-    def user = project.hasProperty('username') ? project.username : 'Dev'
-    exec.setArgs(['--username', user, '--session', '0', '--width', '854', '--height', '480'])
-}
-
-dependencies {
-
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.fmlMCPMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	implementation("it.unimi.dsi:fastutil:8.5.12")
-
-//	implementation files("${lib_dir}/RustedIronCore-1.5.0.jar")
-
-	implementation files("${lib_dir}/ManyLib-2.2.1.jar")
-	implementation files("${lib_dir}/ModMenu-1.0.0.jar")
-	implementation files("${lib_dir}/EMI-1.1.18.jar")
-	implementation files(loom.getFML().toPath())
-
-    compileOnly(files("${lib_dir}/Extreme-0.1.6.11.jar"))
-    compileOnly(files("${lib_dir}/BeyondExtreme-3.0.7.jar"))
-    compileOnly(files("${lib_dir}/MITE-ITF-Reborn-17.2.21-mc1.6.4-MITE-20260130.jar"))
-}
+loom.setFML(fmlResolvedFile)
+dependencies.add("mappings", loom.fmlMCPMappings())
 
 processResources {
 	inputs.property "version", project.version
@@ -87,6 +91,11 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
 	}
+}
+
+tasks.named('runClient', JavaExec).configure { exec ->
+    def user = project.hasProperty('username') ? project.username : 'Dev'
+    exec.setArgs(['--username', user, '--session', '0', '--width', '854', '--height', '480'])
 }
 
 publishing {
