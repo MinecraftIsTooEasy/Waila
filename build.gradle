@@ -1,8 +1,8 @@
 import java.text.SimpleDateFormat
 
 plugins {
-	id 'fml-loom' version '0.1.local'
-	id 'maven-publish'
+    id 'fml-loom' version '0.1'
+    id 'maven-publish'
 }
 
 version = project.mod_version
