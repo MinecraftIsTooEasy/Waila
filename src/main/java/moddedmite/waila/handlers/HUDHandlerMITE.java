@@ -38,10 +38,15 @@ public class HUDHandlerMITE implements IWailaDataProvider {
             int maxDurability = ia.getMaxDamage(itemStack);
             int durability = getAnvilDurability(accessor.getTileEntity().getWorldObj().getDimensionId(), tea.xCoord, tea.yCoord, tea.zCoord);
             if (durability == maxDurability || durability == 0) return currenttip;
+
+            int remainingDurability = maxDurability - durability;
+            double formulaValue = remainingDurability / ((double)maxDurability / 396800 * 1600);
+            String displayStr = String.format("%.1f", formulaValue);
             currenttip.add(LangUtil.translateG(
-                            "hud.msg.anvil.durability",
-                            maxDurability - durability, maxDurability));
-        }
+                    "hud.msg.anvil.durability",
+                    remainingDurability + "(" + displayStr + ")",
+                    maxDurability
+            ));
         
         return currenttip;
     }
