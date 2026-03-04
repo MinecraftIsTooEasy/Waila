@@ -9,8 +9,6 @@ import net.minecraft.*;
 
 import java.util.List;
 
-import net.minecraft.server.MinecraftServer;
-
 public class HUDHandlerMITE implements IWailaDataProvider {
 
     static Block onions = Block.onions;
@@ -32,17 +30,20 @@ public class HUDHandlerMITE implements IWailaDataProvider {
 
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        if (!(accessor.getTileEntity() instanceof TileEntityAnvil tea)) return currenttip;
+        if (!(accessor.getTileEntity() instanceof TileEntityAnvil)) return currenttip;
 
         if (itemStack.getItem() instanceof ItemAnvilBlock ia) {
+            NBTTagCompound tag = accessor.getNBTData();
+            if (tag == null || !tag.hasKey("WailaAnvilDamage")) return currenttip;
+
             int maxDurability = ia.getMaxDamage(itemStack);
-            int durability = getAnvilDurability(accessor.getTileEntity().getWorldObj().getDimensionId(), tea.xCoord, tea.yCoord, tea.zCoord);
+            int durability = tag.getInteger("WailaAnvilDamage");
             if (durability == maxDurability || durability == 0) return currenttip;
             currenttip.add(LangUtil.translateG(
                             "hud.msg.anvil.durability",
                             maxDurability - durability, maxDurability));
         }
-        
+
         return currenttip;
     }
 
@@ -53,19 +54,11 @@ public class HUDHandlerMITE implements IWailaDataProvider {
 
     @Override
     public NBTTagCompound getNBTData(ServerPlayer player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z) {
-        return tag;
-    }
-    
-    private int getAnvilDurability(int dimension, int x, int y, int z) {
-        List<TileEntity> tes = MinecraftServer.getServer().worldServerForDimension(dimension).loadedTileEntityList;
-        
-        for (TileEntity te : tes) {
-            if (!(te instanceof TileEntityAnvil tea)) continue;
-            if (tea.xCoord == x && tea.yCoord == y && tea.zCoord == z) {
-                return tea.damage;
-            }
+        if (te instanceof TileEntityAnvil tea)
+        {
+            tag.setInteger("WailaAnvilDamage", tea.damage);
         }
-        return 0;
+        return tag;
     }
 
     public static void register() {
@@ -73,5 +66,6 @@ public class HUDHandlerMITE implements IWailaDataProvider {
 
         ModuleRegistrar.instance().registerStackProvider(provider, onions.getClass());
         ModuleRegistrar.instance().registerBodyProvider(provider, BlockAnvil.class);
+        ModuleRegistrar.instance().registerNBTProvider(provider, BlockAnvil.class);
     }
 }
