@@ -295,21 +295,60 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             }
         }
 
-        if (block == cocoa && WailaConfig.showcrop.getBooleanValue())
+        if (block == sapling && WailaConfig.showcrop.getBooleanValue())
         {
-            float growthValue = ((accessor.getMetadata() >> 2) / 2.0F) * 100.0F;
+            World world2 = accessor.getWorld();
+            RaycastCollision pos = accessor.getPosition();
+            int bx = pos.block_hit_x, by = pos.block_hit_y, bz = pos.block_hit_z;
+            int rawMeta = accessor.getMetadata();
+            boolean marked = (rawMeta & 8) != 0;
+            int subtype = rawMeta & 3;
 
-            if (growthValue < 100.0)
-                currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
+            if (marked)
+            {
+                currenttip.add(LangUtil.translateG("hud.msg.sapling.stage2_3"));
+            }
+            else
+            {
+                currenttip.add(LangUtil.translateG("hud.msg.sapling.stage1_3"));
+            }
 
-            else currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.growth"), LangUtil.translateG("hud.msg.mature")));
+            if (WailaConfig.showcropdetails.getBooleanValue())
+            {
+                int lightLevel = world2.getBlockLightValue(bx, by + 1, bz);
+                if (lightLevel < 9)
+                {
+                    currenttip.add(SpecialChars.YELLOW + String.format("%s (%d/9)", LangUtil.translateG("hud.msg.crop.no_light"), lightLevel));
+                }
+
+                BiomeGenBase biome = world2.getBiomeGenForCoords(bx, bz);
+                boolean canGrow = BlockSapling.canGrowInBiome(subtype, biome);
+                if (!canGrow)
+                {
+                    currenttip.add(SpecialChars.RED + LangUtil.translateG("hud.msg.sapling.wrong_biome"));
+                }
+
+                if (subtype == 3)
+                {
+                    BlockSapling saplingBlock = (BlockSapling) block;
+                    boolean has2x2 =
+                        (saplingBlock.isSameSapling(world2, bx + 1, by, bz,     3) && saplingBlock.isSameSapling(world2, bx,     by, bz + 1, 3) && saplingBlock.isSameSapling(world2, bx + 1, by, bz + 1, 3)) ||
+                        (saplingBlock.isSameSapling(world2, bx - 1, by, bz,     3) && saplingBlock.isSameSapling(world2, bx,     by, bz + 1, 3) && saplingBlock.isSameSapling(world2, bx - 1, by, bz + 1, 3)) ||
+                        (saplingBlock.isSameSapling(world2, bx + 1, by, bz,     3) && saplingBlock.isSameSapling(world2, bx,     by, bz - 1, 3) && saplingBlock.isSameSapling(world2, bx + 1, by, bz - 1, 3)) ||
+                        (saplingBlock.isSameSapling(world2, bx - 1, by, bz,     3) && saplingBlock.isSameSapling(world2, bx,     by, bz - 1, 3) && saplingBlock.isSameSapling(world2, bx - 1, by, bz - 1, 3));
+                    if (!has2x2)
+                    {
+                        currenttip.add(SpecialChars.YELLOW + LangUtil.translateG("hud.msg.sapling.jungle_needs_2x2"));
+                    }
+                }
+            }
 
             return currenttip;
         }
 
-        if (block == netherwart && WailaConfig.showcrop.getBooleanValue())
+        if (block == cocoa && WailaConfig.showcrop.getBooleanValue())
         {
-            float growthValue = (accessor.getMetadata() / 3.0F) * 100.0F;
+            float growthValue = ((accessor.getMetadata() >> 2) / 2.0F) * 100.0F;
 
             if (growthValue < 100.0)
                 currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
@@ -473,6 +512,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
         ModuleRegistrar.instance().registerBodyProvider(provider, cocoa.getClass());
         ModuleRegistrar.instance().registerBodyProvider(provider, netherwart.getClass());
         ModuleRegistrar.instance().registerBodyProvider(provider, reed.getClass());
+        ModuleRegistrar.instance().registerBodyProvider(provider, sapling.getClass());
 
         ModuleRegistrar.instance().registerNBTProvider(provider, mobSpawner.getClass());
         ModuleRegistrar.instance().registerNBTProvider(provider, crops.getClass());

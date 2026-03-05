@@ -83,7 +83,7 @@ hud.msg.red=红色
 hud.msg.black=黑色
 
 hud.msg.growth=生长状态
-hud.msg.crop.blighted=枯萎中
+hud.msg.crop.blighted=枯萎
 hud.msg.crop.dead=枯死
 hud.msg.crop.growth_rate=生长速率
 hud.msg.crop.blight_chance=枯萎概率
@@ -95,6 +95,11 @@ hud.msg.reed.height=当前高度
 hud.msg.reed.next_growth=下一节生长进度
 hud.msg.reed.max_height=已达最大高度
 hud.msg.reed.grow_chance=每次随机刻生长概率
+hud.msg.sapling.stage1_3=第 1/3 阶段
+hud.msg.sapling.stage2_3=第 2/3 阶段
+hud.msg.sapling.wrong_biome=该生物群系无法生长
+hud.msg.sapling.jungle_needs_2x2=丛林树需要 2×2 排列
+
 hud.msg.mature=成熟
 hud.msg.off=关闭
 hud.msg.on=开启

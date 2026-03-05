@@ -94,7 +94,12 @@ hud.msg.crop.stopped=Growth Stopped
 hud.msg.reed.height=Height
 hud.msg.reed.next_growth=Next growth progress
 hud.msg.reed.max_height=Maximum height reached
-hud.msg.reed.grow_chance=Growth chance per ramdon tick
+hud.msg.reed.grow_chance=Growth chance per random tick
+hud.msg.sapling.stage1_3=Stage 1/3
+hud.msg.sapling.stage2_3=Stage 2/3
+hud.msg.sapling.wrong_biome=Cannot grow in this biome
+hud.msg.sapling.jungle_needs_2x2=Jungle tree requires 2x2 formation
+
 hud.msg.mature=Mature
 hud.msg.off=Off
 hud.msg.on=On
