@@ -41,6 +41,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
     static Block anvil = Block.anvil;
     static Block sapling = Block.sapling;
     static Block skull = Block.skull;
+    static Block reed = Block.reed;
 
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
@@ -230,13 +231,65 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             if (block == melonStem || block == pumpkinStem)
             {
                 int rawMeta = accessor.getMetadata();
-                float growthPct = (rawMeta / 7.0F) * 100.0F;
 
-                if (growthPct < 100.0F)
+                if (BlockStem.isDead(rawMeta))
+                {
+                    currenttip.add(SpecialChars.GRAY + LangUtil.translateG("hud.msg.crop.dead"));
+                    return currenttip;
+                }
+
+                int growth = BlockStem.getGrowth(rawMeta);
+                float growthPct = (growth / 7.0F) * 100.0F;
+
+                if (growth < 7)
+                {
                     currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthPct));
 
+                    if (WailaConfig.showcropdetails.getBooleanValue())
+                    {
+                        World world2 = accessor.getWorld();
+                        RaycastCollision pos = accessor.getPosition();
+                        int bx = pos.block_hit_x, by = pos.block_hit_y, bz = pos.block_hit_z;
+                        Block below = world2.getBlock(bx, by - 1, bz);
+
+                        if (below == Block.tilledField)
+                        {
+                            int farmMeta = world2.getBlockMetadata(bx, by - 1, bz);
+                            int wetness = BlockFarmland.getWetness(farmMeta);
+
+                            if (!BlockFarmland.isWaterNearby(world2, bx, by - 1, bz))
+                            {
+                                if (wetness > 0)
+                                    currenttip.add(SpecialChars.YELLOW + LangUtil.translateG("hud.msg.crop.drying_out"));
+                                else
+                                    currenttip.add(SpecialChars.YELLOW + LangUtil.translateG("hud.msg.crop.no_water"));
+                            }
+                        }
+
+                        float growthRate = ((BlockStem) block).getGrowthRate(world2, bx, by, bz);
+
+                        if (growthRate > 0.0F)
+                            currenttip.add(String.format("%s: %.2f", LangUtil.translateG("hud.msg.crop.growth_rate"), growthRate));
+                        else
+                            currenttip.add(SpecialChars.YELLOW + LangUtil.translateG("hud.msg.crop.stopped"));
+                    }
+                }
                 else
-                    currenttip.add(LangUtil.translateG("hud.msg.growth") + " : " + LangUtil.translateG("hud.msg.mature"));
+                {
+                    World world2 = accessor.getWorld();
+                    RaycastCollision pos = accessor.getPosition();
+                    int bx = pos.block_hit_x, by = pos.block_hit_y, bz = pos.block_hit_z;
+                    Block fruitBlock = (block == melonStem) ? Block.melon : Block.pumpkin;
+                    boolean hasFruit = world2.getBlockId(bx - 1, by, bz) == fruitBlock.blockID
+                            || world2.getBlockId(bx + 1, by, bz) == fruitBlock.blockID
+                            || world2.getBlockId(bx, by, bz - 1) == fruitBlock.blockID
+                            || world2.getBlockId(bx, by, bz + 1) == fruitBlock.blockID;
+
+                    if (hasFruit)
+                        currenttip.add(LangUtil.translateG("hud.msg.growth") + " : " + LangUtil.translateG("hud.msg.mature") + " \u2713");
+                    else
+                        currenttip.add(LangUtil.translateG("hud.msg.growth") + " : " + LangUtil.translateG("hud.msg.mature"));
+                }
 
                 return currenttip;
             }
@@ -262,6 +315,54 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                 currenttip.add(String.format("%s : %.0f %%", LangUtil.translateG("hud.msg.growth"), growthValue));
 
             else currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.growth"), LangUtil.translateG("hud.msg.mature")));
+
+            return currenttip;
+        }
+
+        if (block == reed && WailaConfig.showcrop.getBooleanValue())
+        {
+            World world2 = accessor.getWorld();
+            RaycastCollision pos = accessor.getPosition();
+            int bx = pos.block_hit_x, by = pos.block_hit_y, bz = pos.block_hit_z;
+
+            int height = 1;
+            int checkY = by;
+            while (world2.getBlock(bx, checkY - 1, bz) == reed)
+            {
+                ++height;
+                --checkY;
+            }
+
+            int topY = by;
+            while (world2.getBlock(bx, topY + 1, bz) == reed)
+            {
+                ++topY;
+            }
+            int topMeta = world2.getBlockMetadata(bx, topY, bz);
+            float growthPct = (topMeta / 16.0F) * 100.0F;
+
+            currenttip.add(String.format("%s: %d/3", LangUtil.translateG("hud.msg.reed.height"), height));
+            if (height < 3)
+            {
+                currenttip.add(String.format("%s: %.0f%%", LangUtil.translateG("hud.msg.reed.next_growth"), growthPct));
+
+                if (WailaConfig.showcropdetails.getBooleanValue())
+                {
+                    int lightLevel = world2.getBlockLightValue(bx, topY, bz);
+                    if (lightLevel < 15)
+                    {
+                        currenttip.add(SpecialChars.YELLOW + String.format("%s (%d/15)", LangUtil.translateG("hud.msg.crop.no_light"), lightLevel));
+                    }
+
+                    float temperature = world2.getBiomeGenForCoords(bx, bz).temperature;
+                    float growChance = Math.max(0.0F, Math.min(1.0F, temperature - 0.2F)) * 0.2F * 100.0F;
+                    currenttip.add(String.format("%s: %.0f%%", LangUtil.translateG("hud.msg.reed.grow_chance"), growChance));
+                }
+            }
+            else
+            {
+                currenttip.add(SpecialChars.GRAY + LangUtil.translateG("hud.msg.reed.max_height"));
+            }
 
             return currenttip;
         }
@@ -371,6 +472,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
         ModuleRegistrar.instance().registerBodyProvider(provider, jukebox.getClass());
         ModuleRegistrar.instance().registerBodyProvider(provider, cocoa.getClass());
         ModuleRegistrar.instance().registerBodyProvider(provider, netherwart.getClass());
+        ModuleRegistrar.instance().registerBodyProvider(provider, reed.getClass());
 
         ModuleRegistrar.instance().registerNBTProvider(provider, mobSpawner.getClass());
         ModuleRegistrar.instance().registerNBTProvider(provider, crops.getClass());

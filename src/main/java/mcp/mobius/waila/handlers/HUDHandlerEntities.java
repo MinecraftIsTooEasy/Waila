@@ -159,38 +159,14 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
         if (!(entity instanceof EntityLivestock)) return;
 
-        float food, water, freedom;
+        NBTTagCompound tag = accessor.getNBTData();
 
-        MinecraftServer server = MinecraftServer.getServer();
+        if (tag == null || !tag.hasKey("WailaFood")) return;
 
-        if (server != null)
-        {
-            Entity serverEntity = null;
-            for (World w : server.worldServers)
-            {
-                if (w != null)
-                {
-                    serverEntity = w.getEntityByID(entity.entityId);
-
-                    if (serverEntity != null) break;
-                }
-            }
-            if (!(serverEntity instanceof EntityLivestockAccessor livestock)) return;
-
-            food = livestock.getFood();
-            water = livestock.getWater();
-            freedom = livestock.getFreedom();
-        }
-        else
-        {
-            NBTTagCompound tag = accessor.getNBTData();
-
-            if (tag == null || !tag.hasKey("WailaFood")) return;
-
-            food = tag.getFloat("WailaFood");
-            water = tag.getFloat("WailaWater");
-            freedom = tag.getFloat("WailaFreedom");
-        }
+        float food = tag.getFloat("WailaFood");
+        float water = tag.getFloat("WailaWater");
+        float freedom = tag.getFloat("WailaFreedom");
+        boolean isOutdoors = !tag.hasKey("WailaIsOutdoors") || tag.getBoolean("WailaIsOutdoors");
 
         if (food < 0.05F)
         {
@@ -220,7 +196,18 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
 
         if (freedom < 0.25F)
         {
-            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.freedom.crowded"));
+            if (!isOutdoors)
+            {
+                currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.freedom.indoors"));
+            }
+            else
+            {
+                currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.freedom.crowded"));
+            }
+        }
+        else if (!isOutdoors)
+        {
+            currenttip.add(GRAY + LangUtil.translateG("hud.msg.livestock.freedom.indoors"));
         }
     }
 
@@ -523,6 +510,11 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
             tag.setFloat("WailaFood", ls.getFood());
             tag.setFloat("WailaWater", ls.getWater());
             tag.setFloat("WailaFreedom", ls.getFreedom());
+            if (entity instanceof EntityLivestock livestock)
+            {
+                tag.setBoolean("WailaIsOutdoors", livestock.isOutdoors());
+                tag.setBoolean("WailaIsCrowded", livestock.isCrowded());
+            }
         }
 
         if (ModCompat.HAS_ITFRB && ModCompat.isITFRBEvasionEntity(entity))

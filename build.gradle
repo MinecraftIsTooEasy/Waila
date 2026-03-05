@@ -98,13 +98,23 @@ tasks.named('runClient', JavaExec).configure { exec ->
     exec.setArgs(['--username', user, '--session', '0', '--width', '854', '--height', '480'])
 }
 
+// configure the maven publication
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 
-	repositories {
-	}
+    repositories {
+        maven {
+            name = "ModdedMITE"
+            url = uri("https://maven.limingzxc.top/repository/maven-releases/")
+            credentials {
+                // Read only from gradle.properties (user level, your gradle_home)
+                username = project.findProperty("nexusUsername")
+                password = project.findProperty("nexusPassword")
+            }
+        }
+    }
 }

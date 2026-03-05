@@ -83,7 +83,7 @@ hud.msg.red=红色
 hud.msg.black=黑色
 
 hud.msg.growth=生长状态
-hud.msg.crop.blighted=枯萎
+hud.msg.crop.blighted=枯萎中
 hud.msg.crop.dead=枯死
 hud.msg.crop.growth_rate=生长速率
 hud.msg.crop.blight_chance=枯萎概率
@@ -91,6 +91,10 @@ hud.msg.crop.no_light=光照不足，停止生长
 hud.msg.crop.no_water=附近无水，停止生长
 hud.msg.crop.drying_out=附近无水，即将干涸
 hud.msg.crop.stopped=停止生长
+hud.msg.reed.height=当前高度
+hud.msg.reed.next_growth=下一节生长进度
+hud.msg.reed.max_height=已达最大高度
+hud.msg.reed.grow_chance=每次随机刻生长概率
 hud.msg.mature=成熟
 hud.msg.off=关闭
 hud.msg.on=开启
@@ -220,6 +224,7 @@ hud.msg.livestock.water.thirsty=口渴
 hud.msg.livestock.water.very_thirsty=非常口渴
 hud.msg.livestock.water.desperate=喉咙冒烟
 hud.msg.livestock.freedom.crowded=过于拥挤
+hud.msg.livestock.freedom.indoors=在室内（头顶无天空）
 
 hud.msg.zombie.converting=转化倒计时：%d秒
 hud.msg.spider.web_count=蜘蛛网数量：%d
