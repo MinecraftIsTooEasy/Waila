@@ -1,0 +1,74 @@
+name: CI Build (push / PR -> build + upload artifact)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Ensure jar in fml-loom cache
+        run: |
+          set -euo pipefail
+          MITE_VER="1.6.4-MITE"
+          GRADLE_USER_HOME="${GRADLE_USER_HOME:-$HOME/.gradle}"
+          CACHE_DIR="$GRADLE_USER_HOME/caches/fml-loom/$MITE_VER"
+          TARGET_JAR="$CACHE_DIR/$MITE_VER.jar"
+
+          mkdir -p "$CACHE_DIR"
+
+          if [ -f "$TARGET_JAR" ]; then
+            echo "Found $TARGET_JAR, skipping download."
+            exit 0
+          fi
+
+          DOWNLOAD_URL="https://maven.limingzxc.top/repository/maven-releases/com/mojang/minecraft/$MITE_VER/minecraft-$MITE_VER.jar"
+
+          echo "Downloading $DOWNLOAD_URL ..."
+          # download to temp file then move into place
+          curl -fSL "$DOWNLOAD_URL" -o "$TARGET_JAR.tmp"
+          mv "$TARGET_JAR.tmp" "$TARGET_JAR"
+          echo "Saved $TARGET_JAR"
+
+      - name: Build with Gradle
+        run: ./gradlew clean build --no-daemon
+
+      - name: Find built JAR
+        id: find
+        run: |
+          set -e
+          ARTIFACTS=$(ls build/libs/*.jar 2>/dev/null || true)
+          if [ -z "$ARTIFACTS" ]; then
+            echo "No jar found in build/libs/"
+            exit 1
+          fi
+          # output all matching paths (newline-separated)
+          echo "$ARTIFACTS" | tr ' ' '\n' > artifact_paths.txt
+          echo "artifact_list<<EOF" >> $GITHUB_OUTPUT
+          cat artifact_paths.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ github.sha }}
+          path: build/libs/*.jar
