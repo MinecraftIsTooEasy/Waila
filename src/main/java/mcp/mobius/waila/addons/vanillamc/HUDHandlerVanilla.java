@@ -18,36 +18,12 @@ import mcp.mobius.waila.cbcore.LangUtil;
 
 public class HUDHandlerVanilla implements IWailaDataProvider {
 
-    static Block mobSpawner = Block.mobSpawner;
-    static Block crops = Block.crops;
-    static Block melonStem = Block.melonStem;
-    static Block pumpkinStem = Block.pumpkinStem;
-    static Block carrot = Block.carrot;
-    static Block potato = Block.potato;
-    static Block onions = Block.onions;
-    static Block lever = Block.lever;
-    static Block repeaterIdle = Block.redstoneRepeaterIdle;
-    static Block repeaterActv = Block.redstoneRepeaterActive;
-    static Block comparatorIdl = Block.redstoneComparatorIdle;
-    static Block comparatorAct = Block.redstoneComparatorActive;
-    static Block redstone = Block.redstoneWire;
-    static Block jukebox = Block.jukebox;
-    static Block cocoa = Block.cocoaPlant;
-    static Block netherwart = Block.netherStalk;
-    static Block silverfish = Block.silverfish;
-    static Block leave = Block.leaves;
-    static Block log = Block.wood;
-    static Block quartz = Block.blockNetherQuartz;
-    static Block anvil = Block.anvil;
-    static Block sapling = Block.sapling;
-    static Block skull = Block.skull;
-    static Block reed = Block.reed;
-
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
         Block block = accessor.getBlock();
+        if (block == null) return null;
 
-        if (block == silverfish && config.getConfig("vanilla.silverfish")) {
+        if (block == Block.silverfish && config.getConfig("vanilla.silverfish")) {
             int metadata = accessor.getMetadata();
             return switch (metadata) {
                 case 0 -> new ItemStack(Block.stone);
@@ -57,7 +33,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             };
         }
 
-        if (block == redstone) {
+        if (block == Block.redstoneWire) {
             return new ItemStack(Item.redstone);
         }
 
@@ -65,31 +41,31 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             return new ItemStack(Block.oreRedstone);
         }
 
-        if (block == crops) {
+        if (block == Block.crops) {
             return new ItemStack(Item.wheat);
         }
 
-        if (block == carrot) {
+        if (block == Block.carrot) {
             return new ItemStack(Item.carrot);
         }
 
-        if (block == potato) {
+        if (block == Block.potato) {
             return new ItemStack(Item.potato);
         }
 
-        if (block == onions) {
+        if (block == Block.onions) {
             return new ItemStack(Item.onion);
         }
 
-        if ((block == leave) && (accessor.getMetadata() > 3)) {
+        if ((block == Block.leaves) && (accessor.getMetadata() > 3)) {
             return new ItemStack(block, 1, accessor.getMetadata() - 4);
         }
 
-        if (block == log) {
+        if (block == Block.wood) {
             return new ItemStack(block, 1, accessor.getMetadata() % 4);
         }
 
-        if ((block == quartz) && (accessor.getMetadata() > 2)) {
+        if ((block == Block.blockNetherQuartz) && (accessor.getMetadata() > 2)) {
             return new ItemStack(block, 1, 2);
         }
 
@@ -113,25 +89,26 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
     public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
             IWailaConfigHandler config) {
         Block block = accessor.getBlock();
+        if (block == null) return currenttip;
 
         /* Mob spawner handler */
-        if (block == mobSpawner && accessor.getTileEntity() instanceof TileEntityMobSpawner
+        if (block == Block.mobSpawner && accessor.getTileEntity() instanceof TileEntityMobSpawner
                 && config.getConfig("vanilla.spawntype")) {
             String name = currenttip.get(0);
             String mobname = ((TileEntityMobSpawner) accessor.getTileEntity()).getSpawnerLogic().getEntityNameToSpawn();
             currenttip.set(0, String.format("%s (%s)", name, mobname));
         }
 
-        if (block == redstone) {
+        if (block == Block.redstoneWire) {
             String name = currenttip.get(0).replaceFirst(String.format(" %s", accessor.getMetadata()), "");
             currenttip.set(0, name);
         }
 
-        if (block == melonStem) {
+        if (block == Block.melonStem) {
             currenttip.set(0, SpecialChars.WHITE + I18n.getString("tile.melon_stem.name"));
         }
 
-        if (block == pumpkinStem) {
+        if (block == Block.pumpkinStem) {
             currenttip.set(0, SpecialChars.WHITE + I18n.getString("tile.pumpkin_stem.name"));
         }
 
@@ -142,6 +119,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 
         Block block = accessor.getBlock();
+        if (block == null) return currenttip;
 
         String skull2;
 
@@ -228,7 +206,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                 return currenttip;
             }
 
-            if (block == melonStem || block == pumpkinStem)
+            if (block == Block.melonStem || block == Block.pumpkinStem)
             {
                 int rawMeta = accessor.getMetadata();
 
@@ -279,7 +257,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                     World world2 = accessor.getWorld();
                     RaycastCollision pos = accessor.getPosition();
                     int bx = pos.block_hit_x, by = pos.block_hit_y, bz = pos.block_hit_z;
-                    Block fruitBlock = (block == melonStem) ? Block.melon : Block.pumpkin;
+                    Block fruitBlock = (block == Block.melonStem) ? Block.melon : Block.pumpkin;
                     boolean hasFruit = world2.getBlockId(bx - 1, by, bz) == fruitBlock.blockID
                             || world2.getBlockId(bx + 1, by, bz) == fruitBlock.blockID
                             || world2.getBlockId(bx, by, bz - 1) == fruitBlock.blockID
@@ -295,7 +273,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             }
         }
 
-        if (block == sapling && WailaConfig.showcrop.getBooleanValue())
+        if (block == Block.sapling && WailaConfig.showcrop.getBooleanValue())
         {
             World world2 = accessor.getWorld();
             RaycastCollision pos = accessor.getPosition();
@@ -346,7 +324,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             return currenttip;
         }
 
-        if (block == cocoa && WailaConfig.showcrop.getBooleanValue())
+        if (block == Block.cocoaPlant && WailaConfig.showcrop.getBooleanValue())
         {
             float growthValue = ((accessor.getMetadata() >> 2) / 2.0F) * 100.0F;
 
@@ -358,7 +336,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             return currenttip;
         }
 
-        if (block == reed && WailaConfig.showcrop.getBooleanValue())
+        if (block == Block.reed && WailaConfig.showcrop.getBooleanValue())
         {
             World world2 = accessor.getWorld();
             RaycastCollision pos = accessor.getPosition();
@@ -366,14 +344,14 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
 
             int height = 1;
             int checkY = by;
-            while (world2.getBlock(bx, checkY - 1, bz) == reed)
+            while (world2.getBlock(bx, checkY - 1, bz) == Block.reed)
             {
                 ++height;
                 --checkY;
             }
 
             int topY = by;
-            while (world2.getBlock(bx, topY + 1, bz) == reed)
+            while (world2.getBlock(bx, topY + 1, bz) == Block.reed)
             {
                 ++topY;
             }
@@ -406,7 +384,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             return currenttip;
         }
 
-        if (WailaConfig.leverstate.getBooleanValue()) if (block == lever)
+        if (WailaConfig.leverstate.getBooleanValue()) if (block == Block.lever)
         {
             String redstoneOn = (accessor.getMetadata() & 8) == 0 ? LangUtil.translateG("hud.msg.off") : LangUtil.translateG("hud.msg.on");
             currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.state"), redstoneOn));
@@ -414,7 +392,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             return currenttip;
         }
 
-        if (WailaConfig.repeater.getBooleanValue()) if ((block == repeaterIdle) || (block == repeaterActv))
+        if (WailaConfig.repeater.getBooleanValue()) if ((block == Block.redstoneRepeaterIdle) || (block == Block.redstoneRepeaterActive))
         {
             int tick = (accessor.getMetadata() >> 2) + 1;
 
@@ -425,7 +403,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             return currenttip;
         }
 
-        if (WailaConfig.comparator.getBooleanValue()) if ((block == comparatorIdl) || (block == comparatorAct))
+        if (WailaConfig.comparator.getBooleanValue()) if ((block == Block.redstoneComparatorIdle) || (block == Block.redstoneComparatorActive))
         {
             String mode = ((accessor.getMetadata() >> 2) & 1) == 0 ? LangUtil.translateG("hud.msg.comparator") : LangUtil.translateG("hud.msg.substractor");
             currenttip.add("Mode : " + mode);
@@ -433,19 +411,19 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
             return currenttip;
         }
 
-        if (WailaConfig.redstone.getBooleanValue()) if (block == redstone)
+        if (WailaConfig.redstone.getBooleanValue()) if (block == Block.redstoneWire)
         {
             currenttip.add(String.format("%s : %s", LangUtil.translateG("hud.msg.power"), accessor.getMetadata()));
 
             return currenttip;
         }
 
-        if (WailaConfig.spawnertype.getBooleanValue() && block == mobSpawner && (accessor.getTileEntity() instanceof TileEntityMobSpawner))
+        if (WailaConfig.spawnertype.getBooleanValue() && block == Block.mobSpawner && (accessor.getTileEntity() instanceof TileEntityMobSpawner))
         {
             currenttip.add(String.format("Type: %s", ((TileEntityMobSpawner) accessor.getTileEntity()).getSpawnerLogic().getEntityNameToSpawn()));
         }
 
-        if (WailaConfig.skulltype.getBooleanValue() && block == skull && (accessor.getTileEntity() instanceof TileEntitySkull) && Waila.instance.serverPresent)
+        if (WailaConfig.skulltype.getBooleanValue() && block == Block.skull && (accessor.getTileEntity() instanceof TileEntitySkull) && Waila.instance.serverPresent)
         {
             NBTTagCompound tag = accessor.getNBTData();
             byte type = tag.getByte("SkullType");
@@ -458,7 +436,7 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
                 case 3 -> String.format(StatCollector.translateToLocal("item.skull.player.name"), tag.getString("ExtraType"));
                 case 4 -> StatCollector.translateToLocal("item.skull.creeper.name");
                 case 5 -> StatCollector.translateToLocal("item.skull.infused.name");
-                default -> skull.unlocalizedName;
+                default -> Block.skull.unlocalizedName;
             };
             currenttip.add(skull2);
         }
@@ -482,52 +460,10 @@ public class HUDHandlerVanilla implements IWailaDataProvider {
     public static void register() {
         IWailaDataProvider provider = new HUDHandlerVanilla();
 
-        ModuleRegistrar.instance().registerStackProvider(provider, silverfish.getClass());
-        ModuleRegistrar.instance().registerStackProvider(provider, redstone.getClass());
-        ModuleRegistrar.instance().registerStackProvider(provider, BlockRedstoneOre.class);
-        ModuleRegistrar.instance().registerStackProvider(provider, crops.getClass());
-        ModuleRegistrar.instance().registerStackProvider(provider, leave.getClass());
-        ModuleRegistrar.instance().registerStackProvider(provider, log.getClass());
-        ModuleRegistrar.instance().registerStackProvider(provider, quartz.getClass());
-        ModuleRegistrar.instance().registerStackProvider(provider, anvil.getClass());
-        ModuleRegistrar.instance().registerStackProvider(provider, sapling.getClass());
-        ModuleRegistrar.instance().registerStackProvider(provider, BlockSlab.class);
-
-        ModuleRegistrar.instance().registerHeadProvider(provider, mobSpawner.getClass());
-        ModuleRegistrar.instance().registerHeadProvider(provider, melonStem.getClass());
-        ModuleRegistrar.instance().registerHeadProvider(provider, pumpkinStem.getClass());
-
-        ModuleRegistrar.instance().registerBodyProvider(provider, crops.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, melonStem.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, pumpkinStem.getClass());
-
-        ModuleRegistrar.instance().registerBodyProvider(provider, lever.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, repeaterIdle.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, repeaterActv.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, comparatorIdl.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, comparatorAct.getClass());
-        ModuleRegistrar.instance().registerHeadProvider(provider, redstone.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, redstone.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, jukebox.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, cocoa.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, netherwart.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, reed.getClass());
-        ModuleRegistrar.instance().registerBodyProvider(provider, sapling.getClass());
-
-        ModuleRegistrar.instance().registerNBTProvider(provider, mobSpawner.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, crops.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, melonStem.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, pumpkinStem.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, lever.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, repeaterIdle.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, repeaterActv.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, comparatorIdl.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, comparatorAct.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, redstone.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, jukebox.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, cocoa.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, netherwart.getClass());
-        ModuleRegistrar.instance().registerNBTProvider(provider, silverfish.getClass());
+        ModuleRegistrar.instance().registerStackProvider(provider, Block.class);
+        ModuleRegistrar.instance().registerHeadProvider(provider, Block.class);
+        ModuleRegistrar.instance().registerBodyProvider(provider, Block.class);
+        ModuleRegistrar.instance().registerNBTProvider(provider, Block.class);
     }
 
 }

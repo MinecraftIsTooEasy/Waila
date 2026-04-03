@@ -20,6 +20,7 @@
     "accessor.EntityZombieAccessor",
     "accessor.EntityArachnidAccessor",
     "accessor.EntityPhaseSpiderAccessor",
+    "StringTranslateSafeMixin",
     "ItemAnvilBlockMixin",
     "PlayerControllerMPMixin",
     "NetServerHandlerMixin"

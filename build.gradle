@@ -56,7 +56,7 @@ dependencies {
 def fmlResolvedFile = configurations.fml.files.iterator().next()
 
 loom {
-	accessWidenerPath = file("src/main/resources/waila.accessWidener")
+	accessWidenerPath = file("src/main/resources/waila.accesswidener")
 	mergedMinecraftJar()
 	mods {
 		"Waila" {

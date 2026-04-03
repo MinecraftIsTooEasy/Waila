@@ -11,13 +11,11 @@ import java.util.List;
 
 public class HUDHandlerMITE implements IWailaDataProvider {
 
-    static Block onions = Block.onions;
-
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
         Block block = accessor.getBlock();
 
-        if (block == onions) {
+        if (block == Block.onions) {
             return new ItemStack(Item.onion);
         }
         return null;
@@ -64,7 +62,7 @@ public class HUDHandlerMITE implements IWailaDataProvider {
     public static void register() {
         IWailaDataProvider provider = new HUDHandlerMITE();
 
-        ModuleRegistrar.instance().registerStackProvider(provider, onions.getClass());
+        ModuleRegistrar.instance().registerStackProvider(provider, Block.class);
         ModuleRegistrar.instance().registerBodyProvider(provider, BlockAnvil.class);
         ModuleRegistrar.instance().registerNBTProvider(provider, BlockAnvil.class);
     }
