@@ -50,7 +50,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     public static final ConfigInteger posY = new ConfigInteger("screen.label.posY", 1, 0, 100, true, "");
     public static final ConfigInteger alpha = new ConfigInteger("screen.label.alpha", 80, 0, 100, true, "");
     public static final ConfigDouble scale = new ConfigDouble("screen.label.scale", 1.0, 0.2, 2.0, true, "");
-    public static final ConfigDouble lerpfactor = new ConfigDouble("screen.label.lerpfactor", 0.3, 0.1, 1.0, true, "");
+    public static final ConfigDouble lerpfactor = new ConfigDouble("screen.label.lerpfactor", 0.3, 0.01, 1.0, true, "");
     public static final ConfigBoolean icon = new ConfigBoolean("screen.label.icon", true);
     public static final ConfigEnum<EnumTooltipTheme> theme = new ConfigEnum<>("screen.label.TooltipTheme", EnumTooltipTheme.Waila);
     public static final ConfigColor bgcolor = new ConfigColor("screen.label.bgcolor", "#FF100010");

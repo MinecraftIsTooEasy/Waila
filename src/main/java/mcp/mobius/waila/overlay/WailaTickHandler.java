@@ -5,6 +5,7 @@ import static mcp.mobius.waila.api.SpecialChars.ITALIC;
 import java.util.List;
 
 import moddedmite.waila.config.WailaConfig;
+import net.minecraft.EntityItem;
 import net.minecraft.Minecraft;
 import net.minecraft.Entity;
 import net.minecraft.EntityPlayer;
@@ -153,7 +154,11 @@ public class WailaTickHandler {
                     currenttip.addAll(currenttipBody);
                     currenttip.addAll(currenttipTail);
 
-                    this.tooltip = new Tooltip(currenttip, false);
+                    if (targetEnt instanceof EntityItem entityStack) {
+                        this.tooltip = new Tooltip(currenttip, WailaConfig.icon.getBooleanValue(), entityStack.getEntityItem());
+                    } else {
+                        this.tooltip = new Tooltip(currenttip, false);
+                    }
                 }
             }
         }

@@ -52,8 +52,7 @@ public class HUDHandlerMITE implements IWailaDataProvider {
 
     @Override
     public NBTTagCompound getNBTData(ServerPlayer player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z) {
-        if (te instanceof TileEntityAnvil tea)
-        {
+        if (te instanceof TileEntityAnvil tea) {
             tag.setInteger("WailaAnvilDamage", tea.damage);
         }
         return tag;

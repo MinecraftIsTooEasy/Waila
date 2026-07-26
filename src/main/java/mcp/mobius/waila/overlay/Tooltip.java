@@ -219,8 +219,12 @@ public class Tooltip {
         h = Math.max(paddingH, this.getRenderableTotalHeight() + 8);
 
         Dimension size = DisplayUtil.displaySize();
-        x = ((int) (size.width / OverlayConfig.scale) - w - 1) * pos.x / 100;
-        y = ((int) (size.height / OverlayConfig.scale) - h - 1) * pos.y / 100;
+        int screenW = (int) (size.width / OverlayConfig.scale) - 1;
+        int screenH = (int) (size.height / OverlayConfig.scale) - 1;
+        
+        int centerX = screenW * pos.x / 100;
+        x = centerX - w / 2;
+        y = screenH * pos.y / 100;
 
         if (BossStatus.bossName != null && BossStatus.statusBarLength > 0 && Minecraft.inDevMode() && Minecraft.getMinecraft().gameSettings.gui_mode == 0) {
             y += 20;

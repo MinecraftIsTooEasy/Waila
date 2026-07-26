@@ -5,25 +5,26 @@
   "target": "DEFAULT",
   "minVersion": "0.8.3",
   "client": [
-    "client.MinecraftMixin",
     "client.GuiInGameMixin",
+    "client.MinecraftMixin",
     "client.NetClientHandlerMixin"
   ],
   "mixins": [
-    "compat.EntityLichShadowAccessor",
-    "compat.EntitySpiritAccessor",
+    "EntityItemMixin",
+    "ItemAnvilBlockMixin",
+    "NetServerHandlerMixin",
+    "PlayerControllerMPMixin",
+    "StringTranslateSafeMixin",
+    "accessor.EntityArachnidAccessor",
+    "accessor.EntityLivestockAccessor",
+    "accessor.EntityPhaseSpiderAccessor",
+    "accessor.EntityZombieAccessor",
     "compat.EntityLichAccessor",
+    "compat.EntityLichShadowAccessor",
     "compat.EntitySkeletonBossAccessor",
     "compat.EntitySkeletonShadowAccessor",
-    "compat.EntityUltimateAnnihilationSkeletonAccessor",
-    "accessor.EntityLivestockAccessor",
-    "accessor.EntityZombieAccessor",
-    "accessor.EntityArachnidAccessor",
-    "accessor.EntityPhaseSpiderAccessor",
-    "StringTranslateSafeMixin",
-    "ItemAnvilBlockMixin",
-    "PlayerControllerMPMixin",
-    "NetServerHandlerMixin"
+    "compat.EntitySpiritAccessor",
+    "compat.EntityUltimateAnnihilationSkeletonAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

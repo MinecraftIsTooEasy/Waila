@@ -23,12 +23,8 @@ public class OverlayRenderer {
     protected static boolean hasColorMaterial;
     protected static int boundTexIndex;
     private static int lastProgressLine = 0;
-    private static int targetX = 0, targetY = 0, targetW = 0, targetH = 0;
-    private static float currentX = 0, currentY = 0, currentW = 0, currentH = 0;
-    private static float LERP_FACTOR = (float) WailaConfig.lerpfactor.getDoubleValue();
+	private static float currentX = 0, currentY = 0, currentW = 0, currentH = 0;
     private static float lastBreakProgress = 0f;
-    private static float currentAlpha = 0f;
-    private static final float FADE_SPEED = 0.1f;
 
     public OverlayRenderer() {
     }
@@ -57,18 +53,13 @@ public class OverlayRenderer {
                 && WailaConfig.showEnts.getBooleanValue()) {
             renderOverlay(tooltip);
         }
+        tooltip.w = -200;
+        tooltip.h = -200;
     }
 
     public void renderOverlay(Tooltip tooltip) {
         GL11.glPushMatrix();
         saveGLState();
-
-        handleLerp(tooltip);
-        if (currentAlpha <= 0f) {
-            loadGLState();
-            GL11.glPopMatrix();
-            return;
-        }
 
         GL11.glScalef(OverlayConfig.scale, OverlayConfig.scale, 1.0f);
 
@@ -84,9 +75,9 @@ public class OverlayRenderer {
         float configAlpha = WailaConfig.alpha.getIntegerValue() / 100.0f;
 
         if (theme != EnumTooltipTheme.Custom) {
-            tooltipBGColor = Color4f.fromColor(theme.backgroundColor, currentAlpha * configAlpha);
-            tooltipFrameColorTop = Color4f.fromColor(theme.frameColorTop, currentAlpha * configAlpha);
-            tooltipFrameColorBottom = Color4f.fromColor(theme.frameColorBottom, currentAlpha * configAlpha);
+            tooltipBGColor = Color4f.fromColor(theme.backgroundColor, configAlpha);
+            tooltipFrameColorTop = Color4f.fromColor(theme.frameColorTop, configAlpha);
+            tooltipFrameColorBottom = Color4f.fromColor(theme.frameColorBottom, configAlpha);
         }
 
         drawTooltipBox(
@@ -144,53 +135,45 @@ public class OverlayRenderer {
         GL11.glPopAttrib();
     }
 
-    public static void handleLerp(Tooltip tooltip) {
-        if (tooltip != null) {
-            currentAlpha = DisplayUtil.lerp(currentAlpha, 1f, FADE_SPEED);
-            if (currentAlpha > 0.99f) {
-                currentAlpha = 1f;
-            }
-        } else {
-            currentAlpha = DisplayUtil.lerp(currentAlpha, 0f, FADE_SPEED);
-            if (currentAlpha < 0.01f) {
-                currentAlpha = 0f;
-            }
-        }
-    }
-
     public static void drawTooltipBox(int x, int y, int w, int h, int bg, int grad1, int grad2, boolean center, boolean frame, boolean gradient) {
-        targetX = x;
-        targetY = y;
-        targetW = w;
-        targetH = h;
+        float lerpFactor = (float) WailaConfig.lerpfactor.getDoubleValue();
 
-        currentX = DisplayUtil.lerp(currentX, targetX, LERP_FACTOR);
-        currentY = DisplayUtil.lerp(currentY, targetY, LERP_FACTOR);
-        currentW = DisplayUtil.lerp(currentW, targetW, LERP_FACTOR);
-        currentH = DisplayUtil.lerp(currentH, targetH, LERP_FACTOR);
+        int centerX = x + w / 2;
 
-        int drawX = (int) currentX;
+        if (currentW == 0 && currentH == 0) {
+            currentX = centerX;
+            currentY = y;
+            currentW = 0;
+            currentH = 0;
+        }
+
+        currentX = DisplayUtil.lerp(currentX, centerX, lerpFactor);
+        currentY = DisplayUtil.lerp(currentY, y, lerpFactor);
+        currentW = DisplayUtil.lerp(currentW, w, lerpFactor);
+        currentH = DisplayUtil.lerp(currentH, h, lerpFactor);
+        
+        int drawX = (int) (currentX - currentW / 2);
         int drawY = (int) currentY;
         int drawW = (int) currentW;
         int drawH = (int) currentH;
 
         EnumTooltipTheme theme = WailaConfig.theme.getEnumValue();
         if (theme.center) {
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, drawH - 1, bg, bg); // center
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, drawH - 1, bg, bg);
         }
         if (theme.frame) {
-            DisplayUtil.drawGradientRect(drawX + 1, drawY, drawW - 1, 1, bg, bg); // top frame
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH, drawW - 1, 1, bg, bg); // bottom frame
-            DisplayUtil.drawGradientRect(drawX, drawY + 1, 1, drawH - 1, bg, bg); // left frame
-            DisplayUtil.drawGradientRect(drawX + drawW, drawY + 1, 1, drawH - 1, bg, bg); // right frame
+            DisplayUtil.drawGradientRect(drawX + 1, drawY, drawW - 1, 1, bg, bg);
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH, drawW - 1, 1, bg, bg);
+            DisplayUtil.drawGradientRect(drawX, drawY + 1, 1, drawH - 1, bg, bg);
+            DisplayUtil.drawGradientRect(drawX + drawW, drawY + 1, 1, drawH - 1, bg, bg);
         }
         if (theme.gradient) {
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, 1, grad1, grad1); // top gradient
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH - 1, drawW - 1, 1, grad2, grad2); // bottom gradient
-            DisplayUtil.drawGradientRect(drawX + 1, drawY + 2, 1, drawH - 3, grad1, grad2); // left gradient
-            DisplayUtil.drawGradientRect(drawX + drawW - 1, drawY + 2, 1, drawH - 3, grad1, grad2); // right gradient
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 1, drawW - 1, 1, grad1, grad1);
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + drawH - 1, drawW - 1, 1, grad2, grad2);
+            DisplayUtil.drawGradientRect(drawX + 1, drawY + 2, 1, drawH - 3, grad1, grad2);
+            DisplayUtil.drawGradientRect(drawX + drawW - 1, drawY + 2, 1, drawH - 3, grad1, grad2);
         }
-        if (theme.coarseGradient) {//WIP
+        if (theme.coarseGradient) {
             DisplayUtil.drawGradientRect(drawX, drawY + 2, 3, drawH - 3, grad1, grad2);
             DisplayUtil.drawGradientRect(drawX + drawW - 3, drawY + 2, 3, drawH - 3, grad1, grad2);
             DisplayUtil.drawGradientRect(drawX, drawY, drawW, 3, grad1, grad1);

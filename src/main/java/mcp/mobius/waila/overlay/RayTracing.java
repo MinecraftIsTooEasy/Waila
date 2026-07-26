@@ -69,7 +69,12 @@ public class RayTracing {
     }
 
     public ItemStack getTargetStack() {
-        return this.target != null && this.target.isBlock() ? this.getIdentifierStack() : null;
+        if (this.target == null) return null;
+        if (this.target.isBlock()) return this.getIdentifierStack();
+        if (this.target.isEntity() && this.target.getEntityHit() instanceof EntityItem entityItem) {
+            return entityItem.getEntityItem();
+        }
+        return null;
     }
 
     public Entity getTargetEntity() {

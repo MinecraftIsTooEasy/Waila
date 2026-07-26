@@ -1,14 +1,9 @@
 package mcp.mobius.waila;
 
-import java.awt.event.KeyEvent;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Map;
-
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.gui.screen.ModsScreen;
 import mcp.mobius.waila.client.ProxyClient;
 import mcp.mobius.waila.network.Packet0x00ServerPing;
+import mcp.mobius.waila.server.ProxyServer;
 import moddedmite.waila.api.PacketDispatcher;
 import moddedmite.waila.config.WailaConfig;
 import moddedmite.waila.event.WailaEventFish;
@@ -23,17 +18,8 @@ import net.xiaoyu233.fml.reload.event.MITEEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
-
-import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import mcp.mobius.waila.commands.CommandDumpHandlers;
-import mcp.mobius.waila.network.NetworkHandler;
 import mcp.mobius.waila.network.WailaPacketHandler;
 import mcp.mobius.waila.overlay.OverlayConfig;
-import mcp.mobius.waila.overlay.WailaTickHandler;
-import mcp.mobius.waila.server.ProxyServer;
-import mcp.mobius.waila.utils.ModIdentification;
 
 public class Waila implements ModInitializer {
     public static Waila instance;

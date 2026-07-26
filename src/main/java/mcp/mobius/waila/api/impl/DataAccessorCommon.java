@@ -49,7 +49,7 @@ public class DataAccessorCommon implements IWailaCommonAccessor, IWailaDataAcces
             if (this.block != null) {
                 this.blockID = this.block.blockID;
                 this.blockUnlocalizedName = this.block.getUnlocalizedName();
-                this.blockResource = this.getMod() + ":" + this.getBlockUnlocalizedName();
+                this.blockResource = this.getMod().toLowerCase() + ":" + this.getBlockUnlocalizedName().substring(5);;
             }
 
         } else if (this.mop != null && this.mop.isEntity()) {
