@@ -45,6 +45,10 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     public static final ConfigBoolean comparator = new ConfigBoolean("option.vanilla.comparator", true);
     public static final ConfigBoolean leverstate = new ConfigBoolean("option.vanilla.leverstate", true);
     public static final ConfigBoolean skulltype = new ConfigBoolean("option.vanilla.skulltype", true);
+    public static final ConfigBoolean position = new ConfigBoolean("option.vanilla.position", false);
+    public static final ConfigBoolean distance = new ConfigBoolean("option.vanilla.distance", false);
+    public static final ConfigBoolean direction = new ConfigBoolean("option.vanilla.direction", false);
+    public static final ConfigBoolean vsblock = new ConfigBoolean("option.vanilla.vsblock", false);
 
     public static final ConfigInteger posX = new ConfigInteger("screen.label.posX", 50, 0, 100, true, "");
     public static final ConfigInteger posY = new ConfigInteger("screen.label.posY", 1, 0, 100, true, "");
@@ -78,7 +82,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
     static {
         general = List.of(showTooltip, showMods, showEnts, metadata, liquid, shiftblock, shiftents, devMoveDownTooltip);
-        features = List.of(showhp, showatk, showarmor, showcrop, showcropdetails, showanimal, showlivestock, showzombieconversion, showspiderweb, showphaseevasions, spawnertype, repeater, redstone, comparator, leverstate, skulltype);
+        features = List.of(showhp, showatk, showarmor, showcrop, showcropdetails, showanimal, showlivestock, showzombieconversion, showspiderweb, showphaseevasions, spawnertype, repeater, redstone, comparator, leverstate, skulltype, position, distance, direction, vsblock);
         screen = List.of(posX, posY, alpha, scale, lerpfactor, icon, theme, bgcolor, gradient1, gradient2, fontcolor);
         keybinding = List.of(wailaconfig, wailadisplay, keyliquid, recipe, usage);
         ArrayList<ConfigBase> values = new ArrayList<>();

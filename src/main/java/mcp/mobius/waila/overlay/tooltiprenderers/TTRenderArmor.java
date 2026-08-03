@@ -18,7 +18,7 @@ public class TTRenderArmor implements IWailaTooltipRenderer {
     @Override
     public Dimension getSize(String[] params, IWailaCommonAccessor accessor) {
         float maxarmors = Float.parseFloat(params[0]);
-        float maxarmor = Float.parseFloat(params[2]);
+        float maxarmor = Float.parseFloat(params[2]) / 2.0f;
 
         int armorsPerLine = (int) (Math.min(maxarmors, Math.ceil(maxarmor)));
         int nlines = (int) (Math.ceil(maxarmor / maxarmors));
@@ -29,8 +29,8 @@ public class TTRenderArmor implements IWailaTooltipRenderer {
     @Override
     public void draw(String[] params, IWailaCommonAccessor accessor) {
         float maxarmors = Float.parseFloat(params[0]);
-        float armor = Float.parseFloat(params[1]);
-        float maxarmor = Float.parseFloat(params[2]);
+        float armor = Float.parseFloat(params[1]) / 2.0f;
+        float maxarmor = Float.parseFloat(params[2]) / 2.0f;
 
         int nhearts = MathHelper.ceiling_float_int(maxarmor);
         int heartsPerLine = (int) (Math.min(maxarmors, Math.ceil(maxarmor)));
