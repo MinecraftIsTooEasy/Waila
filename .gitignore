@@ -31,3 +31,10 @@ bin/
 /.idea
 /build
 /run
+
+### 移植参考（本地，不提交）
+/.refjar
+/Jade
+/FishModLoader
+/.pi-subagents
+/.plan-notes
