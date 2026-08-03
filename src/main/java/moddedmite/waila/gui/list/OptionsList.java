@@ -22,6 +22,7 @@ public class OptionsList extends WidgetBase {
     private final SmoothChasingValue scroll = new SmoothChasingValue().withSpeed(ScreenTheme.SCROLL_SPEED);
     public @Nullable TitleEntry currentTitle;
     private @Nullable Entry hovered;
+    private @Nullable Entry activeEntry;
     private final ScrollBarV scrollBar;
     private @Nullable Entry defaultParent;
     private long lastNano;
@@ -82,6 +83,11 @@ public class OptionsList extends WidgetBase {
             }
         }
         this.forceScroll(Math.min(this.scroll.getTarget(), this.maxScroll()));
+        // activeEntry 可能指向已被过滤掉、不再渲染的行；若不清空，
+        // 那个不可见的行仍会继续接收键盘输入并改写配置。
+        if (this.activeEntry != null && !this.visibleEntries.contains(this.activeEntry)) {
+            this.activeEntry = null;
+        }
     }
 
     private void walkChildren(Entry entry, Set<Entry> retained) {
@@ -211,14 +217,18 @@ public class OptionsList extends WidgetBase {
             return false;
         }
         Entry entry = this.getEntryAt(mouseX, mouseY);
+        if (this.activeEntry != null && this.activeEntry != entry) {
+            this.activeEntry.onMouseReleased(mouseX, mouseY, button);
+        }
+        this.activeEntry = entry;
         return entry != null && entry.onMouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     protected void onMouseReleasedImpl(int mouseX, int mouseY, int button) {
         this.scrollBar.mouseReleased();
-        if (this.hovered != null) {
-            this.hovered.onMouseReleased(mouseX, mouseY, button);
+        if (this.activeEntry != null) {
+            this.activeEntry.onMouseReleased(mouseX, mouseY, button);
         }
     }
 
@@ -235,7 +245,7 @@ public class OptionsList extends WidgetBase {
 
     @Override
     protected boolean onCharTypedImpl(char chr, int keyCode) {
-        return this.hovered != null && this.hovered.onCharTyped(chr, keyCode);
+        return this.activeEntry != null && this.activeEntry.onCharTyped(chr, keyCode);
     }
 
     @Override

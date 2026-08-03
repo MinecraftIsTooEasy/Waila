@@ -34,12 +34,22 @@ public final class ScreenTheme {
     /** 子项相对父项的额外缩进。 */
     public static final int INDENT_STEP = 12;
 
-    /** 值控件区宽度：控件 x = 内容区右边界 - VALUE_AREA_WIDTH + offsetX。 */
-    public static final int VALUE_AREA_WIDTH = 110;
+    /**
+     * 值控件区宽度：控件 x = 内容区右边界 - VALUE_AREA_WIDTH + offsetX。
+     * <p>
+     * = WIDGET_WIDTH(100) + RESET_BUTTON_SIZE(20) + RESET_BUTTON_GAP(4)，
+     * 保证值控件与右侧 reset 按钮不重叠。重叠会让 reset 吃掉控件的点击（
+     * OptionEntry.onMouseClicked 先查 reset）。
+     */
+    public static final int VALUE_AREA_WIDTH = 124;
     /** 标准控件宽度。 */
     public static final int WIDGET_WIDTH = 100;
     /** 标准控件高度。 */
     public static final int WIDGET_HEIGHT = 20;
+    /** 单项 reset 按钮的边长（ManyLib ResetButton 写死为 20x20）。 */
+    public static final int RESET_BUTTON_SIZE = 20;
+    /** 值控件右边界与 reset 按钮之间的间隙。 */
+    public static final int RESET_BUTTON_GAP = 4;
 
     /** 底部按钮宽度。 */
     public static final int BUTTON_WIDTH = 90;

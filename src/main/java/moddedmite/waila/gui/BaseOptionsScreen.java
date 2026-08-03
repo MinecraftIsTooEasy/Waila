@@ -84,11 +84,14 @@ public abstract class BaseOptionsScreen extends LayeredScreen {
             this.searchBox.setFocused(true);
             return true;
         }
+        if (super.charTyped(chr, keyCode)) {
+            return true;
+        }
         if (!this.searchBox.isFocused() && Character.isLetterOrDigit(chr)) {
             this.searchBox.setFocused(true);
             return this.searchBox.onCharTyped(chr, keyCode);
         }
-        return super.charTyped(chr, keyCode);
+        return false;
     }
 
     @Override
