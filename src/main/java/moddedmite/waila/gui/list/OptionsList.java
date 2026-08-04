@@ -120,6 +120,26 @@ public class OptionsList extends WidgetBase {
         }
     }
 
+    public void scrollToEntry(Entry entry) {
+        int index = this.visibleEntries.indexOf(entry);
+        if (index >= 0) {
+            this.setScroll(index * ScreenTheme.ROW_HEIGHT);
+        }
+    }
+
+    public List<Entry> allEntries() {
+        return new ArrayList<>(this.allEntries);
+    }
+
+    public @Nullable OptionEntry findInvalidEntry() {
+        for (Entry entry : this.allEntries) {
+            if (entry instanceof OptionEntry optionEntry && !optionEntry.isValidValue()) {
+                return optionEntry;
+            }
+        }
+        return null;
+    }
+
     public @Nullable Entry getEntryAt(int mouseX, int mouseY) {
         if (!this.isMouseOver(mouseX, mouseY)) {
             return null;
@@ -154,6 +174,7 @@ public class OptionsList extends WidgetBase {
         RenderUtils.startScissor(this.x, this.y, this.width, this.height);
         for (int i = first; i < end; i++) {
             Entry entry = this.visibleEntries.get(i);
+            entry.refreshDisabledState();
             int rowY = this.rowTop(i);
             entry.setGeometry(contentX, rowY, contentWidth);
             if (entry == this.hovered) {

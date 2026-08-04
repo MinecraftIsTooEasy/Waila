@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ResetButton;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 import moddedmite.waila.gui.util.ScreenTheme;
 
 import java.util.List;
@@ -22,6 +23,11 @@ public abstract class OptionEntry extends Entry {
         if (comment != null) {
             this.addDescription(comment);
         }
+        String extraMessage = StringUtils.getTranslatedOrFallback(
+                "config.name." + config.getName() + ".extra_msg", null);
+        if (extraMessage != null && !extraMessage.isEmpty()) {
+            this.addKeyword(extraMessage);
+        }
         this.resetButton = new ResetButton(0, 0, () -> !this.disabled && config.isModified(), button -> {
             config.resetToDefault();
             this.onValueReset();
@@ -32,7 +38,19 @@ public abstract class OptionEntry extends Entry {
 
     protected abstract void renderValueWidget(int mouseX, int mouseY, DrawContext context, int valueX, int valueY);
 
+    public ConfigBase<?> getConfig() {
+        return this.config;
+    }
+
+    public boolean isValidValue() {
+        return true;
+    }
+
+    public void syncFromConfig() {
+    }
+
     protected void onValueReset() {
+        this.syncFromConfig();
     }
 
     protected List<? extends WidgetBase> valueWidgets() {

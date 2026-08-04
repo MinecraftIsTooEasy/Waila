@@ -261,3 +261,6 @@ config.enum.screen.label.TooltipTheme.Custom=Custom
 gui.waila.keybind.none=NONE
 gui.waila.keybind.conflict=Key conflict
 gui.waila.reset=Reset to default
+gui.waila.invalid_value_cant_save=Invalid value, cannot save
+config.comment.choice.showhidewaila=Press ${KEY_DISPLAY} to quickly toggle the overlay
+config.comment.choice.showliquids=Press ${KEY_LIQUID} to quickly toggle liquid display

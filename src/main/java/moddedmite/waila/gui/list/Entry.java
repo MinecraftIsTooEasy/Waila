@@ -3,6 +3,7 @@ package moddedmite.waila.gui.list;
 import fi.dy.masa.malilib.gui.DrawContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import moddedmite.waila.gui.util.ConfigVariables;
 import moddedmite.waila.gui.util.ScreenTheme;
 import moddedmite.waila.gui.util.TextUtil;
 
@@ -10,6 +11,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BooleanSupplier;
 
 /** A lightweight, continuously repositioned row in the options list. */
 public class Entry {
@@ -18,6 +20,7 @@ public class Entry {
     protected final List<String> searchKeywords = new ArrayList<>();
     protected final List<String> description = new ArrayList<>();
     protected @Nullable Entry parent;
+    protected @Nullable BooleanSupplier disableWhen;
     protected final List<Entry> children = new ArrayList<>();
     protected int indent;
     protected boolean disabled;
@@ -39,11 +42,26 @@ public class Entry {
             this.parent.children.remove(this);
         }
         this.parent = parent;
-        this.indent = parent == null ? 0 : parent.indent + ScreenTheme.INDENT_STEP;
+        this.indent = parent instanceof OptionEntry ? parent.indent + ScreenTheme.INDENT_STEP : 0;
         if (parent != null && !parent.children.contains(this)) {
             parent.children.add(this);
         }
         return this;
+    }
+
+    public Entry disableWhen(BooleanSupplier disableWhen) {
+        this.disableWhen = disableWhen;
+        this.refreshDisabledState();
+        return this;
+    }
+
+    public void refreshDisabledState() {
+        if (this.disableWhen != null) {
+            boolean shouldDisable = this.disableWhen.getAsBoolean();
+            if (this.disabled != shouldDisable) {
+                this.setDisabled(shouldDisable);
+            }
+        }
     }
 
     public Entry root() {
@@ -86,6 +104,9 @@ public class Entry {
     }
 
     public void setDisabled(boolean disabled) {
+        if (this.disabled == disabled) {
+            return;
+        }
         this.disabled = disabled;
         this.title = disabled ? ScreenTheme.TXT_MUTED + TextUtil.stripColor(this.rawTitle) : this.rawTitle;
     }
@@ -105,7 +126,11 @@ public class Entry {
     public void renderTooltip(int mouseX, int mouseY, DrawContext context) {
         int left = this.contentX + this.getTextX();
         if (!this.description.isEmpty() && mouseX >= left && mouseX < left + this.getTextWidth()) {
-            RenderUtils.drawHoverText(mouseX, mouseY, this.description, context);
+            List<String> resolved = new ArrayList<>(this.description.size());
+            for (String line : this.description) {
+                resolved.add(ConfigVariables.replaceKeybindVariables(line));
+            }
+            RenderUtils.drawHoverText(mouseX, mouseY, resolved, context);
         }
     }
 

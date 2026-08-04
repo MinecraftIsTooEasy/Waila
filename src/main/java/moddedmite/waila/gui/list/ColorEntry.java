@@ -12,9 +12,14 @@ import net.minecraft.GuiScreen;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 /** ARGB text input and clickable color-board row. */
 public class ColorEntry extends OptionEntry {
+    private static final Pattern COLOR_PATTERN = Pattern.compile("(?:0x|#)([a-fA-F0-9]{1,8})");
+    private static final int TEXT_COLOR_NORMAL = 0xE0E0E0;
+    private static final int TEXT_COLOR_INVALID = 0xFF5555;
+
     private final ConfigColor colorConfig;
     private final WidgetTextFieldColor textField;
     private final ColorBoard colorBoard;
@@ -35,6 +40,7 @@ public class ColorEntry extends OptionEntry {
 
     @Override
     protected void renderValueWidget(int mouseX, int mouseY, DrawContext context, int valueX, int valueY) {
+        this.textField.setTextColor(this.isValidValue() ? TEXT_COLOR_NORMAL : TEXT_COLOR_INVALID);
         this.textField.xPos = valueX;
         this.textField.yPos = valueY + 1;
         this.textField.render(context, mouseX, mouseY, 0);
@@ -78,7 +84,9 @@ public class ColorEntry extends OptionEntry {
                 return true;
             }
             boolean handled = this.textField.charTyped(chr, keyCode);
-            if (handled) {
+            // ConfigColor.setValueFromString 解析失败时会退回 0（全透明黑），
+            // 半成品文本（如刚输入的 "#"）会把配置写坏，所以只在文本合法时写入。
+            if (handled && this.isValidValue()) {
                 this.colorConfig.setValueFromString(this.textField.getText());
             }
             return handled;
@@ -95,13 +103,24 @@ public class ColorEntry extends OptionEntry {
         super.renderTooltip(mouseX, mouseY, context);
     }
 
-    private void syncFromConfig() {
-        this.textField.setText(this.colorConfig.getColorString());
+    @Override
+    public boolean isValidValue() {
+        String value = this.textField.getText();
+        if (!COLOR_PATTERN.matcher(value).matches()) {
+            return false;
+        }
+        try {
+            Long.parseLong(value.substring(value.startsWith("#") ? 1 : 2), 16);
+            return true;
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
     }
 
     @Override
-    protected void onValueReset() {
-        this.syncFromConfig();
+    public void syncFromConfig() {
+        this.wasFocused = false;
+        this.textField.setText(this.colorConfig.getColorString());
     }
 
     @Override

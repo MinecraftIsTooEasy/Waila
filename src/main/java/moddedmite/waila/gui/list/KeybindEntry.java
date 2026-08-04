@@ -96,7 +96,7 @@ public class KeybindEntry extends OptionEntry {
     }
 
     @Override
-    protected void onValueReset() {
+    public void syncFromConfig() {
         this.editing = false;
         // 重置会改按键，强制下一帧重算冲突。
         this.lastCheckedKeys = null;

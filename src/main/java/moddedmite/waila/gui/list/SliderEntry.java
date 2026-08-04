@@ -20,6 +20,9 @@ import java.util.List;
 /** Numeric row switchable between slider and text input. */
 public class SliderEntry<T extends ConfigBase<T> & IConfigSlideable & IConfigDisplay & IStringRepresentable>
         extends OptionEntry {
+    private static final int TEXT_COLOR_NORMAL = 0xE0E0E0;
+    private static final int TEXT_COLOR_INVALID = 0xFF5555;
+
     private final T typedConfig;
     private final SliderButton<T> slider;
     private final WidgetTextField textField;
@@ -58,12 +61,17 @@ public class SliderEntry<T extends ConfigBase<T> & IConfigSlideable & IConfigDis
     }
 
     private void applyAndNormalizeText() {
-        this.typedConfig.setValueFromString(this.textField.getText());
+        // 文本非法（空 / "-" / "5."）时不写配置，直接把控件文本拉回配置现值，
+        // 避免 parseXxxWithDefault 把原值冲成默认值。
+        if (this.isValidValue()) {
+            this.typedConfig.setValueFromString(this.textField.getText());
+        }
         this.textField.setText(this.typedConfig.getStringValue());
     }
 
     @Override
     protected void renderValueWidget(int mouseX, int mouseY, DrawContext context, int valueX, int valueY) {
+        this.textField.setTextColor(this.isValidValue() ? TEXT_COLOR_NORMAL : TEXT_COLOR_INVALID);
         if (this.typedConfig.shouldUseSlider()) {
             this.slider.setPosition(valueX, valueY);
             this.slider.render(mouseX, mouseY, false, context);
@@ -117,7 +125,10 @@ public class SliderEntry<T extends ConfigBase<T> & IConfigSlideable & IConfigDis
                 return true;
             }
             boolean handled = this.textField.charTyped(chr, keyCode);
-            if (handled) {
+            // 只在文本合法时写配置。ManyLib 的 setValueFromString 走
+            // parseIntWithDefault/parseDoubleWithDefault，解析失败会静默落到
+            // 默认值 —— 用户清空输入框准备重新输入时会把原值冲掉。
+            if (handled && this.isValidValue()) {
                 this.typedConfig.setValueFromString(this.textField.getText());
             }
             return handled;
@@ -126,10 +137,33 @@ public class SliderEntry<T extends ConfigBase<T> & IConfigSlideable & IConfigDis
     }
 
     @Override
-    protected void onValueReset() {
+    public boolean isValidValue() {
+        if (this.typedConfig.shouldUseSlider()) {
+            return true;
+        }
+        String value = this.textField.getText();
+        if (value.isEmpty() || value.equals("-") || value.endsWith(".")) {
+            return false;
+        }
+        try {
+            if (this.typedConfig instanceof ConfigDouble) {
+                Double.parseDouble(value);
+            } else {
+                Integer.parseInt(value);
+            }
+            return true;
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
+    }
+
+    @Override
+    public void syncFromConfig() {
+        this.wasFocused = false;
         this.slider.updateString();
         this.slider.updateSliderRatioByConfig();
         this.textField.setText(this.typedConfig.getStringValue());
+        this.rebuildModeButton();
     }
 
     @Override

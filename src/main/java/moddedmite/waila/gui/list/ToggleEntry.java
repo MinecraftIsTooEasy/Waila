@@ -38,7 +38,7 @@ public class ToggleEntry extends OptionEntry {
     }
 
     @Override
-    protected void onValueReset() {
+    public void syncFromConfig() {
         this.button.updateString();
     }
 
