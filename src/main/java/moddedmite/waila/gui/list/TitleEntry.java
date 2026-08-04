@@ -9,6 +9,7 @@ import moddedmite.waila.gui.util.TextUtil;
 /** A centered section heading, shared by the list and navigation bar. */
 public class TitleEntry extends Entry {
     public final String key;
+    private int titleColor = ScreenTheme.TITLE_TEXT;
 
     public TitleEntry(String key) {
         this(key, StringUtils.getTranslatedOrFallback("config.tab." + key, key));
@@ -37,7 +38,12 @@ public class TitleEntry extends Entry {
     public void render(int mouseX, int mouseY, boolean hovered, DrawContext context) {
         int y = this.contentY + (this.getHeight() - TextUtil.lineHeight()) / 2;
         context.drawTextWithShadow(RenderUtils.fontRenderer(), this.title,
-                this.contentX + this.getTextX(), y, ScreenTheme.TITLE_TEXT);
+                this.contentX + this.getTextX(), y, this.titleColor);
+    }
+
+    public TitleEntry titleColor(int color) {
+        this.titleColor = color;
+        return this;
     }
 
     public String getNavigationTitle() {

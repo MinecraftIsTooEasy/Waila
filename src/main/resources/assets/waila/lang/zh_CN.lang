@@ -260,3 +260,12 @@ gui.waila.reset=重置为默认值
 gui.waila.invalid_value_cant_save=存在非法值，无法保存
 config.comment.choice.showhidewaila=按 ${KEY_DISPLAY} 可快速开关
 config.comment.choice.showliquids=按 ${KEY_LIQUID} 可快速切换
+
+gui.waila.configuration=Waila 配置
+gui.waila.configuration.desc1=查看并调整 Waila 的显示与功能设置
+gui.waila.configuration.desc2=
+gui.waila.home.settings=Waila 设置
+config.tab.waila.danger_zone=危险区域
+config.name.waila.reset_all=重置全部设置
+gui.waila.reset_all.button=重置
+gui.waila.reset_all.question=确定要把 Waila 全部设置重置为默认值吗？

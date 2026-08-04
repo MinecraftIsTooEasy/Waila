@@ -11,7 +11,7 @@ import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.overlay.OverlayConfig;
 import moddedmite.waila.handlers.emi.EMIHandler;
-import moddedmite.waila.gui.WailaSettingsScreen;
+import moddedmite.waila.gui.WailaHomeScreen;
 import net.minecraft.GuiScreen;
 import net.minecraft.Minecraft;
 import net.xiaoyu233.fml.FishModLoader;
@@ -135,7 +135,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
 
     @Override
     public GuiScreen getConfigScreen(GuiScreen parentScreen) {
-        return new WailaSettingsScreen(parentScreen, "gui.waila.waila_settings");
+        return new WailaHomeScreen(parentScreen);
     }
 
     @Override

@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.gui.layer.Layer;
 import fi.dy.masa.malilib.gui.screen.LayeredScreen;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import mcp.mobius.waila.overlay.OverlayConfig;
 import moddedmite.waila.gui.list.Entry;
 import moddedmite.waila.gui.list.OptionEntry;
 import moddedmite.waila.gui.list.OptionsList;
@@ -116,6 +117,10 @@ public abstract class BaseOptionsScreen extends LayeredScreen {
                 }
             }
         }
+        // OverlayConfig 是缓存，只在 save() 里刷新。但「重置全部设置」会中途把默认值
+        // 写进缓存，此时若再取消，配置已回滚而缓存仍是默认值 —— HUD 的 scale 与
+        // fontcolor 会一直错到下次保存。回滚后必须重新同步缓存。
+        OverlayConfig.updateColors();
     }
 
     protected void saveAndClose() {
