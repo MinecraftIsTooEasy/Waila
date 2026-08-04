@@ -24,6 +24,7 @@ public class OverlayRenderer {
     protected static int boundTexIndex;
     private static int lastProgressLine = 0;
 	private static float currentX = 0, currentY = 0, currentW = 0, currentH = 0;
+    private static boolean snapNext = false;
     private static float lastBreakProgress = 0f;
 
     public OverlayRenderer() {
@@ -135,12 +136,38 @@ public class OverlayRenderer {
         GL11.glPopAttrib();
     }
 
+    /**
+     * 让下一帧直接跳到目标位置，不做平滑插值。
+     * 配置界面的位置调整模式用它，否则框会以 lerpfactor 的速度追鼠标，定位手感很差。
+     */
+    public static void snapAnimation() {
+        snapNext = true;
+    }
+
+    /**
+     * 把平滑插值恢复到「从未绘制」状态，使下一次绘制走正常的渐入动画。
+     * 配置界面关闭时调用，避免游戏内 HUD 从预览残留的位置飘进来。
+     */
+    public static void resetAnimation() {
+        currentX = 0;
+        currentY = 0;
+        currentW = 0;
+        currentH = 0;
+        snapNext = false;
+    }
+
     public static void drawTooltipBox(int x, int y, int w, int h, int bg, int grad1, int grad2, boolean center, boolean frame, boolean gradient) {
         float lerpFactor = (float) WailaConfig.lerpfactor.getDoubleValue();
 
         int centerX = x + w / 2;
 
-        if (currentW == 0 && currentH == 0) {
+        if (snapNext) {
+            snapNext = false;
+            currentX = centerX;
+            currentY = y;
+            currentW = w;
+            currentH = h;
+        } else if (currentW == 0 && currentH == 0) {
             currentX = centerX;
             currentY = y;
             currentW = 0;

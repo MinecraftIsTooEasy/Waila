@@ -237,6 +237,22 @@ public class Tooltip {
         ty = (h - this.getRenderableTotalHeight()) / 2 + 1;
     }
 
+    public int getBoxX() {
+        return this.x;
+    }
+
+    public int getBoxY() {
+        return this.y;
+    }
+
+    public int getBoxWidth() {
+        return this.w;
+    }
+
+    public int getBoxHeight() {
+        return this.h;
+    }
+
     public void draw() {
         for (Renderable r : this.elements) r.draw(accessor, x + offsetX, y + ty);
     }

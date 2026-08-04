@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /** Settings screen containing all four Waila config sections. */
-public class WailaSettingsScreen extends BaseOptionsScreen {
+public class WailaSettingsScreen extends PreviewOptionsScreen {
     private static final int RESET_ALL_FLAG = 0x5741494C;
 
     public WailaSettingsScreen(@Nullable GuiScreen parent, String titleKey) {
@@ -46,7 +46,10 @@ public class WailaSettingsScreen extends BaseOptionsScreen {
         Map<ConfigBase<?>, Entry> entries = new IdentityHashMap<>();
         this.addSection(options, entries, "waila.general", WailaConfig.general);
         this.addSection(options, entries, "waila.features", WailaConfig.features);
-        this.addSection(options, entries, "waila.screen", WailaConfig.screen);
+        options.title("waila.screen");
+        options.add(new ButtonEntry(StringUtils.translate("config.name.waila.overlay_pos"),
+                StringUtils.translate("gui.waila.overlay_pos.adjust"), button -> this.startAdjustingPosition()));
+        this.addConfigs(options, entries, WailaConfig.screen);
         this.addSection(options, entries, "waila.keybinding", WailaConfig.keybinding);
 
         this.linkBooleanChildren(entries, WailaConfig.showTooltip,
@@ -111,6 +114,11 @@ public class WailaSettingsScreen extends BaseOptionsScreen {
     private void addSection(OptionsList options, Map<ConfigBase<?>, Entry> entries,
                             String title, List<? extends ConfigBase> configs) {
         options.title(title);
+        this.addConfigs(options, entries, configs);
+    }
+
+    private void addConfigs(OptionsList options, Map<ConfigBase<?>, Entry> entries,
+                            List<? extends ConfigBase> configs) {
         for (ConfigBase config : configs) {
             Entry entry = this.createEntry(config);
             if (entry != null) {

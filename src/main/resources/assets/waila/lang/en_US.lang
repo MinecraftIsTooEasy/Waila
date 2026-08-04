@@ -273,3 +273,11 @@ config.tab.waila.danger_zone=Danger Zone
 config.name.waila.reset_all=Reset All Settings
 gui.waila.reset_all.button=Reset
 gui.waila.reset_all.question=Reset all Waila settings to their defaults?
+
+gui.waila.preview.on=Preview: On
+gui.waila.preview.off=Preview: Off
+gui.waila.preview.line1=Block Name
+gui.waila.preview.line2=Block information preview
+config.name.waila.overlay_pos=Overlay Position
+gui.waila.overlay_pos.adjust=Adjust Position
+gui.waila.overlay_pos.exit=Click the center area or press Esc to exit
