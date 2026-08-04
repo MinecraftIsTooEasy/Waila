@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.FontRenderer;
 import net.minecraft.GuiScreen;
+import net.xiaoyu233.fml.FishModLoader;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -60,7 +61,7 @@ public class WailaHomeScreen extends LayeredScreen {
 
         // Return to normal GUI scale relative to the 2x title before drawing small text.
         GL11.glScalef(0.5F, 0.5F, 1.0F);
-        font.drawString(StringUtils.getModVersionString(MOD_ID), font.getStringWidth(title) * 2 + 6, 4,
+        font.drawString(getModVersionString(), font.getStringWidth(title) * 2 + 6, 4,
                 0xFFAAAAAA);
         String desc1 = StringUtils.translate("gui.waila.configuration.desc1");
         String desc2 = StringUtils.translate("gui.waila.configuration.desc2");
@@ -69,6 +70,12 @@ public class WailaHomeScreen extends LayeredScreen {
             this.drawFancyTitle(font, desc2, 32, mouseX - left, mouseY - top);
         }
         GL11.glPopMatrix();
+    }
+
+    private static String getModVersionString() {
+        return FishModLoader.getModContainer(MOD_ID)
+                .map(container -> container.getMetadata().getVersion().getFriendlyString())
+                .orElse("?");
     }
 
     private void updateAnimationTime() {

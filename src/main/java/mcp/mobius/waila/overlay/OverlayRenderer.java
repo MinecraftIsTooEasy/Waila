@@ -43,7 +43,7 @@ public class OverlayRenderer {
         if (RayTracing.instance().getTarget() == null) return;
         if (rc == null) return;
 
-        Tooltip tooltip = WailaTickHandler.instance().tooltip;
+        Tooltip tooltip = WailaTickHandler.instance().getTooltip();
         if (tooltip == null) return;// not ready
 
         if (rc.isBlock()

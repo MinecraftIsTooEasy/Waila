@@ -8,14 +8,13 @@ import fi.dy.masa.malilib.util.StringUtils;
 import mcp.mobius.waila.overlay.OverlayConfig;
 import mcp.mobius.waila.overlay.OverlayRenderer;
 import mcp.mobius.waila.overlay.Tooltip;
+import mcp.mobius.waila.overlay.WailaTickHandler;
 import moddedmite.waila.config.WailaConfig;
-import net.minecraft.EnumChatFormatting;
 import net.minecraft.GuiScreen;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 /** Option screen base with a live Waila overlay preview and position adjustment mode. */
@@ -58,6 +57,12 @@ public abstract class PreviewOptionsScreen extends BaseOptionsScreen {
         if (this.previewEnabled || this.adjustingPosition) {
             OverlayConfig.updateColors();
             Tooltip tooltip = this.buildPreviewTooltip();
+            if (tooltip == null && this.adjustingPosition) {
+                tooltip = this.buildNoTargetTooltip();
+            }
+            if (tooltip == null) {
+                return;
+            }
             if (this.adjustingPosition) {
                 // drawTooltipBox 的平滑插值是 static，调整位置时必须每帧吸附，
                 // 否则框会以 lerpfactor 的速度滞后于鼠标，定位无法对准。
@@ -76,12 +81,12 @@ public abstract class PreviewOptionsScreen extends BaseOptionsScreen {
         }
     }
 
-    private Tooltip buildPreviewTooltip() {
-        List<String> lines = new ArrayList<>(3);
-        lines.add(StringUtils.translate("gui.waila.preview.line1"));
-        lines.add(StringUtils.translate("gui.waila.preview.line2"));
-        lines.add(EnumChatFormatting.BLUE.toString() + EnumChatFormatting.ITALIC + "Minecraft");
-        return new Tooltip(lines, false);
+    private @Nullable Tooltip buildPreviewTooltip() {
+        return WailaTickHandler.instance().getTooltip();
+    }
+
+    private Tooltip buildNoTargetTooltip() {
+        return new Tooltip(List.of(StringUtils.translate("gui.waila.preview.no_target")), false);
     }
 
     private void drawAdjustmentGuides(Tooltip tooltip) {
@@ -204,7 +209,8 @@ public abstract class PreviewOptionsScreen extends BaseOptionsScreen {
 
     private Tooltip freshTooltip() {
         OverlayConfig.updateColors();
-        return this.buildPreviewTooltip();
+        Tooltip tooltip = this.buildPreviewTooltip();
+        return tooltip != null ? tooltip : this.buildNoTargetTooltip();
     }
 
     private void applyPosition(int posXPercent, int posYPercent, int boxW, int boxH) {

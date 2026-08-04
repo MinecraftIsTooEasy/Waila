@@ -15,6 +15,8 @@ import net.minecraft.World;
 
 import org.lwjgl.input.Keyboard;
 
+import javax.annotation.Nullable;
+
 import mcp.mobius.waila.api.impl.DataAccessorCommon;
 import mcp.mobius.waila.api.impl.MetaDataProvider;
 import mcp.mobius.waila.api.impl.TipList;
@@ -23,7 +25,7 @@ import mcp.mobius.waila.utils.Constants;
 
 public class WailaTickHandler {
 
-    public Tooltip tooltip = null;
+    private @Nullable Tooltip tooltip;
     public MetaDataProvider handler = new MetaDataProvider();
     private final Minecraft mc = Minecraft.getMinecraft();
 
@@ -37,6 +39,7 @@ public class WailaTickHandler {
     }
 
     public void tickClient() {
+        this.tooltip = null;
 
 //        if (!Keyboard.isKeyDown(KeyEvent.key_show.getKeyCode())
 //                && !ConfigHandler.instance().getConfig(Configuration.CATEGORY_GENERAL, Constants.CFG_WAILA_MODE, false)
@@ -48,8 +51,8 @@ public class WailaTickHandler {
         World world = mc.theWorld;
         EntityPlayer player = mc.thePlayer;
         if (world != null && player != null) {
-            RaycastCollision target = RayTracing.instance().getTarget();
             RayTracing.instance().fire();
+            RaycastCollision target = RayTracing.instance().getTarget();
 
             List<String> currenttip;
             List<String> currenttipHead;
@@ -162,6 +165,9 @@ public class WailaTickHandler {
                 }
             }
         }
+    }
 
+    public @Nullable Tooltip getTooltip() {
+        return this.tooltip;
     }
 }

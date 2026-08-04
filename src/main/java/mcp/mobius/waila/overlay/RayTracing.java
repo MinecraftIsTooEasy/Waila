@@ -27,6 +27,7 @@ public class RayTracing {
     private RaycastCollision target = null;// referring to mc.objectMouseOver is unreliable
 
     public void fire() {
+        this.target = null;
         if (mc.objectMouseOver != null
 //                &&
 //                target.isEntity()

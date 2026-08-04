@@ -272,8 +272,7 @@ gui.waila.reset_all.question=确定要把 Waila 全部设置重置为默认值�
 
 gui.waila.preview.on=预览：开
 gui.waila.preview.off=预览：关
-gui.waila.preview.line1=方块名称
-gui.waila.preview.line2=方块信息预览
+gui.waila.preview.no_target=准星当前未指向方块或生物
 config.name.waila.overlay_pos=提示框位置
 gui.waila.overlay_pos.adjust=调整位置
 gui.waila.overlay_pos.exit=点击中心区域或按 Esc 退出
