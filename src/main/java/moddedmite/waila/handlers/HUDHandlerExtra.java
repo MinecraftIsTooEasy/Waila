@@ -41,17 +41,19 @@ public class HUDHandlerExtra implements IWailaDataProvider {
 		DecimalFormat distanceFormat = new DecimalFormat("0.0");
 		String distance = distanceFormat.format(cast.raycast.getOrigin().distanceTo(pos));
 
-		StringBuilder sb = new StringBuilder(SpecialChars.GRAY);
-		if (WailaConfig.position.getBooleanValue()) {
-			sb.append(pos.xCoord).append(' ').append(cast.block_hit_y).append(' ').append(cast.block_hit_z);
+		if (WailaConfig.position.getBooleanValue() || WailaConfig.distance.getBooleanValue() || WailaConfig.direction.getBooleanValue()) {
+			StringBuilder sb = new StringBuilder(SpecialChars.GRAY);
+			if (WailaConfig.position.getBooleanValue()) {
+				sb.append(pos.xCoord).append(' ').append(pos.yCoord).append(' ').append(pos.zCoord);
+			}
+			if (WailaConfig.distance.getBooleanValue()) {
+				sb.append(" [").append(distance).append(']');
+			}
+			if (WailaConfig.direction.getBooleanValue()) {
+				sb.append(" {").append(accessor.getSide()).append('}');
+			}
+			currenttip.add(sb.toString());
 		}
-		if (WailaConfig.distance.getBooleanValue()) {
-			sb.append(" [").append(distance).append(']');
-		}
-		if (WailaConfig.direction.getBooleanValue()) {
-			sb.append(" {").append(accessor.getSide()).append('}');
-		}
-		currenttip.add(sb.toString());
 		
 		if (WailaConfig.vsblock.getBooleanValue() && cast.isBlock()) {
 			float hardness = accessor.getWorld().getBlockHardness(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());

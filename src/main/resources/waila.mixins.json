@@ -10,7 +10,6 @@
     "client.NetClientHandlerMixin"
   ],
   "mixins": [
-    "EntityItemMixin",
     "ItemAnvilBlockMixin",
     "NetServerHandlerMixin",
     "PlayerControllerMPMixin",

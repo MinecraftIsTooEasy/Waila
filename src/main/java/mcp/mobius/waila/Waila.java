@@ -23,7 +23,9 @@ import mcp.mobius.waila.overlay.OverlayConfig;
 
 public class Waila implements ModInitializer {
     public static Waila instance;
-    public static Logger log = LogManager.getLogger("Waila");
+    public static String NAME = "Waila";
+    public static String ID = NAME.toLowerCase();
+    public static Logger log = LogManager.getLogger(NAME);
     public boolean serverPresent = false;
     private WailaPacketHandler wailaPacketHandler;
     public static ProxyClient proxy;
@@ -60,7 +62,7 @@ public class Waila implements ModInitializer {
     }
 
     public void onInitialize() {
-        ModResourceManager.addResourcePackDomain("waila");
+        ModResourceManager.addResourcePackDomain(NAME.toLowerCase());
         MITEEvents.MITE_EVENT_BUS.register(new WailaEventFish());
         WailaConfig.getInstance().load();
         ConfigManager.getInstance().registerConfig(WailaConfig.getInstance());

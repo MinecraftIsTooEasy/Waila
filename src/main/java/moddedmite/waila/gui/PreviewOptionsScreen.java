@@ -64,8 +64,6 @@ public abstract class PreviewOptionsScreen extends BaseOptionsScreen {
                 return;
             }
             if (this.adjustingPosition) {
-                // drawTooltipBox 的平滑插值是 static，调整位置时必须每帧吸附，
-                // 否则框会以 lerpfactor 的速度滞后于鼠标，定位无法对准。
                 OverlayRenderer.snapAnimation();
                 this.drawAdjustmentGuides(tooltip);
             }

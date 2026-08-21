@@ -19,7 +19,7 @@ import java.util.Map;
 public class WailaPacketHandler {
     public void handleCustomPacket(Packet250CustomPayload packet) {
 
-        if (packet.channel.equals("Waila"))
+        if (packet.channel.equals(Waila.NAME))
         {
             try
             {
@@ -47,7 +47,7 @@ public class WailaPacketHandler {
 
     public void handleCustomPacket(NetServerHandler handler, Packet250CustomPayload packet) {
 
-        if (packet.channel.equals("Waila"))
+        if (packet.channel.equals(Waila.NAME))
         {
             try {
                 byte header = getHeader(packet);

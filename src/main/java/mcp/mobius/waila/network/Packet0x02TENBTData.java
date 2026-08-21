@@ -2,6 +2,7 @@ package mcp.mobius.waila.network;
 
 import java.io.*;
 
+import mcp.mobius.waila.Waila;
 import net.minecraft.*;
 
 public class Packet0x02TENBTData {
@@ -26,7 +27,7 @@ public class Packet0x02TENBTData {
             writeNBTTagCompound(tag, outputStream);
         } catch (IOException e) {
         }
-        packet.channel = "Waila";
+        packet.channel = Waila.NAME;
         packet.data = bos.toByteArray();
         packet.length = bos.size();
         return packet;

@@ -118,7 +118,7 @@ public class Entry {
     }
 
     public void render(int mouseX, int mouseY, boolean hovered, DrawContext context) {
-        int y = this.contentY + (this.getHeight() - TextUtil.lineHeight()) / 2 + this.getTextY();
+        int y = this.contentY + (this.getHeight() - TextUtil.lineHeight()) / 2;
         int color = this.disabled ? ScreenTheme.LABEL_TEXT_DISABLED : ScreenTheme.LABEL_TEXT;
         context.drawTextWithShadow(RenderUtils.fontRenderer(), this.title, this.contentX + this.getTextX(), y, color);
     }

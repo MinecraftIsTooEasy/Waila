@@ -9,6 +9,10 @@ pluginManagement {
             name = 'ModdedMITE'
             url = 'https://maven.limingzxc.top/repository/maven-public/'
         }
+        maven {
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven"
+        }
         mavenCentral()
         gradlePluginPortal()
     }

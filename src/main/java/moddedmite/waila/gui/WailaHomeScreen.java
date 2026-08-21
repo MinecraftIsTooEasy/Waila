@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.layer.Layer;
 import fi.dy.masa.malilib.gui.screen.LayeredScreen;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import mcp.mobius.waila.Waila;
 import net.minecraft.FontRenderer;
 import net.minecraft.GuiScreen;
 import net.xiaoyu233.fml.FishModLoader;
@@ -15,7 +16,6 @@ import javax.annotation.Nullable;
 
 /** Jade-style landing page for the Waila configuration screens. */
 public class WailaHomeScreen extends LayeredScreen {
-    private static final String MOD_ID = "waila";
     private static final int HOME_BUTTON_WIDTH = 120;
     private static final int HOME_BUTTON_HEIGHT = 20;
     private static final int TITLE_LEFT_OFFSET = 105;
@@ -52,14 +52,13 @@ public class WailaHomeScreen extends LayeredScreen {
         FontRenderer font = RenderUtils.fontRenderer();
         int left = this.width / 2 - TITLE_LEFT_OFFSET;
         int top = this.height / 4 - TITLE_TOP_OFFSET;
-        String title = "Waila";
+        String title = Waila.NAME;
 
         GL11.glPushMatrix();
         GL11.glTranslatef(left, top, 0.0F);
         GL11.glScalef(2.0F, 2.0F, 1.0F);
         font.drawString(title, 0, 0, 0xFFFFFFFF);
 
-        // Return to normal GUI scale relative to the 2x title before drawing small text.
         GL11.glScalef(0.5F, 0.5F, 1.0F);
         font.drawString(getModVersionString(), font.getStringWidth(title) * 2 + 6, 4,
                 0xFFAAAAAA);
@@ -73,7 +72,7 @@ public class WailaHomeScreen extends LayeredScreen {
     }
 
     private static String getModVersionString() {
-        return FishModLoader.getModContainer(MOD_ID)
+        return FishModLoader.getModContainer(Waila.ID)
                 .map(container -> container.getMetadata().getVersion().getFriendlyString())
                 .orElse("?");
     }

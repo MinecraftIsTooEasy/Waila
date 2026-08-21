@@ -30,7 +30,6 @@ public class KeybindEntry extends OptionEntry {
     private final GuiScreen screen;
     private final Consumer<Supplier<Layer>> layerOpener;
     private final List<String> conflicts = new ArrayList<>();
-    /** 上次做过冲突检测时的按键组合，用于避免逐帧全量遍历所有 mod 的 keybind。 */
     private @Nullable List<Integer> lastCheckedKeys;
     private boolean editing;
 
@@ -120,8 +119,6 @@ public class KeybindEntry extends OptionEntry {
     }
 
     private void updateDisplay() {
-        // 冲突检测要遍历全部 mod 的全部 keybind，开销不小，
-        // 只在本行按键真的变了时重算。
         List<Integer> keys = this.keybind.getKeys();
         if (this.lastCheckedKeys == null || !this.lastCheckedKeys.equals(keys)) {
             this.lastCheckedKeys = new ArrayList<>(keys);

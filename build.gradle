@@ -27,6 +27,10 @@ repositories {
         url = ("http://maven.limingzxc.top/repository/maven-public/")
         allowInsecureProtocol = true
     }
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+	}
 }
 
 configurations {
@@ -39,7 +43,7 @@ dependencies {
     fml "com.github.MinecraftIsTooEasy:FishModLoader:3.4.2"
     implementation "com.github.MinecraftIsTooEasy:FishModLoader:3.4.2"
 
-	implementation "com.github.MinecraftIsTooEasy:RustedIronCore:1.5.0"
+	implementation "com.github.MinecraftIsTooEasy:RustedIronCore:1.5.5"
 
     implementation "com.github.MinecraftIsTooEasy:ManyLib:2.3.0"
     implementation "com.github.MinecraftIsTooEasy:ModMenu:10.1.1"

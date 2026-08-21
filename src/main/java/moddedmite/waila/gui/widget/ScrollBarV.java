@@ -47,7 +47,6 @@ public class ScrollBarV {
         return this.contentHeight > this.viewportHeight;
     }
 
-    /** 拖动中时滚动条是滚动位置的权威，调用方不要反向覆盖它。 */
     public boolean isDragging() {
         return this.dragging && this.isNeeded();
     }

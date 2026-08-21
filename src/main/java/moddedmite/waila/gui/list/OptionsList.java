@@ -8,6 +8,7 @@ import moddedmite.waila.gui.util.ScreenTheme;
 import moddedmite.waila.gui.util.SmoothChasingValue;
 import moddedmite.waila.gui.widget.ScrollBarV;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -26,10 +27,6 @@ public class OptionsList extends WidgetBase {
     private final ScrollBarV scrollBar;
     private @Nullable Entry defaultParent;
     private long lastNano;
-    /**
-     * 本帧使用的整数滚动偏移。渲染与命中判定必须共用同一个值，
-     * 否则平滑动画产生半像素 scroll 时两者取整方式不同，命中会偏一行。
-     */
     private int scrollPx;
 
     public OptionsList(int x, int y, int width, int height) {
@@ -83,8 +80,6 @@ public class OptionsList extends WidgetBase {
             }
         }
         this.forceScroll(Math.min(this.scroll.getTarget(), this.maxScroll()));
-        // activeEntry 可能指向已被过滤掉、不再渲染的行；若不清空，
-        // 那个不可见的行仍会继续接收键盘输入并改写配置。
         if (this.activeEntry != null && !this.visibleEntries.contains(this.activeEntry)) {
             this.activeEntry = null;
         }
@@ -148,7 +143,6 @@ public class OptionsList extends WidgetBase {
         return index >= 0 && index < this.visibleEntries.size() ? this.visibleEntries.get(index) : null;
     }
 
-    /** 行的屏幕 y 坐标。渲染与命中判定共用，保证两者严格自洽。 */
     private int rowTop(int index) {
         return this.y - this.scrollPx + index * ScreenTheme.ROW_HEIGHT;
     }
@@ -183,8 +177,6 @@ public class OptionsList extends WidgetBase {
             entry.render(mouseX, mouseY, entry == this.hovered, context);
         }
         RenderUtils.endScissor();
-        // drawGradientRect 是「边界」语义 (left, top, right, bottom)，
-        // 与 drawRect 的「尺寸」语义不同，不能传 width/height。
         RenderUtils.drawGradientRect(this.x, this.y + this.height - 2,
                 this.x + this.width, this.y + this.height, 0,
                 ScreenTheme.LIST_SEPARATOR_TOP, ScreenTheme.LIST_SEPARATOR_BOTTOM);
@@ -193,7 +185,6 @@ public class OptionsList extends WidgetBase {
                 ScreenTheme.SCROLLBAR_WIDTH, this.height);
         this.scrollBar.setContent(this.height, this.visibleEntries.size() * ScreenTheme.ROW_HEIGHT);
         if (this.scrollBar.isDragging()) {
-            // 拖动中：滚动条是权威，直接吸附，不走平滑动画。
             this.scrollBar.render(context, mouseX, mouseY);
             this.forceScroll(this.scrollBar.getScroll());
         } else {

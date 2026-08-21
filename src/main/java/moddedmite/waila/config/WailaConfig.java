@@ -78,7 +78,7 @@ public class WailaConfig extends SimpleConfigs implements IWailaConfigHandler {
     public static final List<ConfigTab> tabs = new ArrayList<>();
 
     public WailaConfig() {
-        super("Waila", keybinding, general);
+        super(Waila.NAME, keybinding, general);
     }
 
     static {

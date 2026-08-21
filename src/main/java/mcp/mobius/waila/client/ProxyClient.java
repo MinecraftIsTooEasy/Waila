@@ -1,5 +1,6 @@
 package mcp.mobius.waila.client;
 
+import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderArmor;
 import net.minecraft.*;
 
@@ -69,7 +70,7 @@ public class ProxyClient extends ProxyServer {
     @Override
     public Object getFont() {
         if (minecraftiaFont == null)
-            minecraftiaFont = FontLoader.createFont(new ResourceLocation("waila", "fonts/Minecraftia.ttf"), 14, true);
+            minecraftiaFont = FontLoader.createFont(new ResourceLocation(Waila.ID, "fonts/Minecraftia.ttf"), 14, true);
         return this.minecraftiaFont;
     }
 

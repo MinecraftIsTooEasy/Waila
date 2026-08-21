@@ -21,7 +21,7 @@ public class WailaExceptionHandler {
                 Waila.log.log(
                         Level.WARN,
                         String.format("%s.%s:%s", elem.getClassName(), elem.getMethodName(), elem.getLineNumber()));
-                if (elem.getClassName().contains("waila")) break;
+                if (elem.getClassName().contains(Waila.ID)) break;
             }
 
             Waila.log.log(Level.WARN, String.format("Catched unhandled exception : [%s] %s", className, e));

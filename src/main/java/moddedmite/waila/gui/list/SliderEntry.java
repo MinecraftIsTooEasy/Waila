@@ -15,13 +15,14 @@ import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldDouble;
 import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldInteger;
 import moddedmite.waila.gui.util.ScreenTheme;
 
+import java.awt.*;
 import java.util.List;
 
 /** Numeric row switchable between slider and text input. */
 public class SliderEntry<T extends ConfigBase<T> & IConfigSlideable & IConfigDisplay & IStringRepresentable>
         extends OptionEntry {
-    private static final int TEXT_COLOR_NORMAL = 0xE0E0E0;
-    private static final int TEXT_COLOR_INVALID = 0xFF5555;
+    private static final int TEXT_COLOR_NORMAL = new Color(0xE0E0E0).getRGB();
+    private static final int TEXT_COLOR_INVALID = new Color(0xFF5555).getRGB();
 
     private final T typedConfig;
     private final SliderButton<T> slider;
@@ -61,8 +62,6 @@ public class SliderEntry<T extends ConfigBase<T> & IConfigSlideable & IConfigDis
     }
 
     private void applyAndNormalizeText() {
-        // 文本非法（空 / "-" / "5."）时不写配置，直接把控件文本拉回配置现值，
-        // 避免 parseXxxWithDefault 把原值冲成默认值。
         if (this.isValidValue()) {
             this.typedConfig.setValueFromString(this.textField.getText());
         }
@@ -125,9 +124,6 @@ public class SliderEntry<T extends ConfigBase<T> & IConfigSlideable & IConfigDis
                 return true;
             }
             boolean handled = this.textField.charTyped(chr, keyCode);
-            // 只在文本合法时写配置。ManyLib 的 setValueFromString 走
-            // parseIntWithDefault/parseDoubleWithDefault，解析失败会静默落到
-            // 默认值 —— 用户清空输入框准备重新输入时会把原值冲掉。
             if (handled && this.isValidValue()) {
                 this.typedConfig.setValueFromString(this.textField.getText());
             }

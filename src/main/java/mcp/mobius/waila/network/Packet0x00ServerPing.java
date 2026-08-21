@@ -7,6 +7,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.utils.Constants;
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.Packet;
@@ -59,7 +61,7 @@ public class Packet0x00ServerPing {
         } catch (IOException var6) {
         }
 
-        packet.channel = "Waila";
+        packet.channel = Waila.NAME;
         packet.data = bos.toByteArray();
         packet.length = bos.size();
         return packet;

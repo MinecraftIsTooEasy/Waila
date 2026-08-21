@@ -9,6 +9,7 @@ import static mcp.mobius.waila.api.SpecialChars.patternTab;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.regex.Matcher;
 
 import moddedmite.waila.config.WailaConfig;
 import net.minecraft.BossStatus;
+import net.minecraft.EntityLivingBase;
 import net.minecraft.ItemStack;
 
 import net.minecraft.Minecraft;
@@ -225,6 +227,18 @@ public class Tooltip {
         int centerX = screenW * pos.x / 100;
         x = centerX - w / 2;
         y = screenH * pos.y / 100;
+        
+        EntityLivingBase im = null;
+        try {
+            Class<?> clazz = Class.forName("atomicstryker.infernalmobs.client.InfernalMobsClient");
+            Field retainedTarget = clazz.getDeclaredField("retainedTarget");
+            retainedTarget.setAccessible(true);
+            Object value = retainedTarget.get(clazz.getMethod("getInstance").invoke(null));
+            if (value instanceof EntityLivingBase) {
+                im = (EntityLivingBase) value;
+            }
+        } catch (Throwable t) {
+        }
 
         if (BossStatus.bossName != null && BossStatus.statusBarLength > 0 && Minecraft.inDevMode() && Minecraft.getMinecraft().gameSettings.gui_mode == 0) {
             y += 20;
@@ -232,6 +246,8 @@ public class Tooltip {
             y += 20;
         } else if (Minecraft.inDevMode() && Minecraft.getMinecraft().gameSettings.gui_mode == 0 && WailaConfig.devMoveDownTooltip.getBooleanValue()) {
             y += 10;
+        } else if (im != null) {
+            y += 30;
         }
 
         ty = (h - this.getRenderableTotalHeight()) / 2 + 1;

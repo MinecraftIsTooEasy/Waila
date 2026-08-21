@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.utils.NBTUtil;
 import net.minecraft.NBTTagCompound;
 import net.minecraft.Packet250CustomPayload;
@@ -35,7 +37,7 @@ public class Packet0x04EntNBTData {
         } catch (IOException var5) {
         }
 
-        packet.channel = "Waila";
+        packet.channel = Waila.NAME;
         packet.data = bos.toByteArray();
         packet.length = bos.size();
         return packet;

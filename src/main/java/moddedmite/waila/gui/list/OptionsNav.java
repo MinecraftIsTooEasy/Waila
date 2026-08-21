@@ -17,7 +17,6 @@ public class OptionsNav extends WidgetBase {
     private final List<TitleEntry> titles = new ArrayList<>();
     private final SmoothChasingValue scroll = new SmoothChasingValue().withSpeed(ScreenTheme.SCROLL_SPEED);
     private long lastNano;
-    /** 本帧的整数滚动偏移，渲染与命中共用，避免半像素差异导致点错行。 */
     private int scrollPx;
 
     public OptionsNav(OptionsList list, int x, int y, int width, int height) {
@@ -50,8 +49,6 @@ public class OptionsNav extends WidgetBase {
         int first = Math.max(0, Math.floorDiv(this.scrollPx, ScreenTheme.NAV_ROW_HEIGHT));
         int end = Math.min(this.titles.size(),
                 Math.floorDiv(this.scrollPx + this.height, ScreenTheme.NAV_ROW_HEIGHT) + 1);
-        // 行高不一定整除面板高，末行可能跨过下边界，所以要裁剪。
-        // Layer 是逐个 widget 顺序 render 的，这里的 scissor 与列表的不会嵌套。
         RenderUtils.startScissor(this.x, this.y, this.width, this.height);
         for (int i = first; i < end; i++) {
             TitleEntry title = this.titles.get(i);

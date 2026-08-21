@@ -33,7 +33,7 @@ public class RayTracing {
 //                target.isEntity()
 //                && !shouldHidePlayer(mc.objectMouseOver.getEntityHit())
         ) {
-            this.target = mc.objectMouseOver;
+            this.target = mc.thePlayer.getSelectedObject(1.0F, WailaConfig.liquid.getBooleanValue(), true, null);
             return;
         }
 

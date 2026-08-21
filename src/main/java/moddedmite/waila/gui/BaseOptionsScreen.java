@@ -92,9 +92,6 @@ public abstract class BaseOptionsScreen extends LayeredScreen {
         for (Entry entry : this.options.allEntries()) {
             if (entry instanceof OptionEntry optionEntry) {
                 ConfigBase<?> config = optionEntry.getConfig();
-                // 不能用 JsonElement.deepCopy()：编译期是 Gson 2.10.1，但运行期
-                // classpath 上同时有 MC 自带的 gson 2.2.2（无此方法），会 NoSuchMethodError。
-                // ManyLib 自己实现了递归深拷贝，用它才安全。
                 this.snapshot.put(config, JsonUtils.deepCopy(config.getAsJsonElement()));
             }
         }
@@ -117,9 +114,6 @@ public abstract class BaseOptionsScreen extends LayeredScreen {
                 }
             }
         }
-        // OverlayConfig 是缓存，只在 save() 里刷新。但「重置全部设置」会中途把默认值
-        // 写进缓存，此时若再取消，配置已回滚而缓存仍是默认值 —— HUD 的 scale 与
-        // fontcolor 会一直错到下次保存。回滚后必须重新同步缓存。
         OverlayConfig.updateColors();
     }
 

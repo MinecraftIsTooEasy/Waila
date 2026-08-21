@@ -7,6 +7,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import mcp.mobius.waila.Waila;
 import net.minecraft.Entity;
 import net.minecraft.Packet;
 import net.minecraft.Packet250CustomPayload;
@@ -55,7 +57,7 @@ public class Packet0x03EntRequest {
         } catch (IOException var8) {
         }
 
-        packet.channel = "Waila";
+        packet.channel = Waila.NAME;
         packet.data = bos.toByteArray();
         packet.length = bos.size();
         return packet;

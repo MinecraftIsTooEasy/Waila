@@ -32,7 +32,6 @@ public abstract class OptionEntry extends Entry {
             config.resetToDefault();
             this.onValueReset();
         });
-        // WidgetBase.setHoverStrings 内部会自己 translate，所以直接传语言键。
         this.resetButton.setHoverStrings("gui.waila.reset");
     }
 
@@ -110,8 +109,6 @@ public abstract class OptionEntry extends Entry {
     @Override
     public void setDisabled(boolean disabled) {
         super.setDisabled(disabled);
-        // resetButton 的启禁用由构造时的 predicate 逐帧接管（ManyLib ResetButton 自带
-        // setOnUpdate），这里不能手动 setEnabled，否则下一帧就被覆盖。
         for (WidgetBase widget : this.valueWidgets()) {
             if (widget instanceof ButtonBase button) {
                 button.setEnabled(!disabled);
