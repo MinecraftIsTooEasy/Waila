@@ -32,7 +32,7 @@ public class OverlayRenderer {
 
     public void renderOverlay() {
         Minecraft mc = Minecraft.getMinecraft();
-        RaycastCollision rc = mc.objectMouseOver;//mop
+        RaycastCollision rc = RayTracing.instance().getTarget();
 
         // change too many && to simple returns
         if (mc.currentScreen != null) return;
@@ -40,7 +40,6 @@ public class OverlayRenderer {
         if (!Minecraft.isGuiEnabled()) return;
         if (mc.gameSettings.keyBindPlayerList.pressed) return;
         if (!WailaConfig.showTooltip.getBooleanValue()) return;
-        if (RayTracing.instance().getTarget() == null) return;
         if (rc == null) return;
 
         Tooltip tooltip = WailaTickHandler.instance().getTooltip();

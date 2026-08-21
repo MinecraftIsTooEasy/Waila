@@ -23,7 +23,6 @@ public class RayTracing {
     }
 
     private final Minecraft mc = Minecraft.getMinecraft();
-
     private RaycastCollision target = null;// referring to mc.objectMouseOver is unreliable
 
     public void fire() {
@@ -53,7 +52,12 @@ public class RayTracing {
                 reach = mc.thePlayer.getReach(EnumEntityReachContext.FOR_MELEE_ATTACK, rc.getEntityHit());
             }
         }
-        return reach;
+        if (reach > 0.0F) return reach;
+
+        // Vanilla selection ignores liquids. Only add the liquid fallback when
+        // Waila is configured to show liquids, and use MITE's block reach.
+        if (!WailaConfig.liquid.getBooleanValue()) return 0.0F;
+        return mc.thePlayer.getReach(Block.waterStill, 0);
     }
 
 //    private static boolean shouldHidePlayer(Entity targetEnt) {
@@ -84,7 +88,7 @@ public class RayTracing {
     }
 
     public RaycastCollision rayTrace(EntityLivingBase entity, double par1, float par3) {
-        Vec3 vec3 = entity.getPosition(par3);
+        Vec3 vec3 = entity.getEyePosition(par3);
         Vec3 vec31 = entity.getLook(par3);
         Vec3 vec32 = vec3.addVector(vec31.xCoord * par1, vec31.yCoord * par1, vec31.zCoord * par1);
 
@@ -105,7 +109,6 @@ public class RayTracing {
 
     public Entity getIdentifierEntity() {
         ArrayList<Entity> ents = new ArrayList<>();
-        RaycastCollision raycastCollision = Minecraft.getMinecraft().objectMouseOver;
 
         if (this.target == null) return null;
 
