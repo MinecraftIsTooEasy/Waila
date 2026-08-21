@@ -1,16 +1,18 @@
 {
   "schemaVersion": 1,
-  "id": "waila",
+  "id": "${id}",
   "version": "${version}",
   "depends": {
     "fishmodloader": ">=3.4.0",
+    "minecraft": "1.6.4-mite",
+    "java": ">=17",
     "many-lib": ">=2.2.0"
   },
   "suggests": {
     "emi": ">=1.0.4"
   },
   "environment": "*",
-  "name": "Waila",
+  "name": "${name}",
   "description": "All your data are belong to us. Fork from GTNH-Waila",
   "icon": "assets/waila/icon.png",
   "authors": [
@@ -25,7 +27,7 @@
   "license": "MIT",
   "contact": {
     "homepage": "https://github.com/MinecraftIsTooEasy/Waila",
-    "issues": "https://github.com/MinecraftIsTooEasy/Waila/issue"
+    "issues": "https://github.com/MinecraftIsTooEasy/Waila/issues"
   },
   "entrypoints": {
     "main": [

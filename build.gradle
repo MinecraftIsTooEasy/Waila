@@ -1,5 +1,3 @@
-import java.text.SimpleDateFormat
-
 plugins {
     id 'fml-loom' version '0.1'
     id 'maven-publish'
@@ -8,29 +6,23 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
-static def buildTime() {
-	def df = new SimpleDateFormat("yyyyMMddHHmm")
-	df.setTimeZone(TimeZone.getTimeZone("GMT+8"))
-	return df.format(new Date())
-}
+def useLocalizedArchiveName = Locale.default.country.equalsIgnoreCase("CN")
 
 base {
-//	archivesName = project.archives_base_name + "-dev-build." + buildTime()
-//	archivesName = project.archives_base_name + "-pre-release." + buildTime()
-	archivesName = "[高亮信息显示]" + project.archives_base_name
+    archivesName = useLocalizedArchiveName
+            ? "[高亮信息显示]${project.archives_base_name}"
+            : project.archives_base_name
 }
 
 repositories {
-    mavenLocal()
+    maven {
+        name = "Spongepowered"
+        url = "https://repo.spongepowered.org/repository/maven-public/"
+    }
     maven {
         name = "ModdedMITE"
-        url = ("http://maven.limingzxc.top/repository/maven-public/")
-        allowInsecureProtocol = true
+        url = "https://maven.limingzxc.top/repository/maven-public/"
     }
-	maven {
-		name = "Modrinth"
-		url = "https://api.modrinth.com/maven"
-	}
 }
 
 configurations {
@@ -40,73 +32,83 @@ configurations {
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    implementation "it.unimi.dsi:fastutil:8.5.12"
+    implementation "com.google.code.gson:gson:2.11.0"
+
     fml "com.github.MinecraftIsTooEasy:FishModLoader:3.4.2"
     implementation "com.github.MinecraftIsTooEasy:FishModLoader:3.4.2"
-
-	implementation "com.github.MinecraftIsTooEasy:RustedIronCore:1.5.5"
 
     implementation "com.github.MinecraftIsTooEasy:ManyLib:2.3.0"
     implementation "com.github.MinecraftIsTooEasy:ModMenu:10.1.1"
 
-    implementation "com.github.MinecraftIsTooEasy:Gson:2.10.1"
-    implementation "com.github.MinecraftIsTooEasy:FastUtil:8.5.12"
-    implementation "com.github.MinecraftIsTooEasy:EMI:1.1.24"
-
+    compileOnly "com.github.MinecraftIsTooEasy:EMI:1.1.27"
     compileOnly "com.github.MinecraftIsTooEasy:Extreme:0.1.6.11"
     compileOnly "com.github.MinecraftIsTooEasy:BeyondExtreme:3.0.7"
-    compileOnly "com.github.MinecraftIsTooEasy:MITE-ITF-Reborn:17.2.21"
+    compileOnly "com.github.MinecraftIsTooEasy:MITE-ITF-Reborn:17.2.29"
+
+    localRuntime "com.github.MinecraftIsTooEasy:EMI:1.1.27"
 }
 
-def fmlResolvedFile = configurations.fml.files.iterator().next()
+def fmlResolvedFile = configurations.fml.singleFile
 
 loom {
-	accessWidenerPath = file("src/main/resources/waila.accesswidener")
-	mergedMinecraftJar()
-	mods {
-		"Waila" {
-			sourceSet sourceSets.main
-		}
-	}
+    accessWidenerPath = file("src/main/resources/waila.accesswidener")
+    mergedMinecraftJar()
+    setFML(fmlResolvedFile)
+    dependencies.add("mappings", fmlMCPMappings())
+    mods {
+        "waila" {
+            sourceSet sourceSets.main
+        }
+    }
+    runs {
+        client {
+            String name = project.username
+            String width = project.screen_width
+            String height = project.screen_height
+            programArgs "--userProperties", "{}", "--username", name, "--session", "a.a.a.a", "--width", width, "--height", height
+        }
+    }
 }
 
-loom.setFML(fmlResolvedFile)
-dependencies.add("mappings", loom.fmlMCPMappings())
-
 processResources {
-	inputs.property "version", project.version
+    inputs.properties(
+            version: project.version,
+            id: project.mod_id,
+            name: project.mod_name
+    )
 
-	filesMatching("fml.mod.json") {
-		expand "version": project.version
-	}
+    filesMatching("fml.mod.json") {
+        expand(inputs.properties)
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+    options.release = 17
 }
 
 java {
-	withSourcesJar()
+    withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
-	}
-}
+    inputs.property "archivesName", project.base.archivesName
 
-tasks.named('runClient', JavaExec).configure { exec ->
-    def user = project.hasProperty('username') ? project.username : 'Dev'
-    exec.setArgs(['--username', user, '--session', '0', '--width', '854', '--height', '480'])
+    from("LICENSE") {
+        rename { String fileName -> "${fileName}_${inputs.properties.archivesName}" }
+    }
 }
 
 // configure the maven publication
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            from components.java
+        create("mavenJava", MavenPublication) {
+            artifactId = project.maven_id
+            from(components.java)
         }
     }
 
