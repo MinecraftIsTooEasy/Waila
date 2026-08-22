@@ -1,6 +1,7 @@
 package mcp.mobius.waila.client;
 
 import mcp.mobius.waila.Waila;
+import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderArmor;
 import net.minecraft.*;
 
@@ -17,6 +18,7 @@ import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderHealth;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderProgressBar;
 import mcp.mobius.waila.overlay.tooltiprenderers.TTRenderStack;
 import mcp.mobius.waila.server.ProxyServer;
+import net.xiaoyu233.fml.FishModLoader;
 
 public class ProxyClient extends ProxyServer {
 
@@ -65,6 +67,7 @@ public class ProxyClient extends ProxyServer {
         ModuleRegistrar.instance().registerTooltipRenderer("waila.progress", new TTRenderProgressBar());
         ModuleRegistrar.instance().registerTooltipRenderer("waila.armor", new TTRenderArmor());
 
+        FishModLoader.invokeEntrypoints("waila", IWailaPlugin.class, plugin -> plugin.register(ModuleRegistrar.instance()));
     }
 
     @Override
