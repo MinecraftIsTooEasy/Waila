@@ -17,13 +17,7 @@
     "accessor.EntityArachnidAccessor",
     "accessor.EntityLivestockAccessor",
     "accessor.EntityPhaseSpiderAccessor",
-    "accessor.EntityZombieAccessor",
-    "compat.EntityLichAccessor",
-    "compat.EntityLichShadowAccessor",
-    "compat.EntitySkeletonBossAccessor",
-    "compat.EntitySkeletonShadowAccessor",
-    "compat.EntitySpiritAccessor",
-    "compat.EntityUltimateAnnihilationSkeletonAccessor"
+    "accessor.EntityZombieAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

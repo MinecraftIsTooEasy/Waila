@@ -43,10 +43,6 @@ dependencies {
     implementation "com.github.MinecraftIsTooEasy:ModMenu:10.1.1"
 
     compileOnly "com.github.MinecraftIsTooEasy:EMI:1.1.27"
-    compileOnly "com.github.MinecraftIsTooEasy:Extreme:0.1.6.11"
-    compileOnly "com.github.MinecraftIsTooEasy:BeyondExtreme:3.0.7"
-    compileOnly "com.github.MinecraftIsTooEasy:MITE-ITF-Reborn:17.2.29"
-
     localRuntime "com.github.MinecraftIsTooEasy:EMI:1.1.27"
 }
 

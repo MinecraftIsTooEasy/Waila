@@ -24,7 +24,6 @@ import moddedmite.waila.mixin.accessor.EntityLivestockAccessor;
 import moddedmite.waila.mixin.accessor.EntityZombieAccessor;
 import moddedmite.waila.mixin.accessor.EntityArachnidAccessor;
 import moddedmite.waila.mixin.accessor.EntityPhaseSpiderAccessor;
-import moddedmite.waila.compat.ModCompat;
 import net.minecraft.server.MinecraftServer;
 
 public class HUDHandlerEntities implements IWailaEntityProvider {
@@ -62,9 +61,6 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         this.getLivestockInfo(entity, currenttip, accessor, config);
         this.getZombieConversionInfo(entity, currenttip, accessor, config);
         this.getSpiderWebInfo(entity, currenttip, accessor, config);
-        this.getITFRBEvasionInfo(entity, currenttip, accessor, config);
-        this.getExtremeExchangerInfo(entity, currenttip, accessor, config);
-        this.getBEXEvasionInfo(entity, currenttip, accessor, config);
 //        if (entity instanceof EntityItem entityItem) {
 //            this.getEntityItem(entityItem, currenttip, accessor, config);
 //        }
@@ -265,114 +261,6 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         currenttip.set(0, entity.getEntityItem().getDisplayName());
     }
     
-    public void getITFRBEvasionInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
-        
-        if (!WailaConfig.showphaseevasions.getBooleanValue()) return;
-        
-        if (!ModCompat.HAS_ITFRB) return;
-        
-        if (!ModCompat.isITFRBEvasionEntity(entity)) return;
-        
-        int numEvasions = -1;
-        
-        MinecraftServer server = MinecraftServer.getServer();
-        
-        if (server != null) {
-            for (World world : server.worldServers) {
-                if (world != null) {
-                    Entity serverEntity = world.getEntityByID(entity.entityId);
-                    
-                    if (serverEntity != null) {
-                        numEvasions = ModCompat.getITFRBEvasions(serverEntity);
-                        break;
-                    }
-                }
-            }
-        } else {
-            NBTTagCompound tag = accessor.getNBTData();
-            
-            if (tag != null && tag.hasKey("WailaITFRBEvasions")) {
-                numEvasions = tag.getInteger("WailaITFRBEvasions");
-            }
-        }
-        
-        if (numEvasions >= 0) {
-            currenttip.add(GRAY + LangUtil.translateG("hud.msg.phase_evasions", numEvasions));
-        }
-    }
-    
-    public void getExtremeExchangerInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
-        
-        if (!WailaConfig.showphaseevasions.getBooleanValue()) return;
-        
-        if (!ModCompat.HAS_BEX) return;
-        
-        if (!ModCompat.isExchangerEntity(entity)) return;
-        
-        int numEvasions = -1;
-        
-        MinecraftServer server = MinecraftServer.getServer();
-        
-        if (server != null) {
-            for (World w : server.worldServers) {
-                if (w != null) {
-                    Entity serverEntity = w.getEntityByID(entity.entityId);
-                    
-                    if (serverEntity != null) {
-                        numEvasions = ModCompat.getExchangerEvasions(serverEntity);
-                        break;
-                    }
-                }
-            }
-        } else {
-            NBTTagCompound tag = accessor.getNBTData();
-            
-            if (tag != null && tag.hasKey("WailaExchangerEvasions")) {
-                numEvasions = tag.getInteger("WailaExchangerEvasions");
-            }
-        }
-        
-        if (numEvasions >= 0) {
-            currenttip.add(GRAY + LangUtil.translateG("hud.msg.phase_evasions", numEvasions));
-        }
-    }
-    
-    public void getBEXEvasionInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
-        
-        if (!WailaConfig.showphaseevasions.getBooleanValue()) return;
-        
-        if (!ModCompat.HAS_BEX) return;
-        
-        if (!ModCompat.isBEXEvasionEntity(entity)) return;
-        
-        int numEvasions = -1;
-        
-        MinecraftServer server = MinecraftServer.getServer();
-        
-        if (server != null) {
-            for (World w : server.worldServers) {
-                if (w != null) {
-                    Entity serverEntity = w.getEntityByID(entity.entityId);
-                    
-                    if (serverEntity != null) {
-                        numEvasions = ModCompat.getBEXEvasions(serverEntity);
-                        break;
-                    }
-                }
-            }
-        } else {
-            NBTTagCompound tag = accessor.getNBTData();
-            
-            if (tag != null && tag.hasKey("WailaBEXEvasions")) {
-                numEvasions = tag.getInteger("WailaBEXEvasions");
-            }
-        }
-        
-        if (numEvasions >= 0) {
-            currenttip.add(GRAY + LangUtil.translateG("hud.msg.phase_evasions", numEvasions));
-        }
-    }
-    
     public void getZombieConversionInfo(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
         
         if (!WailaConfig.showzombieconversion.getBooleanValue()) return;
@@ -451,24 +339,6 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
             }
         }
         
-        if (ModCompat.HAS_ITFRB && ModCompat.isITFRBEvasionEntity(entity)) {
-            int evasions = ModCompat.getITFRBEvasions(entity);
-            
-            if (evasions >= 0) tag.setInteger("WailaITFRBEvasions", evasions);
-        }
-        
-        if (ModCompat.HAS_BEX && ModCompat.isExchangerEntity(entity)) {
-            int evasions = ModCompat.getExchangerEvasions(entity);
-            
-            if (evasions >= 0) tag.setInteger("WailaExchangerEvasions", evasions);
-        }
-        
-        if (ModCompat.HAS_BEX && ModCompat.isBEXEvasionEntity(entity)) {
-            int evasions = ModCompat.getBEXEvasions(entity);
-            
-            if (evasions >= 0) tag.setInteger("WailaBEXEvasions", evasions);
-        }
-        
         return tag;
     }
     
@@ -479,12 +349,5 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
         ModuleRegistrar.instance().registerNBTProvider(provider, EntityPhaseSpider.class);
         ModuleRegistrar.instance().registerNBTProvider(provider, EntityLivestock.class);
 
-        if (ModCompat.HAS_ITFRB) {
-            ModCompat.registerITFRBNBTProviders(provider);
-        }
-
-        if (ModCompat.HAS_BEX) {
-            ModCompat.registerBEXOnEXTREMENBTProviders(provider);
-        }
     }
 }

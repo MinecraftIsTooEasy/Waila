@@ -5,12 +5,14 @@ import java.lang.reflect.Method;
 import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.addons.vanillamc.HUDHandlerVanilla;
 import mcp.mobius.waila.api.IWailaRegistrar;
+import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.impl.ModuleRegistrar;
 import mcp.mobius.waila.handlers.DecoratorFMP;
 import mcp.mobius.waila.handlers.HUDHandlerEntities;
 import mcp.mobius.waila.handlers.HUDHandlerFMP;
 import moddedmite.waila.handlers.HUDHandlerExtra;
 import moddedmite.waila.handlers.HUDHandlerMITE;
+import net.xiaoyu233.fml.FishModLoader;
 
 public class ProxyServer {
 
@@ -28,6 +30,8 @@ public class ProxyServer {
         HUDHandlerMITE.register();
         HUDHandlerExtra.register();
         HUDHandlerEntities.register();
+        FishModLoader.invokeEntrypoints("waila", IWailaPlugin.class,
+                plugin -> plugin.register(ModuleRegistrar.instance()));
     }
 
     public void registerIMCs() {
